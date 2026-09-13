@@ -296,13 +296,19 @@ html:not([data-theme="dark"]) .icon-moon{display:none;}
 .hero-stat b{display:block; font-size:1.6rem; font-weight:800;}
 .hero-stat span{font-size:.8rem; color:var(--text-faint);}
 
-.hero-visual{position:relative; aspect-ratio:1/1; max-width:420px; margin-left:auto; width:100%;}
+.hero-visual{position:relative; aspect-ratio:1/1; max-width:440px; margin-left:auto; width:100%;}
+.hero-visual::before{
+  content:''; position:absolute; inset:9%; border-radius:36px;
+  background:linear-gradient(155deg, color-mix(in srgb, var(--accent) 20%, transparent) 0%, color-mix(in srgb, var(--accent-2) 16%, transparent) 100%);
+  border:1px solid var(--border);
+}
 .hero-card{
   position:absolute; background:color-mix(in srgb, var(--bg-raised) 92%, transparent); border:1px solid var(--border); border-radius:var(--radius-lg);
   box-shadow:var(--shadow-lg); padding:20px; backdrop-filter:blur(16px) saturate(160%);
 }
-.hero-card.card-a{inset:6% 8% auto auto; width:72%;}
-.hero-card.card-b{inset:auto 0 4% 4%; width:62%; padding:16px;}
+.hero-card.card-a{top:4%; right:0; width:68%;}
+.hero-card.card-b{bottom:24%; left:0; width:60%; padding:16px;}
+.hero-card.card-c{bottom:0; right:6%; width:52%; padding:14px;}
 .hero-progress{height:8px; border-radius:99px; background:var(--bg-sunken); overflow:hidden; margin-top:10px;}
 .hero-progress i{display:block; height:100%; width:64%; background:linear-gradient(90deg, var(--accent), var(--accent-2)); border-radius:99px;}
 .hero-mini-row{display:flex; align-items:center; gap:10px;}
@@ -315,6 +321,22 @@ html:not([data-theme="dark"]) .icon-moon{display:none;}
 }
 
 /* ==========================================================================
+   FEATURES (Kenapa Pakai Modul Ini)
+   ========================================================================== */
+.feature-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px;}
+.feature-card{
+  background:var(--bg-raised); border:1px solid var(--border); border-radius:var(--radius-md);
+  padding:26px 24px; transition:transform .2s var(--ease), box-shadow .2s var(--ease), border-color .2s var(--ease);
+}
+.feature-card:hover{transform:translateY(-3px); box-shadow:var(--shadow-md); border-color:transparent;}
+.feature-icon{
+  width:48px; height:48px; border-radius:14px; background:var(--accent-soft); color:var(--accent);
+  display:flex; align-items:center; justify-content:center; margin-bottom:16px;
+}
+.feature-title{font-size:1.05rem; font-weight:700; margin-bottom:8px;}
+.feature-desc{color:var(--text-secondary); font-size:.92rem; line-height:1.6; margin:0;}
+
+/* ==========================================================================
    SECTIONS / CONTAINERS
    ========================================================================== */
 .section{padding:64px 24px; max-width:1280px; margin:0 auto;}
@@ -323,13 +345,20 @@ html:not([data-theme="dark"]) .icon-moon{display:none;}
 .section-desc{color:var(--text-secondary); margin-top:6px; max-width:56ch;}
 
 /* materi grid */
-.materi-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:20px;}
+.materi-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,320px)); justify-content:start; gap:20px;}
 .materi-card{
   position:relative; overflow:hidden;
   background:var(--bg-raised); border:1px solid var(--border); border-radius:var(--radius-md);
   padding:23px 22px 22px; display:flex; flex-direction:column; gap:14px;
   transition:transform .2s var(--ease), box-shadow .2s var(--ease), border-color .2s var(--ease);
 }
+.materi-card-placeholder{
+  border:1.5px dashed var(--border); border-radius:var(--radius-md); padding:23px 22px;
+  display:flex; flex-direction:column; gap:6px; color:var(--text-faint); min-height:180px; justify-content:center;
+}
+.materi-card-placeholder .materi-num{color:var(--text-faint);}
+.materi-card-placeholder b{color:var(--text-secondary); font-size:.98rem; font-weight:700;}
+.materi-card-placeholder span:last-child{font-size:.86rem;}
 .materi-card::before{
   content:''; position:absolute; top:0; left:0; right:0; height:3px; transform:scaleX(0); transform-origin:left;
   background:linear-gradient(90deg, var(--accent), var(--accent-2)); transition:transform .28s var(--ease);
