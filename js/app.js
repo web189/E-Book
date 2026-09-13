@@ -642,6 +642,31 @@
             '<div class="hero-card card-b">' +
               '<div class="hero-mini-row"><div class="hero-mini-dot">&#10003;</div><div><strong>Transaksi DMS 3</strong><div class="field-hint">Siap dipelajari</div></div></div>' +
             '</div>' +
+            '<div class="hero-card card-c">' +
+              '<div class="hero-mini-row"><div class="hero-mini-dot">&#9889;</div><div><strong>Update Berkala</strong><div class="field-hint">Materi baru tiap bulan</div></div></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</section>' +
+      '<section class="section features-section">' +
+        '<div class="section-head">' +
+          '<div><h2 class="section-title">Kenapa Pakai Modul Ini?</h2><p class="section-desc">Dirancang supaya admin baru bisa cepat paham alur kerja GDNG PRG tanpa perlu bertanya berulang-ulang.</p></div>' +
+        '</div>' +
+        '<div class="feature-grid">' +
+          '<div class="feature-card">' +
+            '<div class="feature-icon"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H12v16H5.5A1.5 1.5 0 0 1 4 18.5v-13Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/><path d="M20 5.5c0-.8-.7-1.5-1.5-1.5H12v16h6.5a1.5 1.5 0 0 0 1.5-1.5v-13Z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/></svg></div>' +
+            '<h3 class="feature-title">Panduan Langkah demi Langkah</h3>' +
+            '<p class="feature-desc">Setiap prosedur dijelaskan detail lengkap dengan contoh dokumen asli dan tangkapan layar sistem.</p>' +
+          '</div>' +
+          '<div class="feature-card">' +
+            '<div class="feature-icon"><svg viewBox="0 0 24 24" width="22" height="22"><rect x="4" y="3" width="12" height="18" rx="2" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M9 18h2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M17 8h3v10a2 2 0 0 1-2 2h-1" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/></svg></div>' +
+            '<h3 class="feature-title">Bisa Diakses di Mana Saja</h3>' +
+            '<p class="feature-desc">Buka langsung dari HP, tablet, atau komputer kapan pun dibutuhkan, tanpa perlu instal aplikasi tambahan.</p>' +
+          '</div>' +
+          '<div class="feature-card">' +
+            '<div class="feature-icon"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M20 11A8 8 0 1 0 6.5 17.5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M20 5v6h-6" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
+            '<h3 class="feature-title">Selalu Diperbarui</h3>' +
+            '<p class="feature-desc">Materi ditambah dan disempurnakan secara berkala mengikuti perubahan alur kerja dan sistem.</p>' +
           '</div>' +
         '</div>' +
       '</section>' +
@@ -650,15 +675,15 @@
           '<div><h2 class="section-title">Materi Pilihan</h2><p class="section-desc">Kumpulan modul terbaru yang perlu dipelajari admin GDNG PRG.</p></div>' +
           '<a href="#/materi" class="btn btn-ghost btn-sm">Lihat Semua</a>' +
         '</div>' +
-        '<div class="materi-grid">' + renderMateriCards(materials.slice(0, 6)) + '</div>' +
+        '<div class="materi-grid">' + renderMateriCards(materials.slice(0, 6), 3) + '</div>' +
       '</section>';
   }
 
-  function renderMateriCards(list) {
+  function renderMateriCards(list, padTo) {
     if (list.length === 0) {
       return '<div class="empty-state" style="grid-column:1/-1;"><b>Belum ada materi</b>Materi yang dipublikasikan akan tampil di sini.</div>';
     }
-    return list.map(function (m, idx) {
+    var html = list.map(function (m, idx) {
       return (
         '<article class="materi-card">' +
           '<span class="materi-num">' + String(idx + 1).padStart(2, "0") + '</span>' +
@@ -671,6 +696,20 @@
         '</article>'
       );
     }).join("");
+    // When only a few materials are published, the grid stretches into a
+    // large empty row on wide screens. Pad it out with clearly-labelled
+    // "coming soon" placeholders so the section still feels intentional.
+    if (padTo && list.length < padTo) {
+      for (var i = list.length; i < padTo; i++) {
+        html +=
+          '<div class="materi-card-placeholder">' +
+            '<span class="materi-num">' + String(i + 1).padStart(2, "0") + '</span>' +
+            '<b>Segera Hadir</b>' +
+            '<span>Materi baru sedang disiapkan.</span>' +
+          '</div>';
+      }
+    }
+    return html;
   }
 
   /* ------------------------------------------------------------------ */
@@ -685,7 +724,7 @@
         '<div class="section-head">' +
           '<div><h2 class="section-title">Daftar Materi</h2><p class="section-desc">Seluruh modul pelatihan admin GDNG PRG 2026 yang tersedia untuk dipelajari.</p></div>' +
         '</div>' +
-        '<div class="materi-grid">' + renderMateriCards(materials) + '</div>' +
+        '<div class="materi-grid">' + renderMateriCards(materials, 3) + '</div>' +
       '</section>';
   }
 
