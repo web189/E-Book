@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Modul Materi Pelatihan Admin GDNG PRG 2026</title>
+<meta name="description" content="E-Book digital dan modul materi pelatihan untuk admin GDNG PRG 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============ TOAST CONTAINER ============ -->
+<div id="toastRoot" class="toast-root" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ============ CONFIRM DIALOG ============ -->
+<div id="confirmOverlay" class="overlay" hidden>
+  <div class="confirm-box" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <p id="confirmTitle" class="confirm-title"></p>
+    <p id="confirmBody" class="confirm-body"></p>
+    <div class="confirm-actions">
+      <button type="button" class="btn btn-ghost" id="confirmCancel">Batal</button>
+      <button type="button" class="btn btn-danger" id="confirmOk">Hapus</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ADMIN LOGIN MODAL ============ -->
+<div id="loginOverlay" class="overlay" hidden>
+  <div class="login-box" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <button type="button" class="icon-btn login-close" id="loginClose" aria-label="Tutup">
+      <svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+    </button>
+    <div class="login-mark">GP</div>
+    <h2 id="loginTitle" class="login-title">Admin Login</h2>
+    <p class="login-sub">Masuk untuk mengelola modul materi.</p>
+    <form id="loginForm" class="login-form" novalidate>
+      <label class="field">
+        <span class="field-label">Username</span>
+        <input type="text" id="loginUsername" name="username" autocomplete="username" required>
+      </label>
+      <label class="field">
+        <span class="field-label">Password</span>
+        <div class="pw-wrap">
+          <input type="password" id="loginPassword" name="password" autocomplete="current-password" required>
+          <button type="button" class="pw-toggle" id="pwToggle" aria-label="Tampilkan password">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.6" fill="none"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>
+          </button>
+        </div>
+      </label>
+      <p class="login-error" id="loginError" role="alert" hidden></p>
+      <button type="submit" class="btn btn-primary btn-block" id="loginSubmit">
+        <span class="btn-label">Masuk</span>
+        <span class="spinner" hidden></span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ============ VISITOR HEADER ============ -->
+<header class="site-header" id="siteHeader">
+  <div class="header-inner">
+    <button type="button" class="logo-trigger" id="logoTrigger" aria-label="GDNG PRG 2026">
+      <span class="logo-mark">GP</span>
+      <span class="logo-text">
+        <strong>GDNG PRG</strong>
+        <em>Modul Pelatihan 2026</em>
+      </span>
+    </button>
+
+    <nav class="main-nav" id="mainNav" aria-label="Navigasi utama">
+      <a href="#/" class="nav-link" data-route="/">Beranda</a>
+      <a href="#/materi" class="nav-link" data-route="/materi">Daftar Materi</a>
+      <button type="button" class="nav-link nav-search-btn" id="openSearchBtn">Pencarian</button>
+    </nav>
+
+    <div class="header-actions">
+      <button type="button" class="icon-btn" id="themeToggle" aria-label="Ganti mode gelap/terang">
+        <svg class="icon-sun" viewBox="0 0 24 24" width="19" height="19"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7" fill="none"/><g stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></g></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="19" height="19" hidden><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.6 6.6 0 1 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="hamburger" id="hamburgerBtn" aria-label="Buka menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- mobile drawer -->
+  <div class="mobile-drawer" id="mobileDrawer">
+    <a href="#/" class="drawer-link" data-route="/">Beranda</a>
+    <a href="#/materi" class="drawer-link" data-route="/materi">Daftar Materi</a>
+    <button type="button" class="drawer-link" id="drawerSearchBtn">Pencarian</button>
+    <button type="button" class="drawer-link" id="drawerThemeBtn">Mode Gelap / Terang</button>
+  </div>
+</header>
+
+<!-- ============ SEARCH PANEL ============ -->
+<div class="search-overlay" id="searchOverlay" hidden>
+  <div class="search-panel">
+    <div class="search-input-row">
+      <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M20 20l-3.4-3.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <input type="text" id="searchInput" placeholder="Cari materi, mis. Login DMS, Laporan Excel..." autocomplete="off">
+      <button type="button" class="icon-btn" id="closeSearchBtn" aria-label="Tutup pencarian">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<!-- ============ APP ROOT (routed views) ============ -->
+<main id="app" class="app-root"></main>
+
+<!-- ============ FOOTER (visitor) ============ -->
+<footer class="site-footer" id="siteFooter">
+  <p class="footer-title">Modul Materi Pelatihan Admin GDNG PRG 2026</p>
+  <p class="footer-sub">Digital Training Module &middot; &copy; 2026</p>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>
