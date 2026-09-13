@@ -26,7 +26,7 @@
   // Bump this whenever the built-in seed content changes, so browsers that
   // already have older data in LocalStorage get refreshed automatically
   // instead of keeping stale materials forever.
-  var DATA_VERSION = "2026.09.13-transaksi-dms-3-tabs-v3";
+  var DATA_VERSION = "2026.09.13-transaksi-dms-3-tabs-v4-parung-reorder";
   var DATA_VERSION_KEY = "gdngprg_data_version";
 
   /* ------------------------------------------------------------------ */
@@ -305,34 +305,25 @@
   <div class="tx-steps">
 
     <div class="tx-step">
-      <div class="tx-step-media"><span class="tx-step-num">Langkah 1</span><img src="assets/images/transaksi-dms-3/parung-02-btb-dms-3-dari-pol-cicurug.webp" alt="BTB DMS 3 dari Pool Cicurug" loading="lazy"></div>
+      <div class="tx-step-media"><span class="tx-step-num">Langkah 1</span><img src="assets/images/transaksi-dms-3/parung-01-bkb-dms-3-ke-pol-cicurug.webp" alt="BKB DMS 3 ke Pool Cicurug" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag">BTB &middot; Barang Masuk</span>
-        <h3 class="tx-step-title">Terima Barang di Gudang Layak Pet Parung (DMS 3)</h3>
-        <p class="tx-step-desc">Dokumen <strong>Bukti Terima Barang Cabang</strong> dibuat di gudang <strong>281-W13 Gudang Layak Pet Parung</strong>, mencatat kedatangan barang dari LP Pool Cicurug: Jug Aqua 19L, tissue, dan galon isi masing-masing 528 unit dengan tipe stok Jual.</p>
-      </div>
-    </div>
-
-    <div class="tx-step">
-      <div class="tx-step-media"><span class="tx-step-num">Langkah 2</span><img src="assets/images/transaksi-dms-3/parung-01-bkb-dms-3-ke-pol-cicurug.webp" alt="BKB DMS 3 ke Pool Cicurug" loading="lazy"></div>
-      <div class="tx-step-body">
-        <span class="tx-step-tag tag-out">BKB &middot; Barang Keluar</span>
+        <span class="tx-step-tag tag-out">BKB Depo &middot; Barang Keluar</span>
         <h3 class="tx-step-title">Keluarkan Barang Menuju Pool Cicurug (DMS 3)</h3>
-        <p class="tx-step-desc">Sebagai pasangan dokumen sebelumnya, <strong>Bukti Keluar Barang Cabang</strong> diterbitkan dengan Depo Tujuan 288 (LP Pool Cicurug), memastikan kuantitas keluar 528 unit sama persis dengan yang diterima &mdash; kunci agar stok tidak selisih.</p>
+        <p class="tx-step-desc">Titik awal siklus: <strong>Bukti Keluar Barang Cabang</strong> diterbitkan dari Gudang Layak Pet Parung dengan Depo Tujuan 288 (LP Pool Cicurug), mengeluarkan 528 unit Jug Aqua 19L, tissue, dan galon isi sebagai titik transit sebelum masuk DMS 5.</p>
       </div>
     </div>
 
     <div class="tx-step">
-      <div class="tx-step-media"><span class="tx-step-num">Langkah 3</span><img src="assets/images/transaksi-dms-3/parung-03-btb-dms-5-port-9301-dari-depo-parung.webp" alt="BTB DMS 5 port 9301 dari Depo Parung" loading="lazy"></div>
+      <div class="tx-step-media"><span class="tx-step-num">Langkah 2</span><img src="assets/images/transaksi-dms-3/parung-03-btb-dms-5-port-9301-dari-depo-parung.webp" alt="BTB DMS 5 port 9301 dari Depo Parung" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag">BTB &middot; Barang Masuk</span>
+        <span class="tx-step-tag">BTB Depo &middot; Barang Masuk</span>
         <h3 class="tx-step-title">Lanjutkan ke Distribution Management System 5.0</h3>
         <p class="tx-step-desc">Di sistem baru <strong>DMS 5.0 (port 9301)</strong>, menu <em>BTB Depot</em> menerima kembali barang dari Depo 281 (LP Parung) ke gudang <strong>002-W01 Gudang NGG LP</strong> &mdash; menandai barang resmi tercatat di sistem terbaru.</p>
       </div>
     </div>
 
     <div class="tx-step">
-      <div class="tx-step-media"><span class="tx-step-num">Langkah 4</span><img src="assets/images/transaksi-dms-3/parung-04-bkb-distribus-dms-5-port-9301.webp" alt="BKB Distribusi DMS 5 port 9301" loading="lazy"></div>
+      <div class="tx-step-media"><span class="tx-step-num">Langkah 3</span><img src="assets/images/transaksi-dms-3/parung-04-bkb-distribus-dms-5-port-9301.webp" alt="BKB Distribusi DMS 5 port 9301" loading="lazy"></div>
       <div class="tx-step-body">
         <span class="tx-step-tag tag-out">BKB Distribusi &middot; Keluar</span>
         <h3 class="tx-step-title">Proses Bukti Keluar Barang Distribusi</h3>
@@ -341,7 +332,7 @@
     </div>
 
     <div class="tx-step">
-      <div class="tx-step-media"><span class="tx-step-num">Langkah 5</span><img src="assets/images/transaksi-dms-3/parung-05-btb-distribus-dms-5-port-9301.webp" alt="BTB Distribusi DMS 5 port 9301" loading="lazy"></div>
+      <div class="tx-step-media"><span class="tx-step-num">Langkah 4</span><img src="assets/images/transaksi-dms-3/parung-05-btb-distribus-dms-5-port-9301.webp" alt="BTB Distribusi DMS 5 port 9301" loading="lazy"></div>
       <div class="tx-step-body">
         <span class="tx-step-tag">BTB Distribusi &middot; Masuk</span>
         <h3 class="tx-step-title">Konfirmasi Penerimaan Distribusi</h3>
@@ -350,16 +341,25 @@
     </div>
 
     <div class="tx-step">
-      <div class="tx-step-media"><span class="tx-step-num">Langkah 6</span><img src="assets/images/transaksi-dms-3/parung-06-bkb-dms-5-port-9301-ke-depo-parung.webp" alt="BKB DMS 5 port 9301 ke Depo Parung" loading="lazy"></div>
+      <div class="tx-step-media"><span class="tx-step-num">Langkah 5</span><img src="assets/images/transaksi-dms-3/parung-06-bkb-dms-5-port-9301-ke-depo-parung.webp" alt="BKB DMS 5 port 9301 ke Depo Parung" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag tag-out">BKB &middot; Barang Keluar</span>
+        <span class="tx-step-tag tag-out">BKB Depo &middot; Barang Keluar</span>
         <h3 class="tx-step-title">Selesai &mdash; Barang Siap Jual di Parung</h3>
-        <p class="tx-step-desc">Dokumen penutup <em>BKB Depot</em> mengeluarkan barang menuju Depo Tujuan 281 (LP Parung), menandakan seluruh 528 unit Jug Aqua, tissue, dan galon isi resmi menjadi stok siap jual di Parung.</p>
+        <p class="tx-step-desc">Dokumen penutup <em>BKB Depot</em> di DMS 5.0 mengeluarkan barang menuju Depo Tujuan 281 (LP Parung), menandakan seluruh 528 unit Jug Aqua, tissue, dan galon isi resmi kembali menjadi stok Depo Parung.</p>
+      </div>
+    </div>
+
+    <div class="tx-step">
+      <div class="tx-step-media"><span class="tx-step-num">Langkah 6</span><img src="assets/images/transaksi-dms-3/parung-02-btb-dms-3-dari-pol-cicurug.webp" alt="BTB DMS 3 dari Pool Cicurug" loading="lazy"></div>
+      <div class="tx-step-body">
+        <span class="tx-step-tag">BTB Depo &middot; Barang Masuk</span>
+        <h3 class="tx-step-title">Terima Barang di Gudang Layak Pet Parung (DMS 3)</h3>
+        <p class="tx-step-desc">Menutup siklus di sistem DMS 3: dokumen <strong>Bukti Terima Barang Cabang</strong> dibuat di gudang <strong>281-W13 Gudang Layak Pet Parung</strong>, mencatat kedatangan barang dari LP Pool Cicurug: Jug Aqua 19L, tissue, dan galon isi masing-masing 528 unit dengan tipe stok Jual &mdash; barang resmi siap jual di Parung.</p>
       </div>
     </div>
 
   </div>
-  <div class="tx-note"><b>Catatan:</b>&nbsp;Total 6 dokumen (3 pasang BTB/BKB) harus selesai berurutan pada tanggal transaksi yang sama agar posisi stok di kedua sistem (DMS 3 &amp; DMS 5) tetap sinkron.</div>
+  <div class="tx-note"><b>Catatan:</b>&nbsp;Total 6 dokumen (3 pasang BKB/BTB) harus selesai berurutan pada tanggal transaksi yang sama agar posisi stok di kedua sistem (DMS 3 &amp; DMS 5) tetap sinkron.</div>
 </div>
 
 <!-- ================= CASE 2: GALON DARI SENTUL ================= -->
@@ -376,7 +376,7 @@
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 1</span><img src="assets/images/transaksi-dms-3/sentul-01-btb-dms-3-dari-depo-sentul.webp" alt="BTB DMS 3 dari Depo Sentul" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag">BTB &middot; Barang Masuk</span>
+        <span class="tx-step-tag">BTB Depo &middot; Barang Masuk</span>
         <h3 class="tx-step-title">Terima Kiriman dari Depo Sentul</h3>
         <p class="tx-step-desc">Gudang Layak Pet Parung menerima 528 unit Jug Aqua 19L, tissue, dan galon isi yang dikirim dari <strong>LP Sentul (Depo 283)</strong>, diangkut Angkutan Prima Jaya.</p>
       </div>
@@ -385,7 +385,7 @@
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 2</span><img src="assets/images/transaksi-dms-3/sentul-02-bkb-dms-3-ke-pol-cicurug.webp" alt="BKB DMS 3 ke Pool Cicurug" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag tag-out">BKB &middot; Barang Keluar</span>
+        <span class="tx-step-tag tag-out">BKB Depo &middot; Barang Keluar</span>
         <h3 class="tx-step-title">Teruskan ke LP Pool Cicurug</h3>
         <p class="tx-step-desc">Barang yang sama langsung diteruskan keluar menuju Depo Tujuan 288 (LP Pool Cicurug), menjaga kuantitas tetap 528 unit sebagai titik transit sebelum masuk DMS 5.</p>
       </div>
@@ -394,7 +394,7 @@
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 3</span><img src="assets/images/transaksi-dms-3/sentul-03-btb-dms-5-port-9301-dari-depo-parung.webp" alt="BTB DMS 5 port 9301 dari Depo Parung" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag">BTB &middot; Barang Masuk</span>
+        <span class="tx-step-tag">BTB Depo &middot; Barang Masuk</span>
         <h3 class="tx-step-title">Masuk Resmi ke DMS 5.0</h3>
         <p class="tx-step-desc">Di <em>Distribution Management System 5.0</em>, BTB Depot mencatat kedatangan barang dari Depo 281 ke Gudang NGG LP &mdash; melanjutkan alur ke sistem port 9301.</p>
       </div>
@@ -421,7 +421,7 @@
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 6</span><img src="assets/images/transaksi-dms-3/sentul-06-bkb-dms-5-por-9301-ke-depo-parung.webp" alt="BKB DMS 5 port 9301 ke Depo Parung" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag tag-out">BKB &middot; Barang Keluar</span>
+        <span class="tx-step-tag tag-out">BKB Depo &middot; Barang Keluar</span>
         <h3 class="tx-step-title">Stok Resmi Jadi Milik Parung</h3>
         <p class="tx-step-desc">BKB Depot mengeluarkan barang menuju Depo Tujuan 281 (LP Parung) &mdash; babak utama flashout selesai, 528 unit siap dijual.</p>
       </div>
@@ -430,7 +430,7 @@
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 7</span><img src="assets/images/transaksi-dms-3/sentul-07-btb-dms-3-dari-pol-cicurug.webp" alt="BTB DMS 3 dari Pool Cicurug" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag">BTB &middot; Barang Masuk</span>
+        <span class="tx-step-tag">BTB Depo &middot; Barang Masuk</span>
         <h3 class="tx-step-title">Babak Tambahan: Galon Kosong Kembali</h3>
         <p class="tx-step-desc">Sebagai siklus balik, Gudang Layak Pet Parung kembali menerima 528 botol Jug Aqua 19L (galon kosong) dari LP Pool Cicurug &mdash; siap dikembalikan ke titik asalnya.</p>
       </div>
@@ -439,7 +439,7 @@
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 8</span><img src="assets/images/transaksi-dms-3/sentul-08-bkb-dms-3-ke-depo-sentul.webp" alt="BKB DMS 3 ke Depo Sentul" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag tag-out">BKB &middot; Barang Keluar</span>
+        <span class="tx-step-tag tag-out">BKB Depo &middot; Barang Keluar</span>
         <h3 class="tx-step-title">Galon Kosong Pulang ke Sentul</h3>
         <p class="tx-step-desc">Dokumen penutup BKB Depot mengirim 528 botol Jug Aqua kosong kembali ke Depo Tujuan 283 (LP Sentul), menyelesaikan siklus penuh bolak-balik galon.</p>
       </div>
@@ -463,7 +463,7 @@
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 1</span><img src="assets/images/transaksi-dms-3/cianjur-01-btb-dms-3-dari-depo-cianjur.webp" alt="BTB DMS 3 dari Depo Cianjur" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag">BTB &middot; Barang Masuk</span>
+        <span class="tx-step-tag">BTB Depo &middot; Barang Masuk</span>
         <h3 class="tx-step-title">Terima Kiriman SPS dari Cianjur</h3>
         <p class="tx-step-desc">Gudang Layak Parung menerima 1.440 box Aqua 600ml (1x24, sablon gosok) dan 36 buah pallet rent double face dari <strong>LP Cianjur (Depo 285)</strong>, diangkut Tirta Utama Abadi.</p>
       </div>
@@ -472,7 +472,7 @@
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 2</span><img src="assets/images/transaksi-dms-3/cianjur-02-bkb-dms-3-dari-pol-cicurug.webp" alt="BKB DMS 3 ke Pool Cicurug" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag tag-out">BKB &middot; Barang Keluar</span>
+        <span class="tx-step-tag tag-out">BKB Depo &middot; Barang Keluar</span>
         <h3 class="tx-step-title">Lanjutkan ke LP Pool Cicurug</h3>
         <p class="tx-step-desc">1.440 box Aqua 600ml diteruskan keluar menuju Depo Tujuan 288 (LP Pool Cicurug) sebagai titik transit sebelum diproses di DMS 5.</p>
       </div>
@@ -481,7 +481,7 @@
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 3</span><img src="assets/images/transaksi-dms-3/cianjur-03-btb-dms-5-port-9301-dari-depo-parung.webp" alt="BTB DMS 5 port 9301 dari Depo Parung" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag">BTB &middot; Barang Masuk</span>
+        <span class="tx-step-tag">BTB Depo &middot; Barang Masuk</span>
         <h3 class="tx-step-title">Masuk ke Distribution Management System 5.0</h3>
         <p class="tx-step-desc">BTB Depot di DMS 5.0 mencatat kedatangan 1.440 box Aqua 600ml dari Depo 281 ke Gudang NGG LP, meneruskan alur pencatatan ke sistem terbaru.</p>
       </div>
