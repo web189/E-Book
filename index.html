@@ -78,13 +78,16 @@
 <!-- ============ VISITOR HEADER ============ -->
 <header class="site-header" id="siteHeader">
   <div class="header-inner">
-    <button type="button" class="logo-trigger" id="logoTrigger" aria-label="GDNG PRG 2026">
-      <span class="logo-mark">GP</span>
-      <span class="logo-text">
-        <strong>GDNG PRG</strong>
-        <em>Modul Pelatihan 2026</em>
-      </span>
-    </button>
+    <div class="header-brand">
+      <button type="button" class="logo-trigger" id="logoTrigger" aria-label="GDNG PRG 2026">
+        <span class="logo-mark">GP</span>
+        <span class="logo-text">
+          <strong>GDNG PRG</strong>
+          <em>Modul Pelatihan 2026</em>
+        </span>
+      </button>
+      <a href="https://benyoriki.com/" target="_blank" rel="noopener noreferrer" class="logo-credit">Website Developer <span class="logo-credit-link">benyoriki.com</span></a>
+    </div>
 
     <nav class="main-nav" id="mainNav" aria-label="Navigasi utama">
       <a href="#/" class="nav-link" data-route="/">Beranda</a>
@@ -95,7 +98,7 @@
     <div class="header-actions">
       <button type="button" class="icon-btn" id="themeToggle" aria-label="Ganti mode gelap/terang">
         <svg class="icon-sun" viewBox="0 0 24 24" width="19" height="19"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7" fill="none"/><g stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></g></svg>
-        <svg class="icon-moon" viewBox="0 0 24 24" width="19" height="19" hidden><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.6 6.6 0 1 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="19" height="19"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.6 6.6 0 1 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/></svg>
       </button>
       <button type="button" class="hamburger" id="hamburgerBtn" aria-label="Buka menu" aria-expanded="false">
         <span></span><span></span><span></span>
@@ -124,6 +127,17 @@
     </div>
     <div class="search-results" id="searchResults"></div>
   </div>
+</div>
+
+<!-- ============ IMAGE LIGHTBOX (klik gambar untuk memperbesar) ============ -->
+<div class="lightbox-overlay" id="lightboxOverlay" hidden>
+  <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Tutup gambar">
+    <svg viewBox="0 0 24 24" width="20" height="20"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <figure class="lightbox-figure">
+    <img class="lightbox-img" id="lightboxImg" src="" alt="">
+    <figcaption class="lightbox-caption" id="lightboxCaption"></figcaption>
+  </figure>
 </div>
 
 <!-- ============ APP ROOT (routed views) ============ -->
