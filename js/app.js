@@ -26,7 +26,7 @@
   // Bump this whenever the built-in seed content changes, so browsers that
   // already have older data in LocalStorage get refreshed automatically
   // instead of keeping stale materials forever.
-  var DATA_VERSION = "2026.09.13-transaksi-dms-3";
+  var DATA_VERSION = "2026.09.13-transaksi-dms-3-tabs-v3";
   var DATA_VERSION_KEY = "gdngprg_data_version";
 
   /* ------------------------------------------------------------------ */
@@ -145,6 +145,38 @@
     }
   };
 
+  // Image lightbox: any <img> inside the routed #app content (materi reader,
+  // step galleries, etc.) can be clicked to view it enlarged. Bound once via
+  // delegation on document so it keeps working after every re-render.
+  var Lightbox = {
+    overlay: null, imgEl: null, captionEl: null,
+    init: function () {
+      this.overlay = document.getElementById("lightboxOverlay");
+      this.imgEl = document.getElementById("lightboxImg");
+      this.captionEl = document.getElementById("lightboxCaption");
+      var self = this;
+      document.getElementById("lightboxClose").addEventListener("click", function () { self.close(); });
+      this.overlay.addEventListener("click", function (e) { if (e.target === self.overlay) self.close(); });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape") self.close(); });
+      document.addEventListener("click", function (e) {
+        var img = e.target.closest("#app img");
+        if (img && img.getAttribute("src")) self.open(img.getAttribute("src"), img.getAttribute("alt") || "");
+      });
+    },
+    open: function (src, alt) {
+      this.imgEl.src = src;
+      this.imgEl.alt = alt;
+      this.captionEl.textContent = alt;
+      this.overlay.hidden = false;
+      document.body.style.overflow = "hidden";
+    },
+    close: function () {
+      this.overlay.hidden = true;
+      this.imgEl.src = "";
+      document.body.style.overflow = "";
+    }
+  };
+
   var Confirm = {
     overlay: null, titleEl: null, bodyEl: null, okBtn: null, cancelBtn: null, _resolve: null,
     init: function () {
@@ -238,11 +270,31 @@
   var TX_DMS3_CONTENT = `
 <div class="tx-intro">
   <p><strong>Transaksi DMS 3</strong> adalah prosedur <em>flashout</em> alias pemindahan stok berjenjang antar-depo yang wajib dilakukan admin sebelum barang dari depo pemasok bisa "mendarat" sebagai stok siap jual di depo tujuan. Setiap perpindahan barang selalu dicatat dua kali: satu <strong>Bukti Keluar Barang (BKB)</strong> di sisi pengirim, satu <strong>Bukti Terima Barang (BTB)</strong> di sisi penerima &mdash; berpindah dari sistem lama <strong>DMS 3</strong>, transit di <strong>LP Pool Cicurug</strong>, lalu masuk ke <strong>DMS 5 (port 9301)</strong> sampai akhirnya siap dijual di depo tujuan.</p>
-  <p>Di bawah ini disusun 3 skenario nyata beserta urutan dokumen dan tangkapan layarnya, supaya admin baru bisa langsung mengikuti alurnya persis seperti aslinya &mdash; klik gambar untuk memperbesar bila perlu.</p>
+  <p>Di bawah ini disusun 3 skenario nyata beserta urutan dokumen dan tangkapan layarnya, supaya admin baru bisa langsung mengikuti alurnya persis seperti aslinya. Pilih skenario dari menu tab di bawah &mdash; setiap gambar juga bisa diklik untuk diperbesar.</p>
 </div>
 
+<!-- ================= TAB MENU: pilih skenario ================= -->
+<div class="tx-tabs" role="tablist" aria-label="Pilih skenario flashout">
+  <button type="button" class="tx-tab active" role="tab" aria-selected="true" aria-controls="txCase1" data-case-target="1">
+    <span class="tx-tab-num">01</span>
+    <span class="tx-tab-text"><span class="tx-tab-title">Galon dari Parung</span><span class="tx-tab-meta">6 dokumen</span></span>
+    <span class="tx-tab-chevron">&rsaquo;</span>
+  </button>
+  <button type="button" class="tx-tab" role="tab" aria-selected="false" aria-controls="txCase2" data-case-target="2">
+    <span class="tx-tab-num">02</span>
+    <span class="tx-tab-text"><span class="tx-tab-title">Galon dari Sentul</span><span class="tx-tab-meta">8 dokumen</span></span>
+    <span class="tx-tab-chevron">&rsaquo;</span>
+  </button>
+  <button type="button" class="tx-tab" role="tab" aria-selected="false" aria-controls="txCase3" data-case-target="3">
+    <span class="tx-tab-num">03</span>
+    <span class="tx-tab-text"><span class="tx-tab-title">SPS dari Cianjur</span><span class="tx-tab-meta">4 dokumen</span></span>
+    <span class="tx-tab-chevron">&rsaquo;</span>
+  </button>
+</div>
+
+
 <!-- ================= CASE 1: GALON DARI PARUNG ================= -->
-<div class="tx-case">
+<div class="tx-case" id="txCase1" data-case="1">
   <div class="tx-case-head">
     <div class="tx-case-badge">01</div>
     <div>
@@ -311,7 +363,7 @@
 </div>
 
 <!-- ================= CASE 2: GALON DARI SENTUL ================= -->
-<div class="tx-case">
+<div class="tx-case" id="txCase2" data-case="2" hidden>
   <div class="tx-case-head">
     <div class="tx-case-badge">02</div>
     <div>
@@ -398,7 +450,7 @@
 </div>
 
 <!-- ================= CASE 3: SPS DARI CIANJUR ================= -->
-<div class="tx-case">
+<div class="tx-case" id="txCase3" data-case="3" hidden>
   <div class="tx-case-head">
     <div class="tx-case-badge">03</div>
     <div>
@@ -679,6 +731,31 @@
     if (bar) bar.addEventListener("click", function () { drawer.classList.add("open"); overlay.classList.add("open"); });
     if (overlay) overlay.addEventListener("click", closeDrawer);
     drawer.querySelectorAll(".toc-item").forEach(function (a) { a.addEventListener("click", closeDrawer); });
+
+    initTxTabs(document.querySelector(".reader-body"));
+  }
+
+  // Some materials (e.g. "Transaksi DMS 3") group their content into
+  // scenario tabs (.tx-tabs / .tx-case) so the reader doesn't have to scroll
+  // through every case at once. No-op if the material doesn't use this pattern.
+  function initTxTabs(root) {
+    if (!root) return;
+    var tabs = root.querySelectorAll(".tx-tab");
+    var cases = root.querySelectorAll(".tx-case");
+    if (!tabs.length || !cases.length) return;
+    tabs.forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        var target = tab.getAttribute("data-case-target");
+        tabs.forEach(function (t) {
+          var active = t === tab;
+          t.classList.toggle("active", active);
+          t.setAttribute("aria-selected", active ? "true" : "false");
+        });
+        cases.forEach(function (c) { c.hidden = c.getAttribute("data-case") !== target; });
+        var tabsBar = root.querySelector(".tx-tabs");
+        if (tabsBar) tabsBar.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
   }
 
   /* ------------------------------------------------------------------ */
@@ -1396,6 +1473,7 @@
     Toast.init();
     Confirm.init();
     Search.init();
+    Lightbox.init();
     setupHeader();
     setupLogoTrigger();
     setupLoginModal();
