@@ -118,6 +118,13 @@ Karena ini adalah prototype tanpa backend, harap dipahami batasan berikut:
 
 ## 9. Rencana Migrasi Firebase
 
+> Berkas persiapan migrasi (template config, Security Rules, contoh kode
+> `DataService` berbasis Firestore, dan panduan langkah-demi-langkah) sudah
+> disiapkan di folder [`firebase/`](firebase/MIGRATION.md). Situs saat ini
+> **belum** terhubung ke Firebase — masih memakai LocalStorage — sehingga
+> tetap bisa langsung dipakai di GitHub Pages tanpa perlu setup tambahan.
+
+
 Arsitektur kode sudah dipisahkan menjadi service layer di `js/app.js`
 (`DataService`, `AuthService`, `ThemeService`) agar migrasi tidak memerlukan
 membangun ulang tampilan (UI). Rencana bertahap:
