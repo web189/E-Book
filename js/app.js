@@ -26,7 +26,7 @@
   // Bump this whenever the built-in seed content changes, so browsers that
   // already have older data in LocalStorage get refreshed automatically
   // instead of keeping stale materials forever.
-  var DATA_VERSION = "2026.09.13-transaksi-dms-3-tabs-v4-parung-reorder";
+  var DATA_VERSION = "2026.09.25-sgm-materi-lengkap-v6";
   var DATA_VERSION_KEY = "gdngprg_data_version";
 
   /* ------------------------------------------------------------------ */
@@ -131,7 +131,7 @@
   var Toast = {
     root: null,
     init: function () { this.root = document.getElementById("toastRoot"); },
-    show: function (message, type) {
+    show: function (message, type, durationMs) {
       type = type || "success";
       var el = document.createElement("div");
       el.className = "toast " + type;
@@ -141,7 +141,7 @@
       setTimeout(function () {
         el.classList.add("toast-fade");
         setTimeout(function () { el.remove(); }, 220);
-      }, 2800);
+      }, durationMs || 2800);
     }
   };
 
@@ -269,7 +269,7 @@
 
   var TX_DMS3_CONTENT = `
 <div class="tx-intro">
-  <p><strong>Transaksi DMS 3</strong> adalah prosedur <em>flashout</em> alias pemindahan stok berjenjang antar-depo yang wajib dilakukan admin sebelum barang dari depo pemasok bisa "mendarat" sebagai stok siap jual di depo tujuan. Setiap perpindahan barang selalu dicatat dua kali: satu <strong>Bukti Keluar Barang (BKB)</strong> di sisi pengirim, satu <strong>Bukti Terima Barang (BTB)</strong> di sisi penerima &mdash; berpindah dari sistem lama <strong>DMS 3</strong>, transit di <strong>LP Pool Cicurug</strong>, lalu masuk ke <strong>DMS 5 (port 9301)</strong> sampai akhirnya siap dijual di depo tujuan.</p>
+  <p><strong>Transaksi Flashout</strong> (dikenal juga sebagai <strong>Transaksi DMS 3</strong>) adalah prosedur pemindahan stok berjenjang antar-depo yang wajib dilakukan admin sebelum barang dari depo pemasok bisa "mendarat" sebagai stok siap jual di depo tujuan. Setiap perpindahan barang selalu dicatat dua kali: satu <strong>Bukti Keluar Barang (BKB)</strong> di sisi pengirim, satu <strong>Bukti Terima Barang (BTB)</strong> di sisi penerima &mdash; berpindah dari sistem lama <strong>DMS 3</strong>, transit di <strong>LP Pool Cicurug</strong>, lalu masuk ke <strong>DMS 5 (port 9301)</strong> sampai akhirnya siap dijual di depo tujuan.</p>
   <p>Di bawah ini disusun 3 skenario nyata beserta urutan dokumen dan tangkapan layarnya, supaya admin baru bisa langsung mengikuti alurnya persis seperti aslinya. Pilih skenario dari menu tab di bawah &mdash; setiap gambar juga bisa diklik untuk diperbesar.</p>
 </div>
 
@@ -507,6 +507,81 @@
 </ul>
 `;
 
+  var TX_SGM_CONTENT = `
+<div class="tx-intro">
+  <p><strong>Transaksi Produk SGM</strong> adalah prosedur penerimaan produk susu SGM dari supplier sekaligus cara mengubah satuan stok dari <strong>BOX</strong> menjadi <strong>PCS</strong> (satuan eceran) di sistem. Produk SGM memang unik: setiap kali datang dari supplier, produk tercatat per BOX &mdash; padahal sebagian dijual eceran per PCS. Untuk itu diperlukan satu langkah tambahan yang disebut <strong>morphing</strong>, yaitu memindahkan stok BOX menjadi stok PCS memakai transaksi <strong>BKB Mutasi</strong> dan <strong>BTB Mutasi</strong> ke depo sendiri.</p>
+  <p>Ikuti 4 langkah di bawah secara berurutan: mulai dari menerima barang dari supplier, mencetak bukti terimanya, lalu melakukan morphing BOX &rarr; PCS.</p>
+</div>
+
+<div class="tx-case-head">
+  <div class="tx-case-badge">SGM</div>
+  <div>
+    <h2>Penerimaan Barang &amp; Morphing BOX ke PCS</h2>
+    <p>Contoh nyata: penerimaan SGM Vitagrow Choco dari supplier di Gudang Layak Bogor, dilanjutkan proses morphing di Gudang Layak Metro 2.</p>
+  </div>
+</div>
+
+<div class="tx-steps">
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 1</span><img src="assets/images/transaksi-produk-sgm/sgm-01-input-batch-btb-supplier.webp" alt="Penulisan kode batch pada BTB Supplier" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">BTB Supplier &middot; Detil Lot</span>
+      <h3 class="tx-step-title">Tulis Kode Batch Saat Terima Barang dari Supplier</h3>
+      <p class="tx-step-desc">Pada dokumen <strong>Bukti Terima Barang Supplier</strong>, klik ikon kaca pembesar di kolom Lot/SN untuk membuka jendela <strong>UIEntryLot</strong>. Isi <strong>No. Batch</strong> dan <strong>Tanggal Expired</strong> sesuai kemasan fisik produk, lalu pastikan <strong>Kuantiti</strong> pada baris batch sama persis dengan kuantiti produk di atasnya sebelum menekan <strong>Ok</strong>. Batch yang salah tulis di sini akan ikut salah pada seluruh dokumen turunannya.</p>
+    </div>
+  </div>
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 2</span><img src="assets/images/transaksi-produk-sgm/sgm-02-cetak-btb-supplier.webp" alt="Hasil cetak BTB Supplier" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">BTB Supplier &middot; Cetak</span>
+      <h3 class="tx-step-title">Cetak Bukti Terima Barang (Supplier)</h3>
+      <p class="tx-step-desc">Setelah dokumen disimpan, cetak sebagai bukti fisik serah terima. Pastikan Nama Depo, Gudang, No. Dokumen, No. Surat Jalan, Kode &amp; Nama Produk, Satuan (BOX), Jumlah, dan Batch ID pada hasil cetak sudah sesuai dengan fisik barang &mdash; dokumen ini yang ditandatangani Warehouse Admin, Checker, Driver, dan Security.</p>
+    </div>
+  </div>
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 3</span><img src="assets/images/transaksi-produk-sgm/sgm-03-bkb-mutasi-morphing.webp" alt="BKB Mutasi Morphing box ke pcs" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag tag-out">BKB Depo &middot; Mutasi (Keluar)</span>
+      <h3 class="tx-step-title">Morphing Bagian 1 &mdash; BKB Mutasi ke Depo Sendiri</h3>
+      <p class="tx-step-desc">Buka menu <strong>BKB Depo</strong>. Secara normal, BKB Depo dipakai untuk mutasi stok antar-depo yang berbeda (misalnya dari Depo Parung ke Depo Bogor). Khusus morphing SGM, <strong>Depo Tujuan diisi depo itu sendiri</strong> &mdash; barang secara fisik tidak berpindah tempat, hanya satuannya yang berubah. Isi <strong>Driver</strong> dan <strong>Kendaraan</strong> dengan "COUNTER", lalu tulis <strong>MORPHING</strong> pada kolom Keterangan agar mudah ditelusuri kembali. Setelah disimpan, catat <strong>No. Dokumen</strong> BKB ini &mdash; nomor tersebut dibutuhkan sebagai referensi di langkah berikutnya.</p>
+    </div>
+  </div>
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 4</span><img src="assets/images/transaksi-produk-sgm/sgm-04-btb-mutasi-morphing.webp" alt="BTB Mutasi Morphing box ke pcs" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">BTB Depo &middot; Mutasi (Masuk)</span>
+      <h3 class="tx-step-title">Morphing Bagian 2 &mdash; BTB Mutasi Menutup Perubahan Satuan</h3>
+      <p class="tx-step-desc">Buka menu <strong>BTB Depo</strong>, dengan <strong>Dari Depo</strong> diisi depo itu sendiri (pasangan dari langkah 3). Pada kolom Keterangan, tulis <strong>No. Dokumen BKB Mutasi tadi diikuti "/MORPHING"</strong> (contoh: <code>902-0051876/MORPHING</code>) sebagai ID referensi. Pilih produk dengan kode ber-akhiran <strong>"P"</strong> (kode satuan PCS) senilai kuantiti yang sama. Setelah tersimpan, stok BOX otomatis berkurang dan stok PCS bertambah pada produk yang sama.</p>
+    </div>
+  </div>
+
+</div>
+
+<h2>Kode Produk: BOX vs PCS</h2>
+<p>Setiap produk SGM punya dua kode berbeda tergantung satuannya. Gunakan kode <strong>BOX</strong> saat penerimaan dari supplier, dan kode berakhiran <strong>"_pc" / "P"</strong> saat transaksi eceran per PCS setelah morphing:</p>
+<p><img src="assets/images/transaksi-produk-sgm/sgm-05-id-produk-box-pcs.webp" alt="Perbandingan ID produk satuan BOX dan PCS" loading="lazy" style="max-width:420px; border-radius:10px; border:1px solid var(--border);"></p>
+<table>
+  <tr><th>Kode Produk</th><th>Satuan</th><th>Nama Produk</th></tr>
+  <tr><td>214380</td><td>BOX</td><td>SGM VITAGROW CHOCO 24SG HMLY 1X6 POUCH</td></tr>
+  <tr><td>214380_pc</td><td>PCS</td><td>SGM VITAGROW CHOCO 245G SAP HMLY 1X1 POUCH</td></tr>
+</table>
+
+<div class="tx-note"><b>Ingat:</b>&nbsp;Morphing susu SGM dari BOX ke PCS selalu memakai <strong>BKB/BTB Mutasi</strong>, bukan BKB/BTB Supplier maupun Distribusi. Empat hal wajib diperhatikan setiap kali menginput:
+<ol style="margin:10px 0 0; padding-left:20px;">
+  <li>Kolom <strong>Nopol / Sopir</strong> diisi <strong>COUNTER</strong> saja &mdash; bukan kendaraan atau driver sungguhan.</li>
+  <li>Kolom <strong>Depo Tujuan</strong> (di BKB) maupun <strong>Dari Depo</strong> (di BTB) diisi <strong>depo sendiri</strong>, karena barang tidak benar-benar berpindah lokasi.</li>
+  <li>Pada <strong>BKB Mutasi</strong>, kolom Keterangan cukup ditulis <strong>MORPHING</strong>.</li>
+  <li>Pada <strong>BTB Mutasi</strong>, kolom Keterangan ditulis <strong>ID BKB referensi diikuti "/MORPHING"</strong>, contoh: <code>902-0051876/MORPHING</code>.</li>
+</ol>
+</div>
+`;
+
+  var TX_BTB_BKB_SUPPLIER_CONTENT = "\n<p><strong>Transaksi BTB BKB Supplier</strong> adalah prosedur pencatatan Bukti Terima Barang (BTB) dan Bukti Keluar Barang (BKB) untuk transaksi yang melibatkan supplier/pemasok eksternal. Halaman ini akan diisi admin dengan langkah kerja lengkap beserta contoh dokumen dan tangkapan layar sistem.</p>\n<div class=\"tx-note\"><b>Status:</b>&nbsp;Konten sedang disusun oleh admin. Gunakan menu <b>Materi &rarr; Edit</b> pada Dashboard Admin untuk melengkapi langkah-langkah, dokumen contoh, dan foto pada materi ini.</p></div>\n<h2>Rencana Isi Materi</h2>\n<ul>\n  <li>Alur BTB dari supplier ke gudang</li>\n  <li>Alur BKB dari gudang ke supplier (retur/kembali)</li>\n  <li>Dokumen pendukung yang wajib dilampirkan</li>\n  <li>Contoh dokumen dan foto langkah demi langkah</li>\n</ul>\n";
+
   /* ------------------------------------------------------------------ */
   /* 6. SEED DEFAULT DATA                                                */
   /* ------------------------------------------------------------------ */
@@ -515,7 +590,9 @@
     if (force || materials.length === 0) {
       var now = new Date().toISOString();
       var defs = [
-        { title: "Transaksi DMS 3", desc: "Prosedur flashout & pencatatan transaksi barang berjenjang pada modul DMS 3, lengkap dengan contoh dokumen dan foto langkah demi langkah.", body: TX_DMS3_CONTENT }
+        { title: "Transaksi Flashout", desc: "Prosedur flashout & pencatatan transaksi barang berjenjang (sebelumnya dikenal sebagai Transaksi DMS 3), lengkap dengan contoh dokumen dan foto langkah demi langkah.", body: TX_DMS3_CONTENT },
+        { title: "Transaksi Produk SGM", desc: "Prosedur penerimaan produk SGM dari supplier dan cara mengubah stok dari satuan BOX ke PCS (morphing) memakai BKB/BTB Mutasi.", body: TX_SGM_CONTENT },
+        { title: "Transaksi BTB BKB Supplier", desc: "Prosedur pencatatan Bukti Terima Barang (BTB) dan Bukti Keluar Barang (BKB) untuk transaksi dengan supplier/pemasok eksternal.", body: TX_BTB_BKB_SUPPLIER_CONTENT }
       ];
       materials = defs.map(function (d, i) {
         return {
@@ -543,7 +620,9 @@
       };
       contents = [
         { id: Utils.uid("toc"), title: "Home", order: 1, active: true, materialId: null },
-        { id: Utils.uid("toc"), title: "Transaksi DMS 3", order: 2, active: true, materialId: findId("Transaksi DMS 3") }
+        { id: Utils.uid("toc"), title: "Transaksi Flashout", order: 2, active: true, materialId: findId("Transaksi Flashout") },
+        { id: Utils.uid("toc"), title: "Transaksi Produk SGM", order: 3, active: true, materialId: findId("Transaksi Produk SGM") },
+        { id: Utils.uid("toc"), title: "Transaksi BTB BKB Supplier", order: 4, active: true, materialId: findId("Transaksi BTB BKB Supplier") }
       ];
       DataService.setContents(contents);
     }
@@ -620,9 +699,9 @@
         '<span class="hero-blob b2" aria-hidden="true"></span>' +
         '<div class="hero-inner">' +
           '<div>' +
-            '<span class="hero-eyebrow">Pelatihan Admin GDNG PRG</span>' +
-            '<h1 class="hero-title">Modul Materi<span class="line2">Pelatihan Admin GDNG PRG 2026</span></h1>' +
-            '<p class="hero-sub">Panduan digital dan materi pembelajaran untuk mendukung pelaksanaan administrasi GDNG PRG, dapat diakses kapan saja dari HP, tablet, maupun komputer.</p>' +
+            '<span class="hero-eyebrow">Sistem Versi Update v.06</span>' +
+            '<h1 class="hero-title">Modul Sistem<span class="line2">Database Centralized Real-Time</span></h1>' +
+            '<p class="hero-sub">Modul digital dan sistem administrasi, dapat diakses kapan saja dari HP, tablet, maupun komputer.</p>' +
             '<div class="hero-actions">' +
               '<a href="#/materi" class="btn btn-primary">Mulai Membaca</a>' +
               '<a href="#/materi" class="btn btn-outline">Lihat Materi</a>' +
@@ -634,13 +713,15 @@
             '</div>' +
           '</div>' +
           '<div class="hero-visual">' +
+            '<img class="hero-photo" src="assets/images/hero/depo-parung-warehouse.webp" alt="Gudang Depo Parung" loading="lazy">' +
+            '<span class="hero-photo-scrim" aria-hidden="true"></span>' +
             '<div class="hero-card card-a">' +
               '<div class="hero-mini-row"><div class="hero-mini-dot">01</div><div><strong>Progres Modul</strong></div></div>' +
               '<div class="hero-progress"><i></i></div>' +
               '<p class="field-hint" style="margin-top:10px;">Materi baru ditambah secara bertahap</p>' +
             '</div>' +
             '<div class="hero-card card-b">' +
-              '<div class="hero-mini-row"><div class="hero-mini-dot">&#10003;</div><div><strong>Transaksi DMS 3</strong><div class="field-hint">Siap dipelajari</div></div></div>' +
+              '<div class="hero-mini-row"><div class="hero-mini-dot">&#10003;</div><div><strong>Transaksi Flashout</strong><div class="field-hint">Siap dipelajari</div></div></div>' +
             '</div>' +
             '<div class="hero-card card-c">' +
               '<div class="hero-mini-row"><div class="hero-mini-dot">&#9889;</div><div><strong>Update Berkala</strong><div class="field-hint">Materi baru tiap bulan</div></div></div>' +
@@ -649,6 +730,11 @@
         '</div>' +
       '</section>' +
       '<section class="section features-section">' +
+        '<button type="button" class="mobile-collapsible-toggle" aria-expanded="false" aria-controls="featuresPanel">' +
+          '<span>Kenapa Pakai Modul Ini?</span>' +
+          '<svg class="mobile-collapsible-chevron" viewBox="0 0 24 24" width="18" height="18"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '</button>' +
+        '<div class="mobile-collapsible-panel" id="featuresPanel">' +
         '<div class="section-head">' +
           '<div><h2 class="section-title">Kenapa Pakai Modul Ini?</h2><p class="section-desc">Dirancang supaya admin baru bisa cepat paham alur kerja GDNG PRG tanpa perlu bertanya berulang-ulang.</p></div>' +
         '</div>' +
@@ -669,14 +755,59 @@
             '<p class="feature-desc">Materi ditambah dan disempurnakan secara berkala mengikuti perubahan alur kerja dan sistem.</p>' +
           '</div>' +
         '</div>' +
+        '</div>' +
       '</section>' +
-      '<section class="section">' +
+      '<section class="section materi-pilihan-section">' +
         '<div class="section-head">' +
           '<div><h2 class="section-title">Materi Pilihan</h2><p class="section-desc">Kumpulan modul terbaru yang perlu dipelajari admin GDNG PRG.</p></div>' +
           '<a href="#/materi" class="btn btn-ghost btn-sm">Lihat Semua</a>' +
         '</div>' +
         '<div class="materi-grid">' + renderMateriCards(materials.slice(0, 6), 3) + '</div>' +
       '</section>';
+
+    setupCollapsibleSections();
+    layoutHeroVisualForViewport();
+  }
+
+  // On phones, the hero photo/cards visual moves to sit between "Materi
+  // Pilihan" and the collapsed info panel, instead of next to the hero
+  // text like on desktop (see the matching order:3 rule in css/style.css).
+  // Reparenting in JS keeps the desktop grid exactly as it was, since the
+  // desktop CSS never has to know this element can move at all.
+  var HERO_MOBILE_MQ = window.matchMedia ? window.matchMedia("(max-width:860px)") : null;
+  function layoutHeroVisualForViewport() {
+    var heroVisual = document.querySelector(".hero-visual");
+    var heroInner = document.querySelector(".hero-inner");
+    var materiSection = document.querySelector(".materi-pilihan-section");
+    if (!heroVisual || !heroInner || !materiSection) return; // not on the home page
+    var isMobile = HERO_MOBILE_MQ ? HERO_MOBILE_MQ.matches : window.innerWidth <= 860;
+    if (isMobile) {
+      if (heroVisual.previousElementSibling !== materiSection) {
+        materiSection.insertAdjacentElement("afterend", heroVisual);
+      }
+    } else if (heroVisual.parentNode !== heroInner) {
+      heroInner.appendChild(heroVisual);
+    }
+  }
+  if (HERO_MOBILE_MQ) {
+    var mqChangeHandler = function () { layoutHeroVisualForViewport(); };
+    if (HERO_MOBILE_MQ.addEventListener) HERO_MOBILE_MQ.addEventListener("change", mqChangeHandler);
+    else if (HERO_MOBILE_MQ.addListener) HERO_MOBILE_MQ.addListener(mqChangeHandler); // older Safari
+  }
+
+  // On phones, "Kenapa Pakai Modul Ini?" (and any future informational
+  // section) is collapsed into a compact, tappable summary bar so visitors
+  // land on the actual reading material faster. Desktop is untouched — the
+  // toggle button only renders/behaves this way under the mobile CSS below.
+  function setupCollapsibleSections() {
+    document.querySelectorAll(".mobile-collapsible-toggle").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var panel = document.getElementById(btn.getAttribute("aria-controls"));
+        var expanded = btn.getAttribute("aria-expanded") === "true";
+        btn.setAttribute("aria-expanded", String(!expanded));
+        if (panel) panel.classList.toggle("expanded", !expanded);
+      });
+    });
   }
 
   function renderMateriCards(list, padTo) {
@@ -684,16 +815,19 @@
       return '<div class="empty-state" style="grid-column:1/-1;"><b>Belum ada materi</b>Materi yang dipublikasikan akan tampil di sini.</div>';
     }
     var html = list.map(function (m, idx) {
+      // The whole card is a real link (not just the "Baca Materi" text) so
+      // it's easy to tap anywhere on it, especially in the compact 3-column
+      // layout used on phones.
       return (
-        '<article class="materi-card">' +
+        '<a class="materi-card" href="#/materi/' + m.slug + '">' +
           '<span class="materi-num">' + String(idx + 1).padStart(2, "0") + '</span>' +
           '<h3 class="materi-title">' + Utils.escapeHtml(m.title) + '</h3>' +
           '<p class="materi-desc">' + Utils.escapeHtml(m.description) + '</p>' +
           '<div class="materi-foot">' +
             '<span class="materi-status status-' + m.status + '">' + (m.status === "published" ? "Published" : "Draft") + '</span>' +
-            '<a class="materi-link" href="#/materi/' + m.slug + '">Baca Materi &rarr;</a>' +
+            '<span class="materi-link">Baca Materi</span>' +
           '</div>' +
-        '</article>'
+        '</a>'
       );
     }).join("");
     // When only a few materials are published, the grid stretches into a
@@ -772,6 +906,21 @@
     drawer.querySelectorAll(".toc-item").forEach(function (a) { a.addEventListener("click", closeDrawer); });
 
     initTxTabs(document.querySelector(".reader-body"));
+    wrapReaderTables(document.querySelector(".reader-body"));
+  }
+
+  // Wrap every <table> inside materi content with a scrollable container so
+  // wide tables scroll horizontally on phones without breaking the table's
+  // own column layout (see .reader-table-scroll in css/style.css).
+  function wrapReaderTables(root) {
+    if (!root) return;
+    root.querySelectorAll("table").forEach(function (table) {
+      if (table.parentElement && table.parentElement.classList.contains("reader-table-scroll")) return;
+      var wrap = document.createElement("div");
+      wrap.className = "reader-table-scroll";
+      table.parentNode.insertBefore(wrap, table);
+      wrap.appendChild(table);
+    });
   }
 
   // Some materials (e.g. "Transaksi DMS 3") group their content into
@@ -815,7 +964,7 @@
       this.resultsEl = document.getElementById("searchResults");
       var self = this;
       document.getElementById("openSearchBtn").addEventListener("click", function () { self.open(); });
-      document.getElementById("drawerSearchBtn").addEventListener("click", function () { closeDrawerNav(); self.open(); });
+      document.getElementById("openSearchBtnMobile").addEventListener("click", function () { closeDrawerNav(); self.open(); });
       document.getElementById("closeSearchBtn").addEventListener("click", function () { self.close(); });
       this.overlay.addEventListener("click", function (e) { if (e.target === self.overlay) self.close(); });
       document.addEventListener("keydown", function (e) {
@@ -917,10 +1066,40 @@
   /* ------------------------------------------------------------------ */
   /* 14. HEADER / DRAWER / THEME WIRING                                  */
   /* ------------------------------------------------------------------ */
+  var DEV_NOTICE_MSG = "Sabar, sedang tahap pengembangan sistem oleh tim benyoriki.com";
+
   function closeDrawerNav() {
     document.getElementById("mobileDrawer").classList.remove("open");
     document.getElementById("hamburgerBtn").setAttribute("aria-expanded", "false");
+    // Collapse every accordion group so the drawer always reopens fresh.
+    document.querySelectorAll(".drawer-acc-btn[aria-expanded='true']").forEach(function (btn) {
+      btn.setAttribute("aria-expanded", "false");
+      var panel = document.getElementById(btn.getAttribute("aria-controls"));
+      if (panel) panel.classList.remove("open");
+    });
   }
+
+  // Fills the "Materi" dropdown (desktop) and accordion panel (mobile) with
+  // the real, published materials — so the menu always reflects whatever
+  // admin has published, without needing a second manual edit here.
+  function renderNavMaterials() {
+    var materials = DataService.getMaterials().filter(function (m) { return m.status === "published"; });
+    var seeAllNav = '<a class="nav-dropdown-item nav-dropdown-item-all" href="#/materi">Lihat Semua Materi &rarr;</a>';
+    var seeAllDrawer = '<a class="drawer-acc-item drawer-acc-item-all" href="#/materi">Lihat Semua Materi &rarr;</a>';
+    var navPanel = document.getElementById("navMateriPanel");
+    var drawerPanel = document.getElementById("drawerMateriPanel");
+    if (navPanel) {
+      navPanel.innerHTML = (materials.length
+        ? materials.map(function (m) { return '<a class="nav-dropdown-item" href="#/materi/' + m.slug + '">' + Utils.escapeHtml(m.title) + '</a>'; }).join("")
+        : '<span class="nav-dropdown-empty">Belum ada materi</span>') + seeAllNav;
+    }
+    if (drawerPanel) {
+      drawerPanel.innerHTML = (materials.length
+        ? materials.map(function (m) { return '<a class="drawer-acc-item" href="#/materi/' + m.slug + '">' + Utils.escapeHtml(m.title) + '</a>'; }).join("")
+        : '<span class="drawer-acc-empty">Belum ada materi</span>') + seeAllDrawer;
+    }
+  }
+
   function setupHeader() {
     var hamburger = document.getElementById("hamburgerBtn");
     var drawer = document.getElementById("mobileDrawer");
@@ -928,11 +1107,56 @@
       var open = drawer.classList.toggle("open");
       hamburger.setAttribute("aria-expanded", open ? "true" : "false");
     });
-    document.querySelectorAll(".drawer-link[data-route]").forEach(function (a) {
-      a.addEventListener("click", closeDrawerNav);
+    // Delegated so it also covers the Materi links injected dynamically by
+    // renderNavMaterials() (real anchors, no extra binding needed per item).
+    drawer.addEventListener("click", function (e) {
+      if (e.target.closest("a")) closeDrawerNav();
     });
     document.getElementById("themeToggle").addEventListener("click", function () { ThemeService.toggle(); });
-    document.getElementById("drawerThemeBtn").addEventListener("click", function () { ThemeService.toggle(); closeDrawerNav(); });
+
+    // Desktop dropdown menus (Materi / Mati Listrik / Stock Buku PO PRG):
+    // click the title to toggle its panel; clicking elsewhere closes all.
+    document.querySelectorAll(".nav-dropdown").forEach(function (dd) {
+      var btn = dd.querySelector(".nav-dropdown-btn");
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var isOpen = dd.classList.contains("open");
+        document.querySelectorAll(".nav-dropdown.open").forEach(function (o) { o.classList.remove("open"); });
+        if (!isOpen) dd.classList.add("open");
+      });
+    });
+    document.addEventListener("click", function () {
+      document.querySelectorAll(".nav-dropdown.open").forEach(function (o) { o.classList.remove("open"); });
+    });
+
+    // Mobile accordion groups inside the hamburger drawer.
+    document.querySelectorAll(".drawer-acc-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var panel = document.getElementById(btn.getAttribute("aria-controls"));
+        var expanded = btn.getAttribute("aria-expanded") === "true";
+        document.querySelectorAll(".drawer-acc-btn[aria-expanded='true']").forEach(function (other) {
+          if (other !== btn) {
+            other.setAttribute("aria-expanded", "false");
+            var p = document.getElementById(other.getAttribute("aria-controls"));
+            if (p) p.classList.remove("open");
+          }
+        });
+        btn.setAttribute("aria-expanded", String(!expanded));
+        if (panel) panel.classList.toggle("open", !expanded);
+      });
+    });
+
+    // Menus that aren't built yet: show a friendly "still in progress" toast
+    // instead of navigating anywhere. Delegated so it also covers items
+    // rendered dynamically later.
+    document.addEventListener("click", function (e) {
+      var trigger = e.target.closest("[data-dev-notice]");
+      if (trigger) {
+        Toast.show(DEV_NOTICE_MSG, "info", 3600);
+        closeDrawerNav();
+        document.querySelectorAll(".nav-dropdown.open").forEach(function (o) { o.classList.remove("open"); });
+      }
+    });
 
     var header = document.getElementById("siteHeader");
     var onScroll = function () { header.classList.toggle("is-scrolled", window.scrollY > 4); };
@@ -1172,7 +1396,7 @@
     var materials = DataService.getMaterials().sort(function (a, b) { return a.order - b.order; });
     var rows = materials.map(function (m) {
       return (
-        '<tr>' +
+        '<tr data-row-title="' + Utils.escapeHtml(m.title.toLowerCase()) + '">' +
           '<td>' + (m.image ? '<img class="thumb" src="' + m.image + '" alt="">' : '<div class="thumb"></div>') + '</td>' +
           '<td><strong>' + Utils.escapeHtml(m.title) + '</strong><div class="field-hint">' + m.slug + '</div></td>' +
           '<td><span class="materi-status status-' + m.status + '">' + (m.status === "published" ? "Published" : "Draft") + '</span></td>' +
@@ -1188,9 +1412,10 @@
     }).join("");
 
     var body =
-      '<div class="admin-topbar"><div><h1 class="admin-heading">Materi</h1><p class="admin-sub">Kelola seluruh materi E-Book pelatihan.</p></div>' +
+      '<div class="admin-topbar"><div><h1 class="admin-heading">Materi</h1><p class="admin-sub">Kelola seluruh materi E-Book pelatihan &mdash; ' + materials.length + ' materi tersimpan.</p></div>' +
         '<button type="button" class="btn btn-primary btn-sm" id="matAddBtn">+ Tambah Materi</button></div>' +
       '<div class="admin-panel">' +
+        '<div class="field" style="max-width:320px; margin-bottom:14px;"><input type="text" id="matSearchInput" placeholder="Cari judul materi..."></div>' +
         '<div class="table-scroll" id="matTableWrap"><table class="data-table"><thead><tr><th></th><th>Judul</th><th>Status</th><th>Urutan</th><th>Diperbarui</th><th></th></tr></thead><tbody>' +
         (rows || '<tr><td colspan="6"><div class="empty-state"><b>Belum ada materi</b>Klik "Tambah Materi" untuk membuat materi pertama.</div></td></tr>') +
         '</tbody></table></div>' +
@@ -1200,6 +1425,12 @@
     wireAdminShell();
 
     document.getElementById("matAddBtn").addEventListener("click", function () { Router.navigate("/admin/materials/new"); });
+    document.getElementById("matSearchInput").addEventListener("input", Utils.debounce(function (e) {
+      var q = e.target.value.trim().toLowerCase();
+      document.querySelectorAll("#matTableWrap tbody tr[data-row-title]").forEach(function (tr) {
+        tr.hidden = q && tr.getAttribute("data-row-title").indexOf(q) === -1;
+      });
+    }, 120));
     document.getElementById("matTableWrap").addEventListener("click", function handler(e) {
       var btn = e.target.closest("[data-action]");
       if (!btn) return;
@@ -1250,7 +1481,14 @@
           '<label class="field"><span class="field-label">Slug</span><input type="text" id="mSlug" placeholder="otomatis dari judul" value="' + (material ? material.slug : "") + '"></label>' +
           '<label class="field"><span class="field-label">Urutan</span><input type="number" id="mOrder" min="1" value="' + (material ? material.order : (DataService.getMaterials().length + 1)) + '"></label>' +
           '<label class="field full"><span class="field-label">Deskripsi Singkat</span><textarea id="mDesc" rows="2">' + (material ? Utils.escapeHtml(material.description) : "") + '</textarea></label>' +
-          '<label class="field"><span class="field-label">Gambar Utama</span><select id="mImage">' + imageOptions(selectedImageId) + '</select><span class="field-hint">Kelola gambar di menu "Gambar".</span></label>' +
+          '<label class="field"><span class="field-label">Gambar Utama</span><select id="mImage">' + imageOptions(selectedImageId) + '</select>' +
+            '<span class="field-hint">Pilih dari pustaka, atau unggah baru di bawah ini.</span>' +
+            '<div class="quick-upload" id="quickUploadZone">' +
+              '<img id="quickUploadPreview" hidden>' +
+              '<span id="quickUploadLabel"><strong>+ Unggah gambar baru</strong><br>JPG/PNG, maks ' + MAX_IMAGE_MB + ' MB &mdash; langsung tersimpan ke pustaka</span>' +
+              '<input type="file" id="quickUploadInput" accept="image/*" hidden>' +
+            '</div>' +
+          '</label>' +
           '<label class="field"><span class="field-label">Status</span><select id="mStatus"><option value="draft"' + (material && material.status === "draft" ? " selected" : "") + '>Draft</option><option value="published"' + (!material || material.status === "published" ? " selected" : "") + '>Published</option></select></label>' +
         '</div>' +
         '<div class="field full">' +
@@ -1272,6 +1510,59 @@
 
     appEl.innerHTML = adminShell("materials", body);
     wireAdminShell();
+
+    // Live slug preview: as the admin types the title, auto-fill the slug
+    // field (unless they've already customised it manually) so a new
+    // material can be added without thinking about URLs at all.
+    var titleInput = document.getElementById("mTitle");
+    var slugInput = document.getElementById("mSlug");
+    var slugTouched = isEdit; // existing materials keep their slug untouched by default
+    slugInput.addEventListener("input", function () { slugTouched = true; });
+    titleInput.addEventListener("input", function () {
+      if (!slugTouched) slugInput.value = Utils.slugify(titleInput.value);
+    });
+
+    // Quick image upload: lets the admin attach a brand-new photo to this
+    // material without leaving the form and navigating to the Gambar menu.
+    var quickZone = document.getElementById("quickUploadZone");
+    var quickInput = document.getElementById("quickUploadInput");
+    var quickPreview = document.getElementById("quickUploadPreview");
+    var quickLabel = document.getElementById("quickUploadLabel");
+    var mImageSelect = document.getElementById("mImage");
+    quickZone.addEventListener("click", function () { quickInput.click(); });
+    ["dragover", "dragenter"].forEach(function (evt) {
+      quickZone.addEventListener(evt, function (e) { e.preventDefault(); quickZone.classList.add("drag-over"); });
+    });
+    ["dragleave", "dragend"].forEach(function (evt) {
+      quickZone.addEventListener(evt, function () { quickZone.classList.remove("drag-over"); });
+    });
+    quickZone.addEventListener("drop", function (e) {
+      e.preventDefault();
+      quickZone.classList.remove("drag-over");
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) handleQuickFile(e.dataTransfer.files[0]);
+    });
+    quickInput.addEventListener("change", function () {
+      if (quickInput.files[0]) handleQuickFile(quickInput.files[0]);
+    });
+    function handleQuickFile(file) {
+      if (!/^image\//.test(file.type)) { Toast.show("File harus berupa gambar.", "error"); return; }
+      if (file.size > MAX_IMAGE_MB * 1024 * 1024) { Toast.show("Ukuran gambar melebihi " + MAX_IMAGE_MB + " MB.", "error"); return; }
+      var reader = new FileReader();
+      reader.onload = function () {
+        var newImg = { id: Utils.uid("img"), name: file.name.replace(/\.[^.]+$/, ""), alt: titleInput.value.trim() || file.name, dataUrl: reader.result, size: file.size, createdAt: new Date().toISOString() };
+        var list = DataService.getImages();
+        list.push(newImg);
+        DataService.setImages(list);
+        // Refresh the dropdown in place and select the freshly uploaded image.
+        var opt = document.createElement("option");
+        opt.value = newImg.id; opt.textContent = newImg.name; opt.selected = true;
+        mImageSelect.appendChild(opt);
+        images.push(newImg);
+        quickPreview.src = newImg.dataUrl; quickPreview.hidden = false; quickLabel.hidden = true;
+        Toast.show("Gambar diunggah & dipilih otomatis.", "success");
+      };
+      reader.readAsDataURL(file);
+    }
 
     document.querySelectorAll(".editor-btn").forEach(function (btn) {
       btn.addEventListener("click", function () {
@@ -1373,15 +1664,16 @@
     var fileInput = document.getElementById("imageFileInput");
     var formWrap = document.getElementById("imageFormWrap");
 
-    document.getElementById("pickImageBtn").addEventListener("click", function () { editingId = null; fileInput.click(); });
-    fileInput.addEventListener("change", function () {
-      var file = fileInput.files[0];
+    var dropzone = document.querySelector(".upload-dropzone");
+    function acceptFile(file) {
       if (!file) return;
+      if (!/^image\//.test(file.type)) { Toast.show("File harus berupa gambar (JPG/PNG).", "error"); return; }
       if (file.size > MAX_IMAGE_MB * 1024 * 1024) {
         Toast.show("Ukuran gambar melebihi " + MAX_IMAGE_MB + " MB.", "error");
         fileInput.value = "";
         return;
       }
+      editingId = null;
       var reader = new FileReader();
       reader.onload = function () {
         pendingDataUrl = reader.result;
@@ -1389,8 +1681,24 @@
         document.getElementById("imgNameInput").value = file.name.replace(/\.[^.]+$/, "");
         document.getElementById("imgAltInput").value = "";
         formWrap.hidden = false;
+        formWrap.scrollIntoView({ behavior: "smooth", block: "center" });
       };
       reader.readAsDataURL(file);
+    }
+    document.getElementById("pickImageBtn").addEventListener("click", function () { editingId = null; fileInput.click(); });
+    fileInput.addEventListener("change", function () { acceptFile(fileInput.files[0]); });
+    // Real drag & drop onto the dropzone, so admins can drag a photo straight
+    // from their file manager instead of always clicking "Pilih gambar".
+    ["dragover", "dragenter"].forEach(function (evt) {
+      dropzone.addEventListener(evt, function (e) { e.preventDefault(); dropzone.classList.add("drag-over"); });
+    });
+    ["dragleave", "dragend"].forEach(function (evt) {
+      dropzone.addEventListener(evt, function () { dropzone.classList.remove("drag-over"); });
+    });
+    dropzone.addEventListener("drop", function (e) {
+      e.preventDefault();
+      dropzone.classList.remove("drag-over");
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) acceptFile(e.dataTransfer.files[0]);
     });
     document.getElementById("imgCancelBtn").addEventListener("click", function () { formWrap.hidden = true; fileInput.value = ""; pendingDataUrl = null; });
     document.getElementById("imgSaveBtn").addEventListener("click", function () {
@@ -1519,7 +1827,61 @@
     var storedVersion = localStorage.getItem(DATA_VERSION_KEY);
     seedDefaults(storedVersion !== DATA_VERSION);
     localStorage.setItem(DATA_VERSION_KEY, DATA_VERSION);
+    renderNavMaterials();
     registerRoutes();
     Router.start();
+    initLoadingScreen();
+    initPWA();
   });
+
+  // Makes the site installable (like WhatsApp Web): registers the service
+  // worker for offline app-shell caching, and wires an optional "Instal
+  // Aplikasi" button that surfaces the browser's native install prompt when
+  // it becomes available (Chrome/Edge on Windows, Android, ChromeOS...).
+  // Browsers without install support (e.g. Safari) simply never show the
+  // button — the site still works perfectly as a normal page there.
+  function initPWA() {
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("sw.js").catch(function () { /* offline caching just won't be available */ });
+      });
+    }
+    var installBtn = document.getElementById("installAppBtn");
+    var deferredPrompt = null;
+    window.addEventListener("beforeinstallprompt", function (e) {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (installBtn) installBtn.hidden = false;
+    });
+    if (installBtn) {
+      installBtn.addEventListener("click", function () {
+        if (!deferredPrompt) return;
+        installBtn.hidden = true;
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.finally(function () { deferredPrompt = null; });
+      });
+    }
+    window.addEventListener("appinstalled", function () {
+      if (installBtn) installBtn.hidden = true;
+      Toast.show("Aplikasi GDNG PRG berhasil dipasang di perangkat ini.", "success");
+    });
+  }
+
+  // Premium splash/loading screen: shown for a fixed ~5s on first visit so
+  // the brand has a moment to register, then fades out smoothly. The site
+  // underneath is already fully rendered by this point (Router.start ran
+  // above), so nothing is actually blocked while the splash is visible.
+  function initLoadingScreen() {
+    var screen = document.getElementById("loadingScreen");
+    if (!screen) return;
+    var MIN_DISPLAY_MS = 5000;
+    setTimeout(function () {
+      screen.classList.add("loading-hide");
+      document.documentElement.classList.remove("is-loading");
+      screen.addEventListener("transitionend", function remove() {
+        screen.removeEventListener("transitionend", remove);
+        if (screen.parentNode) screen.parentNode.removeChild(screen);
+      });
+    }, MIN_DISPLAY_MS);
+  }
 })();
