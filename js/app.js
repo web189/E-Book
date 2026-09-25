@@ -26,7 +26,7 @@
   // Bump this whenever the built-in seed content changes, so browsers that
   // already have older data in LocalStorage get refreshed automatically
   // instead of keeping stale materials forever.
-  var DATA_VERSION = "2026.09.25-sgm-materi-lengkap-v6";
+  var DATA_VERSION = "2026.09.26-btb-bkb-supplier-update-v7";
   var DATA_VERSION_KEY = "gdngprg_data_version";
 
   /* ------------------------------------------------------------------ */
@@ -580,7 +580,72 @@
 </div>
 `;
 
-  var TX_BTB_BKB_SUPPLIER_CONTENT = "\n<p><strong>Transaksi BTB BKB Supplier</strong> adalah prosedur pencatatan Bukti Terima Barang (BTB) dan Bukti Keluar Barang (BKB) untuk transaksi yang melibatkan supplier/pemasok eksternal. Halaman ini akan diisi admin dengan langkah kerja lengkap beserta contoh dokumen dan tangkapan layar sistem.</p>\n<div class=\"tx-note\"><b>Status:</b>&nbsp;Konten sedang disusun oleh admin. Gunakan menu <b>Materi &rarr; Edit</b> pada Dashboard Admin untuk melengkapi langkah-langkah, dokumen contoh, dan foto pada materi ini.</p></div>\n<h2>Rencana Isi Materi</h2>\n<ul>\n  <li>Alur BTB dari supplier ke gudang</li>\n  <li>Alur BKB dari gudang ke supplier (retur/kembali)</li>\n  <li>Dokumen pendukung yang wajib dilampirkan</li>\n  <li>Contoh dokumen dan foto langkah demi langkah</li>\n</ul>\n";
+  var TX_BTB_BKB_SUPPLIER_CONTENT = `
+<p><strong>Transaksi BTB BKB Supplier</strong> adalah prosedur pencatatan Bukti Terima Barang (BTB) dan Bukti Keluar Barang (BKB) untuk transaksi yang melibatkan supplier/pemasok eksternal. Materi ini memuat <strong>pembaruan resmi dari Kantor Pusat</strong> mengenai cara penginputan BTB Supplier untuk produk <strong>AQUA Gallon &amp; AQUA SPS</strong> di DMS 3, sekaligus aturan wajib saat sebuah Surat Jalan/PO dibatalkan. Pelajari dengan saksama agar setiap dokumen yang disimpan sudah sesuai format terbaru.</p>
+
+<div class="tx-note"><b>Berlaku untuk:</b>&nbsp;Seluruh penginputan BTB Supplier produk AQUA Gallon &amp; AQUA SPS, serta BTB/BKB Supplier yang mengalami pembatalan Surat Jalan, di DMS 3.</div>
+
+<h2>Format Baru: No. Ref. 3 &amp; Keterangan pada BTB Supplier</h2>
+<p>Ada dua ketentuan berbeda tergantung jenis produknya &mdash; perhatikan baik-baik sebelum mengisi, karena format <strong>AQUA Gallon</strong> dan <strong>AQUA SPS</strong> tidak sama.</p>
+
+<div class="tx-steps">
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">AQUA Gallon</span><img src="assets/images/transaksi-btb-bkb-supplier/btb-supplier-gallon-noref3-keterangan.webp" alt="Contoh input No. Ref. 3 dan Keterangan pada BTB Supplier AQUA Gallon" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">BTB Supplier &middot; AQUA Gallon</span>
+      <h3 class="tx-step-title">No. Ref. 3 Diisi Berurutan, Keterangan Diisi No. GRFC</h3>
+      <p class="tx-step-desc">Kolom <strong>No. Ref. 3</strong> diisi berurutan sesuai formula <strong>HPPP / Qty Retur Air / Qty Total Botol / Qty Jugrack</strong>, dan pemisah antar-angka <strong>wajib menggunakan tanda "/"</strong> &mdash; contoh pada gambar: <code>90A0260923-005/24/960/20</code>. Kolom <strong>Keterangan</strong> diisi dengan <strong>No. GRFC</strong>; jika dokumen GRFC belum tersedia, tulis <strong>"TIDAK ADA GRFC"</strong> &mdash; jangan dibiarkan kosong.</p>
+    </div>
+  </div>
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">AQUA SPS</span><img src="assets/images/transaksi-btb-bkb-supplier/btb-supplier-sps-noref3-keterangan.webp" alt="Contoh input No. Ref. 3 dan Keterangan pada BTB Supplier AQUA SPS" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag tag-out">BTB Supplier &middot; AQUA SPS</span>
+      <h3 class="tx-step-title">No. Ref. 3 Dikosongkan, Keterangan Diisi GRFC &amp; Qty GRFC</h3>
+      <p class="tx-step-desc">Khusus produk <strong>AQUA SPS</strong>, kolom <strong>No. Ref. 3 dikosongkan</strong> &mdash; tidak perlu diisi formula apa pun. Sebagai gantinya, kolom <strong>Keterangan</strong> diisi <strong>No. GRFC diikuti Qty GRFC</strong>, dengan tanda "/" sebagai pemisah, contoh: <code>6013068918/36</code>.</p>
+    </div>
+  </div>
+
+</div>
+
+<h2>Aturan Wajib Saat Surat Jalan / PO Dibatalkan</h2>
+<p>Bila sebuah PO atau Surat Jalan dibatalkan, dokumen <strong>BTB Supplier</strong> maupun <strong>BKB Supplier</strong> yang berkaitan harus disesuaikan agar statusnya tidak membingungkan saat direkap ulang di kemudian hari.</p>
+
+<div class="tx-steps">
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">BTB Supplier</span><img src="assets/images/transaksi-btb-bkb-supplier/btb-supplier-pembatalan-surat-jalan.webp" alt="Contoh input pembatalan Surat Jalan pada BTB Supplier" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag tag-out">BTB Supplier &middot; Pembatalan</span>
+      <h3 class="tx-step-title">No. Surat Jalan Wajib Diisi "BATAL"</h3>
+      <p class="tx-step-desc">Pada dokumen BTB Supplier yang PO-nya dibatalkan, kolom <strong>No. Surat Jalan wajib diisi "BATAL"</strong> &mdash; bukan dikosongkan atau dibiarkan memakai nomor lama. Kolom <strong>Keterangan</strong> diisi sesuai alasan pembatalan tersebut, contoh: <code>BATAL PO MOBIL RUBAH MUATAN</code>.</p>
+    </div>
+  </div>
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">BKB Supplier</span><img src="assets/images/transaksi-btb-bkb-supplier/bkb-supplier-pembatalan-surat-jalan.webp" alt="Contoh update No. Surat Jalan menjadi BATAL pada BKB Supplier" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag tag-out">BKB Supplier &middot; Pembatalan</span>
+      <h3 class="tx-step-title">Samakan Melalui "Update No. Surat Jalan"</h3>
+      <p class="tx-step-desc">Dokumen pasangannya, <strong>BKB Supplier</strong>, wajib disesuaikan juga lewat tautan <strong>Update No. Surat Jalan</strong> pada layar, lalu ganti nomor manual menjadi <strong>"BATAL"</strong> &mdash; memastikan data BTB dan BKB tetap konsisten satu sama lain.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="tx-note"><b>Ringkasan Cepat</b>
+<ul class="tx-recap" style="margin:12px 0 0; padding:0;">
+  <li><b>AQUA Gallon &middot; No. Ref. 3</b>HPPP/Qty Retur Air/Qty Botol/Qty Jugrack</li>
+  <li><b>AQUA Gallon &middot; Keterangan</b>No. GRFC (atau "TIDAK ADA GRFC")</li>
+  <li><b>AQUA SPS &middot; No. Ref. 3</b>Dikosongkan</li>
+  <li><b>AQUA SPS &middot; Keterangan</b>No. GRFC/Qty GRFC</li>
+  <li><b>Pembatalan &middot; BTB Supplier</b>No. Surat Jalan diisi "BATAL"</li>
+  <li><b>Pembatalan &middot; BKB Supplier</b>Update No. Surat Jalan jadi "BATAL"</li>
+</ul>
+</div>
+`;
 
   /* ------------------------------------------------------------------ */
   /* 6. SEED DEFAULT DATA                                                */
