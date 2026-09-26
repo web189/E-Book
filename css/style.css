@@ -11,11 +11,11 @@
   --text-secondary:#5B667A;
   --text-faint:#8A93A6;
   --border:#E1E5EF;
-  --accent:#0D8577;
-  --accent-2:#4F6BF0;
-  --accent-3:#9B5DE5;
-  --accent-strong:#075E54;
-  --accent-soft:#E1F3EF;
+  --accent:#1858C9;
+  --accent-2:#2E9BFF;
+  --accent-3:#63C7FF;
+  --accent-strong:#0D3E8F;
+  --accent-soft:#E7F1FF;
   --amber:#D6862A;
   --danger:#B3452F;
   --danger-soft:#F7E7E2;
@@ -43,11 +43,11 @@ html[data-theme="dark"]{
   --text-secondary:#9BA6BE;
   --text-faint:#6C7690;
   --border:#232E48;
-  --accent:#35C2AF;
-  --accent-2:#8AA2FF;
-  --accent-3:#C79BFF;
-  --accent-strong:#5CE0CD;
-  --accent-soft:#132C29;
+  --accent:#3E8CFF;
+  --accent-2:#6FB4FF;
+  --accent-3:#8FE0FF;
+  --accent-strong:#7FC4FF;
+  --accent-soft:#122A50;
   --amber:#E5A150;
   --danger:#E27E64;
   --danger-soft:#2E1B18;
@@ -169,12 +169,16 @@ ul{margin:0; padding:0; list-style:none;}
 .logo-trigger.logo-pulse{animation:logoPulse .32s var(--ease);}
 @keyframes logoPulse{0%{transform:scale(1);}50%{transform:scale(.9);}100%{transform:scale(1);}}
 .logo-mark{
-  width:42px; height:42px; border-radius:13px; flex:none;
-  background:#fff; position:relative;
-  display:flex; align-items:center; justify-content:center; padding:4px;
-  box-shadow:0 6px 18px -6px color-mix(in srgb, var(--accent) 60%, transparent), 0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent);
+  width:50px; height:50px; flex:none; position:relative;
+  display:flex; align-items:center; justify-content:center;
 }
-.logo-mark img{width:100%; height:100%; object-fit:contain; display:block;}
+.logo-mark img{
+  width:100%; height:100%; object-fit:contain; display:block;
+  filter:
+    drop-shadow(0 0 1px rgba(255,255,255,.85))
+    drop-shadow(0 0 8px rgba(255,255,255,.4))
+    drop-shadow(0 3px 8px color-mix(in srgb, var(--accent) 55%, transparent));
+}
 .logo-text{display:flex; flex-direction:column; text-align:left; line-height:1.22; min-width:0; max-width:100%;}
 .logo-text strong{
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; display:block;
@@ -230,7 +234,6 @@ ul{margin:0; padding:0; list-style:none;}
 .nav-dropdown-item-all{margin-top:4px; padding-top:10px; border-top:1px solid var(--border); color:var(--accent);}
 
 .header-actions{display:flex; align-items:center; gap:8px;}
-.mobile-quick-icon{display:none;}
 .hamburger{
   display:none; width:40px; height:40px; border-radius:50%; border:1px solid var(--border); background:var(--bg-secondary);
   flex-direction:column; align-items:center; justify-content:center; gap:4px;
@@ -241,10 +244,21 @@ ul{margin:0; padding:0; list-style:none;}
 .hamburger[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
 
 .mobile-drawer{
-  display:none; flex-direction:column; padding:10px 16px 18px; gap:4px;
-  max-height:0; overflow:hidden; transition:max-height .3s var(--ease);
+  display:none; flex-direction:column; padding:0 16px; gap:4px;
+  max-height:0; overflow:hidden; transition:max-height .3s var(--ease), padding .3s var(--ease);
 }
-.mobile-drawer.open{max-height:90vh; overflow-y:auto;}
+.mobile-drawer.open{max-height:90vh; overflow-y:auto; padding:10px 16px 18px;}
+/* Beranda / Pencarian / Tema quick-action row at the top of the drawer —
+   these used to live as separate icon buttons in the header itself, which
+   crowded the bar on small phones; now the header only shows a hamburger
+   and all three quick actions live together here instead. */
+.drawer-quick-row{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:10px;}
+.drawer-quick-btn{
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+  padding:14px 6px; border-radius:14px; background:var(--bg-sunken); border:none; color:var(--text-primary);
+  font-size:.74rem; font-weight:700; text-decoration:none; transition:background .18s var(--ease), color .18s var(--ease);
+}
+.drawer-quick-btn:hover{background:var(--accent-soft); color:var(--accent);}
 .drawer-link{
   padding:14px 12px; border-radius:12px; font-weight:700; font-size:.95rem; color:var(--text-primary);
   background:var(--bg-sunken); border:none; text-align:left; text-decoration:none;
@@ -274,25 +288,19 @@ ul{margin:0; padding:0; list-style:none;}
 
 @media (max-width:860px){
   .main-nav{display:none;}
-  .mobile-quick-icon{display:inline-flex;}
   .hamburger{display:flex;}
   .mobile-drawer{display:flex;}
   .header-inner{padding:0 12px; gap:8px;}
-  /* Dev credit line now shows on phones too, right under the tagline —
-     just trimmed down a touch so it doesn't crowd the brand block. */
-  .logo-credit{margin-left:0; padding-left:49px; font-size:.66rem;}
-  /* Slightly smaller action icons + tighter gaps so Beranda/Pencarian/
-     Tema/Hamburger all fit on one row without squeezing the brand text
-     into an overflow-causing wrap (see header-inner min-height above). */
+  /* Home / Search / Theme now live only in the drawer on mobile, so the
+     header row is just the brand + a single hamburger button. */
+  #themeToggle{display:none;}
   .header-actions{gap:6px;}
   .header-actions .icon-btn,.header-actions .hamburger{width:36px; height:36px;}
   .logo-trigger{gap:9px; padding:4px;}
-  .logo-mark{width:36px; height:36px;}
+  .logo-mark{width:44px; height:44px;}
 }
 @media (max-width:400px){
   .logo-text em{font-size:.66rem;}
-  .logo-credit{font-size:.62rem; padding-left:47px;}
-  .logo-credit-version{display:none;}
 }
 
 /* icon toggle */
@@ -364,7 +372,9 @@ html:not([data-theme="dark"]) .icon-moon{display:none;}
   display:inline-flex; align-items:center; gap:8px; font-size:.8rem; font-weight:700; color:var(--accent-strong);
   background:var(--accent-soft); border:1px solid color-mix(in srgb, var(--accent) 22%, transparent);
   padding:7px 15px; border-radius:999px; margin-bottom:24px; letter-spacing:.01em;
+  text-decoration:none; transition:border-color .18s var(--ease), background .18s var(--ease);
 }
+a.hero-eyebrow:hover{border-color:var(--accent); background:color-mix(in srgb, var(--accent-soft) 60%, var(--bg-secondary));}
 .hero-eyebrow::before{content:''; width:7px; height:7px; border-radius:50%; background:var(--grad-brand); flex:none; box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);}
 .hero-title{
   font-family:var(--font-display);
@@ -836,46 +846,93 @@ html[data-theme="dark"] .tx-step-tag.tag-out{background:#2E2413;}
 html.is-loading, html.is-loading body{overflow:hidden; height:100%;}
 .loading-screen{
   position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center;
-  background:radial-gradient(120% 120% at 50% 15%, #14352f 0%, #0A1F1B 42%, #060F0D 100%);
+  background:radial-gradient(130% 120% at 50% 12%, #0F3E8C 0%, #071A44 40%, #020714 100%);
   overflow:hidden; transition:opacity .6s var(--ease), visibility .6s var(--ease);
 }
 .loading-screen.loading-hide{opacity:0; visibility:hidden; pointer-events:none;}
-.loading-glow{
-  position:absolute; width:520px; height:520px; border-radius:50%; top:50%; left:50%;
-  background:radial-gradient(circle, color-mix(in srgb, var(--accent) 55%, transparent) 0%, transparent 68%);
-  transform:translate(-50%,-50%); animation:loadingGlowPulse 2.6s ease-in-out infinite;
+/* faint moving tech grid, pure CSS, no assets */
+.loading-grid{
+  position:absolute; inset:-10% -10%; opacity:.16; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(120,190,255,.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120,190,255,.5) 1px, transparent 1px);
+  background-size:42px 42px;
+  -webkit-mask-image:radial-gradient(65% 65% at 50% 38%, #000 0%, transparent 75%);
+  mask-image:radial-gradient(65% 65% at 50% 38%, #000 0%, transparent 75%);
+  animation:loadingGridDrift 16s linear infinite;
 }
-@keyframes loadingGlowPulse{0%,100%{opacity:.55; transform:translate(-50%,-50%) scale(.92);}50%{opacity:1; transform:translate(-50%,-50%) scale(1.08);}}
-.loading-inner{position:relative; display:flex; flex-direction:column; align-items:center; text-align:center; animation:loadingFadeUp .7s var(--ease) both;}
+@keyframes loadingGridDrift{from{transform:translate(0,0);}to{transform:translate(42px,42px);}}
+.loading-glow{
+  position:absolute; width:620px; height:620px; border-radius:50%; top:38%; left:50%;
+  background:radial-gradient(circle, rgba(46,140,255,.6) 0%, transparent 68%);
+  transform:translate(-50%,-50%); animation:loadingGlowPulse 2.6s ease-in-out infinite;
+  filter:blur(2px);
+}
+@keyframes loadingGlowPulse{0%,100%{opacity:.5; transform:translate(-50%,-50%) scale(.92);}50%{opacity:1; transform:translate(-50%,-50%) scale(1.08);}}
+.loading-inner{position:relative; display:flex; flex-direction:column; align-items:center; text-align:center; animation:loadingFadeUp .7s var(--ease) both; padding:0 24px;}
 @keyframes loadingFadeUp{from{opacity:0; transform:translateY(14px);}to{opacity:1; transform:translateY(0);}}
 .loading-logo-ring{
-  position:relative; width:116px; height:116px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-  margin-bottom:22px;
+  position:relative; width:196px; height:196px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  margin-bottom:26px;
 }
 .loading-logo-ring::before{
   content:''; position:absolute; inset:0; border-radius:50%; padding:2.5px;
-  background:conic-gradient(from 0deg, transparent 0%, #33B3A6 30%, #7C9CFF 55%, transparent 75%);
+  background:conic-gradient(from 0deg, transparent 0%, #1E6BFF 30%, #63C7FF 55%, transparent 75%);
   -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite:xor; mask-composite:exclude;
   animation:loadingSpin 1.6s linear infinite;
 }
+.loading-logo-ring::after{
+  content:''; position:absolute; inset:18px; border-radius:50%; border:1px dashed rgba(150,205,255,.35);
+  animation:loadingSpin 9s linear infinite reverse;
+}
 @keyframes loadingSpin{to{transform:rotate(360deg);}}
+/* radar-style ping expanding outward from behind the logo */
+.loading-logo-ping{
+  position:absolute; inset:26px; border-radius:50%;
+  box-shadow:0 0 0 0 rgba(255,255,255,.35);
+  animation:loadingPing 2.6s ease-out infinite;
+}
+@keyframes loadingPing{
+  0%{box-shadow:0 0 0 0 rgba(255,255,255,.35);}
+  70%{box-shadow:0 0 0 22px rgba(255,255,255,0);}
+  100%{box-shadow:0 0 0 22px rgba(255,255,255,0);}
+}
 .loading-logo{
-  width:78px; height:78px; border-radius:50%; object-fit:contain; background:#fff; padding:10px;
-  box-shadow:0 10px 30px -8px rgba(0,0,0,.5); animation:loadingLogoBreathe 2.6s ease-in-out infinite;
+  position:relative; width:150px; height:150px; object-fit:contain;
+  filter:
+    drop-shadow(0 0 2px rgba(255,255,255,.9))
+    drop-shadow(0 0 18px rgba(255,255,255,.55))
+    drop-shadow(0 0 42px rgba(99,199,255,.65));
+  animation:loadingLogoBreathe 2.6s ease-in-out infinite;
 }
 @keyframes loadingLogoBreathe{0%,100%{transform:scale(1);}50%{transform:scale(1.045);}}
-.loading-brand{color:#fff; font-size:1.15rem; font-weight:800; letter-spacing:.06em; margin:0 0 2px;}
-.loading-sub{color:#9fd9cf; font-size:.78rem; font-weight:500; letter-spacing:.02em; margin:0 0 22px;}
+.loading-brand{
+  color:#fff; font-size:1.5rem; font-weight:800; letter-spacing:.05em; margin:0 0 6px;
+  text-shadow:0 0 22px rgba(99,199,255,.7);
+}
+.loading-tagline{color:#bcdcff; font-size:.86rem; font-weight:500; letter-spacing:.01em; margin:0 0 20px; max-width:300px; line-height:1.45;}
+.loading-status{
+  min-height:1.3em; margin:0 0 20px; font-family:'SFMono-Regular',Menlo,Consolas,'Courier New',monospace;
+  font-size:.78rem; letter-spacing:.01em; color:#63C7FF;
+}
+.loading-status::after{content:'\258A'; display:inline-block; margin-left:2px; animation:loadingCursorBlink .9s steps(1) infinite; color:#63C7FF;}
+@keyframes loadingCursorBlink{0%,49%{opacity:1;}50%,100%{opacity:0;}}
 .loading-bar{width:176px; height:4px; border-radius:99px; background:rgba(255,255,255,.14); overflow:hidden;}
 .loading-bar span{
   display:block; height:100%; width:0%; border-radius:99px;
-  background:linear-gradient(90deg, #33B3A6, #7C9CFF);
+  background:linear-gradient(90deg, #1E6BFF, #63C7FF);
+  box-shadow:0 0 10px rgba(99,199,255,.7);
   animation:loadingFill 5s cubic-bezier(.22,.61,.36,1) forwards;
 }
 @keyframes loadingFill{0%{width:0%;}70%{width:88%;}100%{width:100%;}}
+@media (max-width:420px){
+  .loading-logo-ring{width:160px; height:160px;}
+  .loading-logo{width:120px; height:120px;}
+  .loading-brand{font-size:1.28rem;}
+}
 @media (prefers-reduced-motion: reduce){
-  .loading-glow,.loading-logo-ring::before,.loading-logo,.loading-bar span{animation-duration:.01ms; animation-iteration-count:1;}
+  .loading-glow,.loading-grid,.loading-logo-ring::before,.loading-logo-ring::after,.loading-logo-ping,.loading-logo,.loading-bar span,.loading-status::after{animation-duration:.01ms; animation-iteration-count:1;}
 }
 
 .settings-row{display:flex; align-items:center; justify-content:space-between; padding:16px 4px; border-bottom:1px solid var(--border); gap:20px;}
