@@ -733,7 +733,7 @@
     return params;
   }
   function updateActiveNav(path) {
-    document.querySelectorAll(".nav-link[data-route], .drawer-link[data-route]").forEach(function (a) {
+    document.querySelectorAll(".nav-link[data-route], .drawer-link[data-route], .drawer-quick-btn[data-route]").forEach(function (a) {
       a.classList.toggle("active", a.getAttribute("data-route") === path);
     });
     document.body.classList.toggle("is-admin-route", path.indexOf("/admin") === 0);
@@ -764,7 +764,7 @@
         '<span class="hero-blob b2" aria-hidden="true"></span>' +
         '<div class="hero-inner">' +
           '<div>' +
-            '<span class="hero-eyebrow">Sistem Versi Update v.06</span>' +
+            '<a href="https://benyoriki.com/" target="_blank" rel="noopener noreferrer" class="hero-eyebrow">Sistem Developer benyoriki.com</a>' +
             '<h1 class="hero-title">Modul Sistem<span class="line2">Database Centralized Real-Time</span></h1>' +
             '<p class="hero-sub">Modul digital dan sistem administrasi, dapat diakses kapan saja dari HP, tablet, maupun komputer.</p>' +
             '<div class="hero-actions">' +
@@ -1178,6 +1178,10 @@
       if (e.target.closest("a")) closeDrawerNav();
     });
     document.getElementById("themeToggle").addEventListener("click", function () { ThemeService.toggle(); });
+    var themeToggleMobile = document.getElementById("themeToggleMobile");
+    if (themeToggleMobile) {
+      themeToggleMobile.addEventListener("click", function () { ThemeService.toggle(); closeDrawerNav(); });
+    }
 
     // Desktop dropdown menus (Materi / Mati Listrik / Stock Buku PO PRG):
     // click the title to toggle its panel; clicking elsewhere closes all.
@@ -1940,6 +1944,7 @@
     var screen = document.getElementById("loadingScreen");
     if (!screen) return;
     var MIN_DISPLAY_MS = 5000;
+    startLoadingStatusTyper();
     setTimeout(function () {
       screen.classList.add("loading-hide");
       document.documentElement.classList.remove("is-loading");
@@ -1948,5 +1953,43 @@
         if (screen.parentNode) screen.parentNode.removeChild(screen);
       });
     }, MIN_DISPLAY_MS);
+  }
+
+  // Terminal-style status line: types out a short sequence of system-boot
+  // style messages one character at a time (no external deps, ~a few lines
+  // of code) so the splash reads as a live technical process rather than a
+  // static caption. Stops on its own once the splash screen is removed.
+  function startLoadingStatusTyper() {
+    var el = document.getElementById("loadingStatus");
+    if (!el) return;
+    var messages = [
+      "menginisialisasi sistem...",
+      "menghubungkan ke server DMS...",
+      "memuat modul database...",
+      "sinkronisasi data real-time...",
+      "menyiapkan antarmuka..."
+    ];
+    var mi = 0, ci = 0, typing = true, timer = null;
+
+    function tick() {
+      if (!document.body.contains(el)) return;
+      var msg = messages[mi];
+      if (typing) {
+        ci++;
+        el.textContent = msg.slice(0, ci);
+        if (ci >= msg.length) {
+          typing = false;
+          timer = setTimeout(tick, 650);
+        } else {
+          timer = setTimeout(tick, 26);
+        }
+      } else {
+        mi = (mi + 1) % messages.length;
+        ci = 0;
+        typing = true;
+        timer = setTimeout(tick, 150);
+      }
+    }
+    tick();
   }
 })();
