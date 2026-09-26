@@ -24,10 +24,21 @@ mengelola seluruh konten materi dan daftar isi melalui dashboard khusus.
 │   └── app.js
 ├── assets/
 │   ├── logo/     (kosong — logo dibuat via HTML/CSS, mudah diganti file nanti)
-│   ├── images/   (opsional, untuk aset statis tambahan)
-│   └── icons/    (opsional, untuk aset statis tambahan)
+│   ├── images/   (foto hero, dokumentasi transaksi, dll.)
+│   └── icons/    (favicon, ikon PWA, logo header/footer)
+├── manifest.json
+├── sw.js
+├── firebase-config.example.js      (persiapan migrasi Firebase, lihat bagian 9)
+├── firestore.rules                 (persiapan migrasi Firebase, lihat bagian 9)
+├── data-service.firebase.example.js(persiapan migrasi Firebase, lihat bagian 9)
+├── MIGRATION.md                    (panduan migrasi Firebase, lihat bagian 9)
 └── README.md
 ```
+
+Berkas database/Firebase sengaja diletakkan langsung di root (bukan di dalam
+folder tersendiri) karena baru berupa contoh/template persiapan migrasi, bukan
+aset biner. Folder hanya dipakai untuk gambar dan ikon (`assets/images`,
+`assets/icons`, `assets/logo`).
 
 ## 3. Cara Menjalankan
 
@@ -120,7 +131,9 @@ Karena ini adalah prototype tanpa backend, harap dipahami batasan berikut:
 
 > Berkas persiapan migrasi (template config, Security Rules, contoh kode
 > `DataService` berbasis Firestore, dan panduan langkah-demi-langkah) sudah
-> disiapkan di folder [`firebase/`](firebase/MIGRATION.md). Situs saat ini
+> disiapkan langsung di root proyek: [`MIGRATION.md`](MIGRATION.md),
+> `firebase-config.example.js`, `firestore.rules`, dan
+> `data-service.firebase.example.js`. Situs saat ini
 > **belum** terhubung ke Firebase — masih memakai LocalStorage — sehingga
 > tetap bisa langsung dipakai di GitHub Pages tanpa perlu setup tambahan.
 

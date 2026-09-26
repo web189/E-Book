@@ -9,8 +9,8 @@ var CACHE_NAME = "gdng-prg-shell-v1";
 var CORE_ASSETS = [
   "./",
   "./index.html",
-  "./css/style.css",
-  "./js/app.js",
+  "./style.css",
+  "./app.js",
   "./manifest.json",
   "./assets/icons/logo-dms.webp",
   "./assets/icons/logo-dms-splash.webp",

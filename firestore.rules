@@ -1,0 +1,46 @@
+rules_version = '2';
+
+// Firestore Security Rules — GDNG PRG E-Book
+// Siapa saja boleh MEMBACA materi yang published (pengunjung situs statis
+// di GitHub Pages), tapi hanya admin yang login (custom claim "admin": true)
+// yang boleh MENULIS / mengubah data.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /materials/{materialId} {
+      allow read: if resource.data.status == "published" || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /contents/{contentId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /images/{imageId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
+  }
+}
+
+// Storage Security Rules (simpan sebagai storage.rules terpisah di Firebase Console)
+// service firebase.storage {
+//   match /b/{bucket}/o {
+//     match /materi-images/{allPaths=**} {
+//       allow read: if true;
+//       allow write: if request.auth != null && request.auth.token.admin == true
+//                    && request.resource.size < 5 * 1024 * 1024
+//                    && request.resource.contentType.matches('image/.*');
+//     }
+//   }
+// }

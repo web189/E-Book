@@ -32,7 +32,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -119,21 +119,27 @@
 
       <div class="nav-dropdown" data-dropdown>
         <button type="button" class="nav-link nav-dropdown-btn">Materi <svg class="nav-caret" viewBox="0 0 24 24" width="14" height="14"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <div class="nav-dropdown-panel" id="navMateriPanel"></div>
+        <div class="nav-dropdown-panel">
+          <div class="nav-dropdown-panel-inner" id="navMateriPanel"></div>
+        </div>
       </div>
 
       <div class="nav-dropdown" data-dropdown>
         <button type="button" class="nav-link nav-dropdown-btn">Mati Listrik / Internet Down <svg class="nav-caret" viewBox="0 0 24 24" width="14" height="14"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div class="nav-dropdown-panel">
-          <button type="button" class="nav-dropdown-item" data-dev-notice>DMS Manual</button>
-          <button type="button" class="nav-dropdown-item" data-dev-notice>Stock Pagi/Sore Manual</button>
+          <div class="nav-dropdown-panel-inner">
+            <button type="button" class="nav-dropdown-item" data-dev-notice>DMS Manual</button>
+            <button type="button" class="nav-dropdown-item" data-dev-notice>Stock Pagi/Sore Manual</button>
+          </div>
         </div>
       </div>
 
       <div class="nav-dropdown" data-dropdown>
         <button type="button" class="nav-link nav-dropdown-btn">Stock Buku PO PRG <svg class="nav-caret" viewBox="0 0 24 24" width="14" height="14"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div class="nav-dropdown-panel">
-          <button type="button" class="nav-dropdown-item" data-dev-notice>Buku PO PRG</button>
+          <div class="nav-dropdown-panel-inner">
+            <button type="button" class="nav-dropdown-item" data-dev-notice>Buku PO PRG</button>
+          </div>
         </div>
       </div>
 
@@ -160,6 +166,7 @@
 
   <!-- mobile drawer: accordion-style menu -->
   <div class="mobile-drawer" id="mobileDrawer">
+  <div class="mobile-drawer-inner">
     <!-- Beranda / Pencarian / Tema now live only here on mobile, so the
          header row itself stays down to a single hamburger button. -->
     <div class="drawer-quick-row">
@@ -192,8 +199,10 @@
         <svg class="drawer-acc-chevron" viewBox="0 0 24 24" width="17" height="17"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <div class="drawer-acc-panel" id="drawerListrikPanel">
-        <button type="button" class="drawer-acc-item" data-dev-notice>DMS Manual</button>
-        <button type="button" class="drawer-acc-item" data-dev-notice>Stock Pagi/Sore Manual</button>
+        <div class="drawer-acc-panel-inner">
+          <button type="button" class="drawer-acc-item" data-dev-notice>DMS Manual</button>
+          <button type="button" class="drawer-acc-item" data-dev-notice>Stock Pagi/Sore Manual</button>
+        </div>
       </div>
     </div>
 
@@ -203,7 +212,9 @@
         <svg class="drawer-acc-chevron" viewBox="0 0 24 24" width="17" height="17"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <div class="drawer-acc-panel" id="drawerBukuPanel">
-        <button type="button" class="drawer-acc-item" data-dev-notice>Buku PO PRG</button>
+        <div class="drawer-acc-panel-inner">
+          <button type="button" class="drawer-acc-item" data-dev-notice>Buku PO PRG</button>
+        </div>
       </div>
     </div>
 
@@ -211,6 +222,7 @@
       <span>Uang Ritase TUA</span>
       <svg viewBox="0 0 24 24" width="15" height="15"><path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
+  </div>
   </div>
 </header>
 
@@ -244,10 +256,14 @@
 
 <!-- ============ FOOTER (visitor) ============ -->
 <footer class="site-footer" id="siteFooter">
+  <div class="footer-brand">
+    <img src="assets/icons/logo-dms.webp" alt="" class="footer-logo">
+    <span>Depo Parung</span>
+  </div>
   <p class="footer-title">Tim Developer <a href="https://benyoriki.com/" target="_blank" rel="noopener noreferrer" class="footer-link">benyoriki.com</a></p>
   <p class="footer-sub">Digital Module Centralized Real-Time Sistem &middot; &copy; 2026</p>
 </footer>
 
-<script src="js/app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
