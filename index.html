@@ -21,7 +21,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>GDNG PRG 2026 — Sistem &amp; Modul Pelatihan Admin Gudang Digital</title>
 <meta name="description" content="Dokumen terkini, keputusan lebih cepat. Platform digital admin GDNG PRG: materi pelatihan lengkap sekaligus arah menuju sistem gudang real-time yang lebih canggih, aman, dan efisien.">
-<meta name="theme-color" content="#0A1F1B">
+<meta name="theme-color" content="#071A44">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -39,12 +39,15 @@
 <!-- ============ LOADING SCREEN (splash, ~5s) ============ -->
 <div id="loadingScreen" class="loading-screen" role="status" aria-label="Memuat situs">
   <span class="loading-glow" aria-hidden="true"></span>
+  <span class="loading-grid" aria-hidden="true"></span>
   <div class="loading-inner">
     <div class="loading-logo-ring">
+      <span class="loading-logo-ping" aria-hidden="true"></span>
       <img src="assets/icons/logo-dms-splash.webp" alt="" class="loading-logo">
     </div>
-    <p class="loading-brand">GDNG PRG</p>
-    <p class="loading-sub">Modul Pelatihan Admin 2026</p>
+    <p class="loading-brand">DEPO PARUNG</p>
+    <p class="loading-tagline">Modul Sistem Database Centralized Real-Time</p>
+    <p class="loading-status" id="loadingStatus" aria-live="polite"></p>
     <div class="loading-bar"><span></span></div>
   </div>
 </div>
@@ -107,7 +110,6 @@
           <em>Database Centralized Real-Time</em>
         </span>
       </button>
-      <a href="https://benyoriki.com/" target="_blank" rel="noopener noreferrer" class="logo-credit">Sistem Developer <span class="logo-credit-link">benyoriki.com</span> <span class="logo-credit-version">v.06</span></a>
     </div>
 
     <nav class="main-nav" id="mainNav" aria-label="Navigasi utama">
@@ -146,12 +148,6 @@
       <button type="button" class="icon-btn" id="installAppBtn" aria-label="Instal aplikasi" title="Instal Aplikasi" hidden>
         <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3v12m0 0 4.5-4.5M12 15 7.5 10.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17.5V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
       </button>
-      <a href="#/" class="icon-btn mobile-quick-icon" data-route="/" aria-label="Beranda" title="Beranda">
-        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 11.5 12 4l8 7.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v9a1 1 0 0 0 1 1h3v-5.5h4V20h3a1 1 0 0 0 1-1v-9" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/></svg>
-      </a>
-      <button type="button" class="icon-btn mobile-quick-icon" id="openSearchBtnMobile" aria-label="Pencarian" title="Pencarian">
-        <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M20 20l-3.4-3.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      </button>
       <button type="button" class="icon-btn" id="themeToggle" aria-label="Ganti mode gelap/terang" title="Mode gelap/terang">
         <svg class="icon-sun" viewBox="0 0 24 24" width="19" height="19"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7" fill="none"/><g stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></g></svg>
         <svg class="icon-moon" viewBox="0 0 24 24" width="19" height="19"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.6 6.6 0 1 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/></svg>
@@ -164,6 +160,24 @@
 
   <!-- mobile drawer: accordion-style menu -->
   <div class="mobile-drawer" id="mobileDrawer">
+    <!-- Beranda / Pencarian / Tema now live only here on mobile, so the
+         header row itself stays down to a single hamburger button. -->
+    <div class="drawer-quick-row">
+      <a href="#/" class="drawer-quick-btn" data-route="/" aria-label="Beranda">
+        <svg viewBox="0 0 24 24" width="19" height="19"><path d="M4 11.5 12 4l8 7.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v9a1 1 0 0 0 1 1h3v-5.5h4V20h3a1 1 0 0 0 1-1v-9" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/></svg>
+        <span>Beranda</span>
+      </a>
+      <button type="button" class="drawer-quick-btn" id="openSearchBtnMobile" aria-label="Pencarian">
+        <svg viewBox="0 0 24 24" width="19" height="19"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M20 20l-3.4-3.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>Cari</span>
+      </button>
+      <button type="button" class="drawer-quick-btn" id="themeToggleMobile" aria-label="Ganti mode gelap/terang">
+        <svg class="icon-sun" viewBox="0 0 24 24" width="19" height="19"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7" fill="none"/><g stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></g></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="19" height="19"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.6 6.6 0 1 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/></svg>
+        <span>Tema</span>
+      </button>
+    </div>
+
     <div class="drawer-acc" data-drawer-acc>
       <button type="button" class="drawer-acc-btn" aria-expanded="false" aria-controls="drawerMateriPanel">
         <span>Materi</span>
