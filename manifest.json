@@ -1,6 +1,6 @@
 {
-  "name": "GDNG PRG 2026 — Modul Pelatihan Admin",
-  "short_name": "GDNG PRG",
+  "name": "LP-MODUL 2026 - Sistem Modul v.07",
+  "short_name": "LP-MODUL",
   "description": "Modul materi pelatihan digital untuk admin GDNG PRG 2026 — bisa diakses dan dipasang seperti aplikasi di HP maupun komputer.",
   "start_url": "./index.html",
   "scope": "./",
