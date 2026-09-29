@@ -26,7 +26,7 @@
   // Bump this whenever the built-in seed content changes, so browsers that
   // already have older data in LocalStorage get refreshed automatically
   // instead of keeping stale materials forever.
-  var DATA_VERSION = "2026.09.26-btb-bkb-supplier-update-v7";
+  var DATA_VERSION = "2026.09.30-sgm-surat-jalan-btb-ref-po-v8";
   var DATA_VERSION_KEY = "gdngprg_data_version";
 
   /* ------------------------------------------------------------------ */
@@ -510,7 +510,7 @@
   var TX_SGM_CONTENT = `
 <div class="tx-intro">
   <p><strong>Transaksi Produk SGM</strong> adalah prosedur penerimaan produk susu SGM dari supplier sekaligus cara mengubah satuan stok dari <strong>BOX</strong> menjadi <strong>PCS</strong> (satuan eceran) di sistem. Produk SGM memang unik: setiap kali datang dari supplier, produk tercatat per BOX &mdash; padahal sebagian dijual eceran per PCS. Untuk itu diperlukan satu langkah tambahan yang disebut <strong>morphing</strong>, yaitu memindahkan stok BOX menjadi stok PCS memakai transaksi <strong>BKB Mutasi</strong> dan <strong>BTB Mutasi</strong> ke depo sendiri.</p>
-  <p>Ikuti 4 langkah di bawah secara berurutan: mulai dari menerima barang dari supplier, mencetak bukti terimanya, lalu melakukan morphing BOX &rarr; PCS.</p>
+  <p>Ikuti 6 langkah di bawah secara berurutan: membaca surat jalan pabrik, menginput BTB Supplier, mengisi kode batch, mencetak bukti terima, lalu melakukan morphing BOX &rarr; PCS.</p>
 </div>
 
 <div class="tx-case-head">
@@ -524,16 +524,34 @@
 <div class="tx-steps">
 
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 1</span><img src="assets/images/transaksi-produk-sgm/sgm-01-input-batch-btb-supplier.webp" alt="Penulisan kode batch pada BTB Supplier" loading="lazy"></div>
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 1</span><img src="assets/images/transaksi-produk-sgm/sgm-06-surat-jalan-batch-expired.webp" alt="Contoh surat jalan produk: nomor dokumen, qty, dan batch (tanggal expired)" loading="lazy"></div>
     <div class="tx-step-body">
-      <span class="tx-step-tag">BTB Supplier &middot; Detil Lot</span>
-      <h3 class="tx-step-title">Tulis Kode Batch Saat Terima Barang dari Supplier</h3>
-      <p class="tx-step-desc">Pada dokumen <strong>Bukti Terima Barang Supplier</strong>, klik ikon kaca pembesar di kolom Lot/SN untuk membuka jendela <strong>UIEntryLot</strong>. Isi <strong>No. Batch</strong> dan <strong>Tanggal Expired</strong> sesuai kemasan fisik produk, lalu pastikan <strong>Kuantiti</strong> pada baris batch sama persis dengan kuantiti produk di atasnya sebelum menekan <strong>Ok</strong>. Batch yang salah tulis di sini akan ikut salah pada seluruh dokumen turunannya.</p>
+      <span class="tx-step-tag">Surat Jalan &middot; Cek Data</span>
+      <h3 class="tx-step-title">Baca Surat Jalan &amp; Catat Batch / Tanggal Expired</h3>
+      <p class="tx-step-desc">Sebelum menginput, siapkan <strong>surat jalan produk</strong> dari pabrik. Catat tiga data berikut: <strong>(1) Doc. Number</strong> &mdash; nomor dokumen di bagian atas; <strong>(2) Kode &amp; Nama Produk</strong> beserta <strong>Qty</strong>; <strong>(3) kolom BATCH</strong> &mdash; angka 8 digit berformat <em>Tahun-Bulan-Tanggal</em> yang menjadi <strong>tanggal expired</strong>. Contoh: <code>20280825</code> dibaca <strong>25 Agustus 2028</strong>. Jika satu surat jalan memuat lebih dari satu produk, setiap produk punya batch sendiri &mdash; pastikan tidak tertukar.</p>
     </div>
   </div>
 
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 2</span><img src="assets/images/transaksi-produk-sgm/sgm-02-cetak-btb-supplier.webp" alt="Hasil cetak BTB Supplier" loading="lazy"></div>
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 2</span><img src="assets/images/transaksi-produk-sgm/sgm-07-input-btb-supplier-no-ref-po.webp" alt="Contoh input BTB Supplier dengan No. Ref 1 berisi nomor PO" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">BTB Supplier &middot; Header &amp; Detil</span>
+      <h3 class="tx-step-title">Input Barang Masuk di BTB Supplier &mdash; No. Ref 1 = Nomor PO</h3>
+      <p class="tx-step-desc">Buka menu <strong>BTB Supplier</strong>, lalu isi data utama: <strong>Tanggal, Supplier, Gudang, Tipe Stok</strong> (JUAL), <strong>No. Surat Jalan</strong>, dan <strong>Tgl. Surat Jalan Pabrik</strong>. Lengkapi data pengangkut (Jasa Pengangkut, Kendaraan, Pengemudi) sesuai truk yang datang. Kolom terpenting adalah <strong>No. Ref. 1</strong>: isi dengan <strong>Nomor PO</strong> agar penerimaan barang ini terhubung ke PO-nya dan PO dapat dibuka-tutup (di-close). Pada tabel Detil, isi <strong>Kode Produk</strong> dan <strong>Qty</strong> (satuan BOX), lalu klik <strong>Simpan Applied</strong> sampai status dokumen menjadi <strong>Applied</strong>.</p>
+    </div>
+  </div>
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 3</span><img src="assets/images/transaksi-produk-sgm/sgm-01-input-batch-btb-supplier.webp" alt="Penulisan kode batch pada BTB Supplier" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">BTB Supplier &middot; Detil Lot</span>
+      <h3 class="tx-step-title">Tulis Kode Batch Saat Terima Barang dari Supplier</h3>
+      <p class="tx-step-desc">Pada dokumen <strong>Bukti Terima Barang Supplier</strong>, klik ikon kaca pembesar di kolom Lot/SN untuk membuka jendela <strong>UIEntryLot</strong>. Isi <strong>No. Batch</strong> dan <strong>Tanggal Expired</strong> sesuai data yang sudah Anda catat dari surat jalan (langkah 1) dan cocokkan dengan kemasan fisik produk, lalu pastikan <strong>Kuantiti</strong> pada baris batch sama persis dengan kuantiti produk di atasnya sebelum menekan <strong>Ok</strong>. Batch yang salah tulis di sini akan ikut salah pada seluruh dokumen turunannya.</p>
+    </div>
+  </div>
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 4</span><img src="assets/images/transaksi-produk-sgm/sgm-02-cetak-btb-supplier.webp" alt="Hasil cetak BTB Supplier" loading="lazy"></div>
     <div class="tx-step-body">
       <span class="tx-step-tag">BTB Supplier &middot; Cetak</span>
       <h3 class="tx-step-title">Cetak Bukti Terima Barang (Supplier)</h3>
@@ -542,7 +560,7 @@
   </div>
 
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 3</span><img src="assets/images/transaksi-produk-sgm/sgm-03-bkb-mutasi-morphing.webp" alt="BKB Mutasi Morphing box ke pcs" loading="lazy"></div>
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 5</span><img src="assets/images/transaksi-produk-sgm/sgm-03-bkb-mutasi-morphing.webp" alt="BKB Mutasi Morphing box ke pcs" loading="lazy"></div>
     <div class="tx-step-body">
       <span class="tx-step-tag tag-out">BKB Depo &middot; Mutasi (Keluar)</span>
       <h3 class="tx-step-title">Morphing Bagian 1 &mdash; BKB Mutasi ke Depo Sendiri</h3>
@@ -551,11 +569,11 @@
   </div>
 
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 4</span><img src="assets/images/transaksi-produk-sgm/sgm-04-btb-mutasi-morphing.webp" alt="BTB Mutasi Morphing box ke pcs" loading="lazy"></div>
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 6</span><img src="assets/images/transaksi-produk-sgm/sgm-04-btb-mutasi-morphing.webp" alt="BTB Mutasi Morphing box ke pcs" loading="lazy"></div>
     <div class="tx-step-body">
       <span class="tx-step-tag">BTB Depo &middot; Mutasi (Masuk)</span>
       <h3 class="tx-step-title">Morphing Bagian 2 &mdash; BTB Mutasi Menutup Perubahan Satuan</h3>
-      <p class="tx-step-desc">Buka menu <strong>BTB Depo</strong>, dengan <strong>Dari Depo</strong> diisi depo itu sendiri (pasangan dari langkah 3). Pada kolom Keterangan, tulis <strong>No. Dokumen BKB Mutasi tadi diikuti "/MORPHING"</strong> (contoh: <code>902-0051876/MORPHING</code>) sebagai ID referensi. Pilih produk dengan kode ber-akhiran <strong>"P"</strong> (kode satuan PCS) senilai kuantiti yang sama. Setelah tersimpan, stok BOX otomatis berkurang dan stok PCS bertambah pada produk yang sama.</p>
+      <p class="tx-step-desc">Buka menu <strong>BTB Depo</strong>, dengan <strong>Dari Depo</strong> diisi depo itu sendiri (pasangan dari langkah 5). Pada kolom Keterangan, tulis <strong>No. Dokumen BKB Mutasi tadi diikuti "/MORPHING"</strong> (contoh: <code>902-0051876/MORPHING</code>) sebagai ID referensi. Pilih produk dengan kode ber-akhiran <strong>"P"</strong> (kode satuan PCS) senilai kuantiti yang sama. Setelah tersimpan, stok BOX otomatis berkurang dan stok PCS bertambah pada produk yang sama.</p>
     </div>
   </div>
 
