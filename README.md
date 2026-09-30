@@ -168,3 +168,9 @@ Langkah migrasi yang disarankan:
 - Logout mengembalikan ke Home tanpa menghapus data materi.
 - Refresh browser mempertahankan seluruh data (LocalStorage persistence).
 - Responsive pada lebar 320px–1920px tanpa horizontal scroll.
+
+## Alat Bantu Opening & Closing (opening-tools.js / .css)
+
+Tempel dari Excel, unggah .xlsx/.csv/gambar (OCR), bandingkan dengan file Export
+website asli, peringatan otomatis, Cek Akhir, serta Cadangan & Riwayat.
+OCR memuat Tesseract.js dari CDN hanya saat dipakai (perlu internet).

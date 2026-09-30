@@ -1,0 +1,28 @@
+/* Alat bantu Opening & Closing: impor, cek akhir, cadangan. Aman Chrome 109 / Windows 7. */
+.oc-tools{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px;}
+.ot-ov{position:fixed; inset:0; z-index:9000; background:rgba(10,14,24,.6); display:flex; align-items:flex-start; justify-content:center; overflow:auto; padding:24px 12px;}
+.ot-box{background:var(--bg-raised); color:var(--text-primary); border:1px solid var(--border); border-radius:12px; width:100%; max-width:980px; box-shadow:0 30px 70px -20px rgba(0,0,0,.6);}
+.ot-hd{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:14px 18px; background:var(--oc,#5156BE); color:#fff; border-radius:12px 12px 0 0;}
+.ot-hd b{font-size:1.05rem;} .ot-x{border:0; background:rgba(255,255,255,.2); color:#fff; font-size:1.2rem; width:34px; height:34px; border-radius:50%; cursor:pointer;}
+.ot-bd{padding:18px;} .ot-bd h3{margin:18px 0 8px; font-size:.95rem;}
+.ot-drop{border:2px dashed var(--border); border-radius:10px; padding:16px; background:var(--bg-sunken);}
+.ot-drop textarea{width:100%; min-height:110px; box-sizing:border-box; font:13px/1.4 Consolas,monospace; padding:10px; border:1px solid var(--border); border-radius:6px; background:var(--bg-raised); color:var(--text-primary);}
+.ot-row{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:10px;}
+.ot-hint{font-size:.82rem; color:var(--text-secondary); line-height:1.55; margin:8px 0 0;}
+.ot-tbl-w{overflow-x:auto; border:1px solid var(--border); border-radius:8px; margin-top:10px;}
+.ot-tbl{width:100%; border-collapse:collapse; font-size:.86rem;}
+.ot-tbl th{background:var(--bg-sunken); text-align:left; padding:8px; position:sticky; top:0; white-space:nowrap;}
+.ot-tbl td{padding:5px 8px; border-top:1px solid var(--border); vertical-align:middle;}
+.ot-tbl input{width:78px; padding:5px 6px; border:1px solid #CED4DA; border-radius:5px; font:inherit; background:var(--bg-raised); color:var(--text-primary); text-align:right;}
+.ot-tbl tr.warn td{background:rgba(255,200,0,.16);} .ot-tbl tr.bad td{background:rgba(233,60,60,.14);} .ot-tbl tr.ok td.st{color:#1f9d55;}
+.ot-tbl td.diff{background:rgba(233,60,60,.25); font-weight:700;} .ot-tbl td.unsure input{border-color:#e0a800; background:rgba(255,200,0,.25);}
+.ot-tbl small{display:block; color:#c0392b; font-size:.72rem;}
+.ot-sum{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;} .ot-chip{padding:5px 11px; border-radius:999px; background:var(--bg-sunken); border:1px solid var(--border); font-size:.8rem; font-weight:600;}
+.ot-chip.g{background:rgba(31,157,85,.15);} .ot-chip.y{background:rgba(255,200,0,.22);} .ot-chip.r{background:rgba(233,60,60,.18);}
+.ot-alert{padding:9px 12px; border-radius:8px; margin:6px 0; font-size:.9rem; border-left:4px solid #e0a800; background:rgba(255,200,0,.14);}
+.ot-alert.r{border-color:#d33; background:rgba(233,60,60,.12);} .ot-alert.g{border-color:#1f9d55; background:rgba(31,157,85,.12);}
+.ot-big{display:flex; align-items:center; gap:12px; padding:12px 6px; border-bottom:1px solid var(--border); cursor:pointer; font-size:1.25rem;}
+.ot-big.done{opacity:.4; text-decoration:line-through;} .ot-big input{width:26px; height:26px; flex:none;}
+.ot-big .n{flex:1; min-width:0;} .ot-big .n small{display:block; font-size:.78rem; color:var(--text-secondary);} .ot-big .q{font-weight:800; font-size:1.7rem; min-width:84px; text-align:right;} .ot-big .q.e{color:#d33;}
+.ot-gh{display:flex; justify-content:space-between; margin:20px 0 4px; padding:8px 10px; background:var(--bg-sunken); border-radius:8px; font-weight:800;}
+.ot-busy{font-weight:700; color:var(--oc,#5156BE);}

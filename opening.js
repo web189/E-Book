@@ -132,6 +132,7 @@
       '<label class="oc-fld"><span>Tanggal</span><input type="date" id="ocDate" value="' + date + '"></label>' +
       '<label class="oc-fld"><span>Jam ' + (isOpen ? "Opening" : "Closing") + '</span><input type="time" id="ocTime" value="' + esc(r.time) + '"></label>' +
       '<label class="oc-fld oc-fld-wide"><span>Nama User ' + (isOpen ? "Opening" : "Closing") + '</span><input type="text" id="ocUser" placeholder="Nama lengkap" value="' + esc(r.user) + '"></label></div>' +
+      '<div class="oc-tools"><button type="button" class="oc-btn main" data-oct="import">📥 Tempel / Unggah Data</button><button type="button" class="oc-btn ghost" data-oct="check">✅ Cek Akhir</button><button type="button" class="oc-btn ghost" data-oct="backup">💾 Cadangan &amp; Riwayat</button></div>' +
       '<div class="oc-card"><div class="oc-card-bar"><b>' + (isOpen ? "OPENING" : "CLOSING") + ' GUDANG</b><span>' + esc(fmtDate(date)) + '</span></div>' +
       '<div class="oc-card-body"><div class="oc-line"><span class="oc-lbl">Depo</span><div class="oc-depo-val">' + DEPO + '</div></div>' +
       '<div class="oc-line oc-line-top"><span class="oc-lbl">QTY Fisik</span><div class="oc-list" id="ocList">' + listHtml() + '</div></div></div>' +
@@ -147,8 +148,9 @@
     app.onclick = function (e) {
       var t = e.target;
       if (!t.closest || !t.closest(".oc-page")) return;
-      var b = t.closest("[data-toggle],[data-phase],#ocReset,#ocSave,#ocXls");
+      var b = t.closest("[data-toggle],[data-phase],[data-oct],#ocReset,#ocSave,#ocXls");
       if (!b) return;
+      if (b.hasAttribute("data-oct")) { save(true); if (window.OCTools) window.OCTools.open(b.getAttribute("data-oct"), api); else toast("Modul alat belum termuat."); return; }
       if (b.hasAttribute("data-toggle")) {
         var k = b.getAttribute("data-toggle"); openKey = openKey === k ? "" : k;
         document.getElementById("ocList").innerHTML = listHtml();
@@ -292,5 +294,12 @@
     toast("File Excel diunduh.");
   }
 
-  window.OpeningClosing = { render: render };
+  var api = {
+    products: PRODUCTS, gudang: GUDANG, depo: DEPO, rec: rec, peek: peek, save: save, toast: toast, fmtDate: fmtDate,
+    phase: function () { return phase; }, setPhase: function (p) { phase = p; },
+    date: function () { return date; }, setDate: function (d) { date = d; },
+    db: function () { return db; }, setDb: function (d) { db = d || {}; },
+    rerender: function () { if (root) render(root); }
+  };
+  window.OpeningClosing = { render: render, api: api };
 })();
