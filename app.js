@@ -1893,6 +1893,7 @@
   function registerRoutes() {
     Router.add("/", renderHome);
     Router.add("/materi", renderMateriList);
+    Router.add("/opening-closing", function () { if (window.OpeningClosing) window.OpeningClosing.render(appEl); else renderNotFound(); });
     Router.add("/materi/:slug", renderReader);
     Router.add("/preview", requireAdmin(renderPreview));
     Router.add("/admin", requireAdmin(function () { Router.navigate("/admin/dashboard"); }));

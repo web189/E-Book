@@ -31,7 +31,7 @@ html[data-theme="dark"]{
 .logo-mark{width:46px; height:46px;}
 .logo-mark img{filter:drop-shadow(0 2px 6px rgba(var(--acc-rgb),.35));}
 .logo-text strong{font-family:var(--font-display); font-size:1.02rem; letter-spacing:-.005em;}
-.header-brand{flex:0 1 auto; max-width:300px;}
+.header-brand{flex:0 0 auto; max-width:300px;}
 .header-inner{gap:24px;}
 .main-nav{
   margin-left:auto; gap:2px; padding:5px;
@@ -155,8 +155,9 @@ a.hero-eyebrow:hover{background:rgba(255,255,255,.18); border-color:rgba(255,255
 
 /* Layar sangat lebar */
 @media (min-width:1500px){
-  .header-inner,.hero-inner,.section{max-width:1360px;}
+  .header-inner,.hero-inner,.section{max-width:1440px;}
 }
+@media (max-width:1440px){ .nav-link{padding:8px 10px; font-size:.8rem;} .header-inner{gap:14px; padding:0 22px;} .header-brand{max-width:250px;} }
 /* Laptop kecil / monitor 1366px (seperti di screenshot) */
 @media (max-width:1180px){
   .hero{padding:80px 28px 116px;}
