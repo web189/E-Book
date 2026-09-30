@@ -26,7 +26,7 @@
   // Bump this whenever the built-in seed content changes, so browsers that
   // already have older data in LocalStorage get refreshed automatically
   // instead of keeping stale materials forever.
-  var DATA_VERSION = "2026.09.30-sgm-surat-jalan-btb-ref-po-v8";
+  var DATA_VERSION = "2026.09.30-sgm-parung-revisi-v10";
   var DATA_VERSION_KEY = "gdngprg_data_version";
 
   /* ------------------------------------------------------------------ */
@@ -509,96 +509,234 @@
 
   var TX_SGM_CONTENT = `
 <div class="tx-intro">
-  <p><strong>Transaksi Produk SGM</strong> adalah prosedur penerimaan produk susu SGM dari supplier sekaligus cara mengubah satuan stok dari <strong>BOX</strong> menjadi <strong>PCS</strong> (satuan eceran) di sistem. Produk SGM memang unik: setiap kali datang dari supplier, produk tercatat per BOX &mdash; padahal sebagian dijual eceran per PCS. Untuk itu diperlukan satu langkah tambahan yang disebut <strong>morphing</strong>, yaitu memindahkan stok BOX menjadi stok PCS memakai transaksi <strong>BKB Mutasi</strong> dan <strong>BTB Mutasi</strong> ke depo sendiri.</p>
-  <p>Ikuti 6 langkah di bawah secara berurutan: membaca surat jalan pabrik, menginput BTB Supplier, mengisi kode batch, mencetak bukti terima, lalu melakukan morphing BOX &rarr; PCS.</p>
+  <p><strong>Transaksi Produk SGM</strong> adalah prosedur penerimaan produk susu SGM dari supplier, sekaligus cara mengubah satuan stok di sistem dari <strong>BOX</strong> menjadi satuan eceran: <strong>PCS/POUCH</strong> atau <strong>RENCENG</strong>. Produk SGM memang unik: saat datang dari supplier, barang tercatat per BOX, padahal sebagian dijual eceran. Karena itu diperlukan satu langkah tambahan yang disebut <strong>morphing</strong>, yaitu memindahkan stok BOX menjadi stok eceran memakai transaksi <strong>BKB Depot</strong> dan <strong>BTB Depot</strong> ke depo sendiri.</p>
+  <p>Contoh di bawah adalah transaksi nyata <strong>Depo Parung (281 - LP PARUNG)</strong> tanggal 30/09/2026. Ikuti 10 langkah secara berurutan: baca surat jalan, input BTB Supplier, tulis batch, lakukan morphing, lalu cek laporan.</p>
 </div>
 
 <div class="tx-case-head">
   <div class="tx-case-badge">SGM</div>
   <div>
-    <h2>Penerimaan Barang &amp; Morphing BOX ke PCS</h2>
-    <p>Contoh nyata: penerimaan SGM Vitagrow Choco dari supplier di Gudang Layak Bogor, dilanjutkan proses morphing di Gudang Layak Metro 2.</p>
+    <h2>Penerimaan Barang &amp; Morphing di Depo Parung</h2>
+    <p>Dua produk SGM Vitagrow Choco diterima dari supplier ke Gudang Layak Parung, lalu di-morphing dari BOX ke PCS dan RENCENG.</p>
   </div>
 </div>
 
 <div class="tx-steps">
 
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 1</span><img src="assets/images/transaksi-produk-sgm/sgm-06-surat-jalan-batch-expired.webp" alt="Contoh surat jalan produk: nomor dokumen, qty, dan batch (tanggal expired)" loading="lazy"></div>
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 1</span><img src="assets/images/transaksi-produk-sgm/sgm-06-surat-jalan-batch-expired.webp" alt="Contoh surat jalan produk SGM: nomor dokumen, qty, dan batch" loading="lazy"></div>
     <div class="tx-step-body">
       <span class="tx-step-tag">Surat Jalan &middot; Cek Data</span>
       <h3 class="tx-step-title">Baca Surat Jalan &amp; Catat Batch / Tanggal Expired</h3>
-      <p class="tx-step-desc">Sebelum menginput, siapkan <strong>surat jalan produk</strong> dari pabrik. Catat tiga data berikut: <strong>(1) Doc. Number</strong> &mdash; nomor dokumen di bagian atas; <strong>(2) Kode &amp; Nama Produk</strong> beserta <strong>Qty</strong>; <strong>(3) kolom BATCH</strong> &mdash; angka 8 digit berformat <em>Tahun-Bulan-Tanggal</em> yang menjadi <strong>tanggal expired</strong>. Contoh: <code>20280825</code> dibaca <strong>25 Agustus 2028</strong>. Jika satu surat jalan memuat lebih dari satu produk, setiap produk punya batch sendiri &mdash; pastikan tidak tertukar.</p>
+      <p class="tx-step-desc">Sebelum menginput, siapkan <strong>surat jalan</strong> dari pabrik. Catat tiga data ini: <strong>(1) Doc. Number</strong> di bagian atas (contoh: <code>S26092900080</code>); <strong>(2) Kode &amp; Nama Produk</strong> beserta <strong>Qty</strong>; <strong>(3) kolom BATCH</strong>, yaitu angka 8 digit berformat <em>Tahun-Bulan-Tanggal</em> yang menjadi <strong>tanggal expired</strong>. Contoh: <code>20280825</code> dibaca <strong>25 Agustus 2028</strong>. Pada contoh Depo Parung ini ada dua produk, masing-masing dengan batch sendiri: <strong>214380</strong> (136 BOX, batch 20280825) dan <strong>215369</strong> (41 BOX, batch 20280916). Pastikan batch tidak tertukar antarproduk.</p>
     </div>
   </div>
 
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 2</span><img src="assets/images/transaksi-produk-sgm/sgm-07-input-btb-supplier-no-ref-po.webp" alt="Contoh input BTB Supplier dengan No. Ref 1 berisi nomor PO" loading="lazy"></div>
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 2</span><img src="assets/images/transaksi-produk-sgm/sgm-10-btb-supplier-parung.webp" alt="Dokumen BTB Supplier Depo Parung: header dan detil produk" loading="lazy"></div>
     <div class="tx-step-body">
       <span class="tx-step-tag">BTB Supplier &middot; Header &amp; Detil</span>
-      <h3 class="tx-step-title">Input Barang Masuk di BTB Supplier &mdash; No. Ref 1 = Nomor PO</h3>
-      <p class="tx-step-desc">Buka menu <strong>BTB Supplier</strong>, lalu isi data utama: <strong>Tanggal, Supplier, Gudang, Tipe Stok</strong> (JUAL), <strong>No. Surat Jalan</strong>, dan <strong>Tgl. Surat Jalan Pabrik</strong>. Lengkapi data pengangkut (Jasa Pengangkut, Kendaraan, Pengemudi) sesuai truk yang datang. Kolom terpenting adalah <strong>No. Ref. 1</strong>: isi dengan <strong>Nomor PO</strong> agar penerimaan barang ini terhubung ke PO-nya dan PO dapat dibuka-tutup (di-close). Pada tabel Detil, isi <strong>Kode Produk</strong> dan <strong>Qty</strong> (satuan BOX), lalu klik <strong>Simpan Applied</strong> sampai status dokumen menjadi <strong>Applied</strong>.</p>
+      <h3 class="tx-step-title">Input Barang Masuk di BTB Supplier</h3>
+      <p class="tx-step-desc">Buka menu <strong>BTB Supplier</strong>, lalu isi <strong>data utama</strong>: Tanggal, Supplier (contoh: <code>90A5-9000</code>), Gudang (<code>281-W01 - GUDANG LAYAK PARUNG</code>), Tipe Stok <strong>JUAL</strong>, No. Surat Jalan, dan Tgl. Surat Jalan Pabrik. Isi juga data pengangkut: <strong>Jasa Pengangkut, Kendaraan,</strong> dan <strong>Pengemudi</strong> sesuai truk yang datang. Pada bagian <strong>referensi</strong>: <strong>No. Ref. 1</strong> diisi <strong>Nomor PO</strong> (contoh: <code>31242645</code>) supaya penerimaan ini terhubung ke PO-nya; <strong>No. Ref. 2</strong> diisi <strong>Doc. Number surat jalan</strong> (contoh: <code>S26092900080</code>); kolom <strong>Keterangan</strong> diisi catatan penerimaan. Terakhir, pada tabel <strong>Detil</strong>, isi Kode Produk dan Qty (satuan BOX): <strong>215369</strong> sebanyak 41 dan <strong>214380</strong> sebanyak 136. Lot/SN diisi pada dua langkah berikutnya, lalu klik <strong>Simpan Applied</strong> sampai status berubah menjadi <strong>Applied</strong> dan nomor dokumen muncul (contoh: <code>281-0019794</code>).</p>
     </div>
   </div>
 
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 3</span><img src="assets/images/transaksi-produk-sgm/sgm-01-input-batch-btb-supplier.webp" alt="Penulisan kode batch pada BTB Supplier" loading="lazy"></div>
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 3</span><img src="assets/images/transaksi-produk-sgm/sgm-11-batch-215369.webp" alt="Jendela UIEntryLot produk 215369 dengan batch 20280916" loading="lazy"></div>
     <div class="tx-step-body">
-      <span class="tx-step-tag">BTB Supplier &middot; Detil Lot</span>
-      <h3 class="tx-step-title">Tulis Kode Batch Saat Terima Barang dari Supplier</h3>
-      <p class="tx-step-desc">Pada dokumen <strong>Bukti Terima Barang Supplier</strong>, klik ikon kaca pembesar di kolom Lot/SN untuk membuka jendela <strong>UIEntryLot</strong>. Isi <strong>No. Batch</strong> dan <strong>Tanggal Expired</strong> sesuai data yang sudah Anda catat dari surat jalan (langkah 1) dan cocokkan dengan kemasan fisik produk, lalu pastikan <strong>Kuantiti</strong> pada baris batch sama persis dengan kuantiti produk di atasnya sebelum menekan <strong>Ok</strong>. Batch yang salah tulis di sini akan ikut salah pada seluruh dokumen turunannya.</p>
+      <span class="tx-step-tag">BTB Supplier &middot; Detil Lot (1)</span>
+      <h3 class="tx-step-title">Tulis Batch Produk 215369 (41 BOX)</h3>
+      <p class="tx-step-desc">Pada baris produk <strong>215369</strong>, klik ikon kaca pembesar di kolom <strong>Lot/SN</strong> sampai jendela <strong>UIEntryLot</strong> terbuka. Klik baris baru, lalu isi <strong>No. Batch</strong> <code>20280916</code>. <strong>Tanggal Expired</strong> terisi <strong>16/Sep/2028</strong> dan <strong>Kuantiti</strong> <strong>41</strong>. Angka kuantiti harus sama persis dengan Qty produk di dokumen. Setelah benar, klik <strong>Ok</strong>.</p>
     </div>
   </div>
 
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 4</span><img src="assets/images/transaksi-produk-sgm/sgm-02-cetak-btb-supplier.webp" alt="Hasil cetak BTB Supplier" loading="lazy"></div>
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 4</span><img src="assets/images/transaksi-produk-sgm/sgm-12-batch-214380.webp" alt="Jendela UIEntryLot produk 214380 dengan batch 20280825" loading="lazy"></div>
     <div class="tx-step-body">
-      <span class="tx-step-tag">BTB Supplier &middot; Cetak</span>
-      <h3 class="tx-step-title">Cetak Bukti Terima Barang (Supplier)</h3>
-      <p class="tx-step-desc">Setelah dokumen disimpan, cetak sebagai bukti fisik serah terima. Pastikan Nama Depo, Gudang, No. Dokumen, No. Surat Jalan, Kode &amp; Nama Produk, Satuan (BOX), Jumlah, dan Batch ID pada hasil cetak sudah sesuai dengan fisik barang &mdash; dokumen ini yang ditandatangani Warehouse Admin, Checker, Driver, dan Security.</p>
+      <span class="tx-step-tag">BTB Supplier &middot; Detil Lot (2)</span>
+      <h3 class="tx-step-title">Tulis Batch Produk 214380 (136 BOX)</h3>
+      <p class="tx-step-desc">Ulangi cara yang sama untuk baris produk <strong>214380</strong>: buka <strong>Lot/SN</strong>, isi <strong>No. Batch</strong> <code>20280825</code>, <strong>Tanggal Expired</strong> <strong>25/Agust/2028</strong>, dan <strong>Kuantiti</strong> <strong>136</strong>, lalu klik <strong>Ok</strong>. Batch yang salah tulis di sini akan ikut salah pada semua dokumen turunannya, jadi cocokkan sekali lagi dengan surat jalan (langkah 1) sebelum menyimpan.</p>
     </div>
   </div>
 
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 5</span><img src="assets/images/transaksi-produk-sgm/sgm-03-bkb-mutasi-morphing.webp" alt="BKB Mutasi Morphing box ke pcs" loading="lazy"></div>
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 5</span><img src="assets/images/transaksi-produk-sgm/sgm-13-bkb-depot-214380.webp" alt="BKB Depot morphing produk 214380 sebanyak 136 BOX" loading="lazy"></div>
     <div class="tx-step-body">
-      <span class="tx-step-tag tag-out">BKB Depo &middot; Mutasi (Keluar)</span>
-      <h3 class="tx-step-title">Morphing Bagian 1 &mdash; BKB Mutasi ke Depo Sendiri</h3>
-      <p class="tx-step-desc">Buka menu <strong>BKB Depo</strong>. Secara normal, BKB Depo dipakai untuk mutasi stok antar-depo yang berbeda (misalnya dari Depo Parung ke Depo Bogor). Khusus morphing SGM, <strong>Depo Tujuan diisi depo itu sendiri</strong> &mdash; barang secara fisik tidak berpindah tempat, hanya satuannya yang berubah. Isi <strong>Driver</strong> dan <strong>Kendaraan</strong> dengan "COUNTER", lalu tulis <strong>MORPHING</strong> pada kolom Keterangan agar mudah ditelusuri kembali. Setelah disimpan, catat <strong>No. Dokumen</strong> BKB ini &mdash; nomor tersebut dibutuhkan sebagai referensi di langkah berikutnya.</p>
+      <span class="tx-step-tag tag-out">BKB Depot &middot; Mutasi (Keluar)</span>
+      <h3 class="tx-step-title">Morphing Produk 214380, Bagian 1: BKB Depot</h3>
+      <p class="tx-step-desc">Setelah barang diterima, ubah satuannya (<strong>morphing</strong>). Buka menu <strong>BKB Depot</strong>. Isi <strong>Depo Tujuan</strong> dengan depo sendiri (<code>281</code>, LP Parung), karena barang tidak benar-benar berpindah tempat. <strong>Driver</strong> dan <strong>Kendaraan</strong> diisi <code>COUNTER</code>. Gudang <strong>281-W01 - GUDANG LAYAK PARUNG</strong>, Tipe Stok <strong>JUAL</strong>. Kolom <strong>Keterangan</strong> ditulis <code>MORPHING</code>. Pada Detil, pilih produk <strong>214380</strong> dengan qty <strong>136 BOX</strong> (sama dengan jumlah yang diterima), lalu <strong>Simpan Applied</strong>. Catat <strong>No. Dokumen</strong> yang muncul, contoh <code>281-0001169</code>, karena dipakai di langkah berikutnya.</p>
     </div>
   </div>
 
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 6</span><img src="assets/images/transaksi-produk-sgm/sgm-04-btb-mutasi-morphing.webp" alt="BTB Mutasi Morphing box ke pcs" loading="lazy"></div>
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 6</span><img src="assets/images/transaksi-produk-sgm/sgm-14-btb-depot-214380-pc.webp" alt="BTB Depot morphing produk 214380_PC sebanyak 816 PCS" loading="lazy"></div>
     <div class="tx-step-body">
-      <span class="tx-step-tag">BTB Depo &middot; Mutasi (Masuk)</span>
-      <h3 class="tx-step-title">Morphing Bagian 2 &mdash; BTB Mutasi Menutup Perubahan Satuan</h3>
-      <p class="tx-step-desc">Buka menu <strong>BTB Depo</strong>, dengan <strong>Dari Depo</strong> diisi depo itu sendiri (pasangan dari langkah 5). Pada kolom Keterangan, tulis <strong>No. Dokumen BKB Mutasi tadi diikuti "/MORPHING"</strong> (contoh: <code>902-0051876/MORPHING</code>) sebagai ID referensi. Pilih produk dengan kode ber-akhiran <strong>"P"</strong> (kode satuan PCS) senilai kuantiti yang sama. Setelah tersimpan, stok BOX otomatis berkurang dan stok PCS bertambah pada produk yang sama.</p>
+      <span class="tx-step-tag">BTB Depot &middot; Mutasi (Masuk)</span>
+      <h3 class="tx-step-title">Morphing Produk 214380, Bagian 2: BTB Depot</h3>
+      <p class="tx-step-desc">Buka menu <strong>BTB Depot</strong>. <strong>Dari Depo</strong> diisi depo sendiri (<code>281</code>), Driver dan Kendaraan tetap <code>COUNTER</code>. Pada <strong>Keterangan</strong>, tulis nomor BKB tadi diikuti kata morphing, contoh: <code>281-0001169 | MORPHING | TERIMA MORPHING DARI BOX KE POUCH</code>. Pada Detil, pilih produk berkode <strong>214380_PC</strong> (satuan <strong>PCS</strong>) dengan qty <strong>816</strong>. Angka ini berasal dari 136 BOX &times; 6 POUCH per BOX. Lalu klik <strong>Simpan Applied</strong>.</p>
+    </div>
+  </div>
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 7</span><img src="assets/images/transaksi-produk-sgm/sgm-15-bkb-depot-215369.webp" alt="BKB Depot morphing produk 215369 sebanyak 41 BOX" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag tag-out">BKB Depot &middot; Mutasi (Keluar)</span>
+      <h3 class="tx-step-title">Morphing Produk 215369, Bagian 1: BKB Depot</h3>
+      <p class="tx-step-desc">Lakukan hal yang sama untuk produk kedua. Di <strong>BKB Depot</strong>, isi <strong>Depo Tujuan</strong> <code>281</code>, Driver dan Kendaraan <code>COUNTER</code>, dan <strong>Keterangan</strong> <code>MORPHING DARI BOX KE RENCENG</code>. Pada Detil, pilih produk <strong>215369</strong> dengan qty <strong>41 BOX</strong>, lalu <strong>Simpan Applied</strong>. Catat No. Dokumen yang muncul, contoh <code>281-0001170</code>.</p>
+    </div>
+  </div>
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 8</span><img src="assets/images/transaksi-produk-sgm/sgm-16-btb-depot-215369-re.webp" alt="BTB Depot morphing produk 215369_RE sebanyak 492 RENCENG" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">BTB Depot &middot; Mutasi (Masuk)</span>
+      <h3 class="tx-step-title">Morphing Produk 215369, Bagian 2: BTB Depot</h3>
+      <p class="tx-step-desc">Di <strong>BTB Depot</strong>, isi <strong>Dari Depo</strong> <code>281</code> dan Driver/Kendaraan <code>COUNTER</code>. <strong>Keterangan</strong>: nomor BKB tadi diikuti keterangan, contoh <code>281-0001170 | TERIMA MORPHING DARI BOX KE RENCENG</code>. Pada Detil, pilih produk berkode <strong>215369_RE</strong> (satuan <strong>RENCENG</strong>) dengan qty <strong>492</strong>, yaitu 41 BOX &times; 12 renceng per BOX. Klik <strong>Simpan Applied</strong>.</p>
+    </div>
+  </div>
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 9</span><img src="assets/images/transaksi-produk-sgm/sgm-17-laporan-saldo-tbg.webp" alt="Laporan saldo TBG: BTB Supplier, BKB Mutasi, BTB Mutasi, dan selisih 0" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">Pengecekan &middot; Saldo TBG</span>
+      <h3 class="tx-step-title">Cek Hasil di Laporan Saldo TBG</h3>
+      <p class="tx-step-desc">Setelah semua dokumen tersimpan, cek laporan <strong>Saldo TBG</strong>. Hasil yang benar pada contoh ini: produk BOX 214380 tercatat <strong>BTB Supplier 136</strong> lalu <strong>BKB Mutasi 136</strong>, sedangkan produk PCS-nya tercatat <strong>BTB Mutasi 816</strong>. Produk BOX 215369 tercatat <strong>BTB Supplier 41</strong> lalu <strong>BKB Mutasi 41</strong>, sedangkan produk RENCENG-nya tercatat <strong>BTB Mutasi 492</strong>. Stok akhir muncul di kolom <strong>Layak Jual</strong> (816 dan 492) dan kolom <strong>Selisih</strong> harus <strong>0</strong>.</p>
+    </div>
+  </div>
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 10</span><img src="assets/images/transaksi-produk-sgm/sgm-18-laporan-saldo-dms.webp" alt="Laporan saldo DMS: saldo akhir layak sama dengan saldo DMS" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">Pengecekan &middot; Saldo DMS</span>
+      <h3 class="tx-step-title">Cocokkan dengan Saldo DMS</h3>
+      <p class="tx-step-desc">Terakhir, buka laporan yang membandingkan <strong>Saldo Akhir</strong> dengan <strong>Saldo DMS</strong>. Angka <strong>Saldo Akhir Layak</strong> untuk 214380_PC (<strong>816</strong>) dan 215369_RE (<strong>492</strong>) harus sama dengan angka <strong>Saldo DMS Layak</strong>. Jika sama, penerimaan dan morphing sudah benar. Jika berbeda, periksa kembali qty, kode produk, dan batch pada dokumen sebelum melapor ke atasan.</p>
     </div>
   </div>
 
 </div>
 
-<h2>Kode Produk: BOX vs PCS</h2>
-<p>Setiap produk SGM punya dua kode berbeda tergantung satuannya. Gunakan kode <strong>BOX</strong> saat penerimaan dari supplier, dan kode berakhiran <strong>"_pc" / "P"</strong> saat transaksi eceran per PCS setelah morphing:</p>
-<p><img src="assets/images/transaksi-produk-sgm/sgm-05-id-produk-box-pcs.webp" alt="Perbandingan ID produk satuan BOX dan PCS" loading="lazy" style="max-width:420px; border-radius:10px; border:1px solid var(--border);"></p>
-<table>
-  <tr><th>Kode Produk</th><th>Satuan</th><th>Nama Produk</th></tr>
-  <tr><td>214380</td><td>BOX</td><td>SGM VITAGROW CHOCO 24SG HMLY 1X6 POUCH</td></tr>
-  <tr><td>214380_pc</td><td>PCS</td><td>SGM VITAGROW CHOCO 245G SAP HMLY 1X1 POUCH</td></tr>
+<h2>Ringkasan Produk &amp; Hasil Morphing</h2>
+<p>Setiap produk SGM punya kode berbeda untuk tiap satuan. Pakai kode <strong>BOX</strong> saat menerima dari supplier, dan kode berakhiran <strong>_PC</strong> atau <strong>_RE</strong> setelah morphing:</p>
+<table class="tx-mini">
+  <tr><th>Produk</th><th>Masuk</th><th>Hasil Morphing</th></tr>
+  <tr><td><strong>214380</strong><br>Vitagrow Choco 245G, 1X6 POUCH</td><td>136 BOX</td><td><strong>214380_PC</strong><br>816 PCS<br>(136 &times; 6)</td></tr>
+  <tr><td><strong>215369</strong><br>Vitagrow Choco 35G, 1X12 KARTON</td><td>41 BOX</td><td><strong>215369_RE</strong><br>492 RENCENG<br>(41 &times; 12)</td></tr>
 </table>
 
-<div class="tx-note"><b>Ingat:</b>&nbsp;Morphing susu SGM dari BOX ke PCS selalu memakai <strong>BKB/BTB Mutasi</strong>, bukan BKB/BTB Supplier maupun Distribusi. Empat hal wajib diperhatikan setiap kali menginput:
+<div class="tx-note"><b>Ingat:</b>&nbsp;Morphing susu SGM dari BOX ke satuan eceran selalu memakai <strong>BKB/BTB Depot (mutasi)</strong>, bukan BKB/BTB Supplier maupun Distribusi. Lima hal wajib diperhatikan setiap kali menginput:
 <ol class="tx-note-list">
-  <li>Kolom <strong>Nopol / Sopir</strong> diisi <strong>COUNTER</strong> saja &mdash; bukan kendaraan atau driver sungguhan.</li>
-  <li>Kolom <strong>Depo Tujuan</strong> (di BKB) maupun <strong>Dari Depo</strong> (di BTB) diisi <strong>depo sendiri</strong>, karena barang tidak benar-benar berpindah lokasi.</li>
-  <li>Pada <strong>BKB Mutasi</strong>, kolom Keterangan cukup ditulis <strong>MORPHING</strong>.</li>
-  <li>Pada <strong>BTB Mutasi</strong>, kolom Keterangan ditulis <strong>ID BKB referensi diikuti "/MORPHING"</strong>, contoh: <code>902-0051876/MORPHING</code>.</li>
+  <li>Kolom <strong>Driver</strong> dan <strong>Kendaraan</strong> diisi <strong>COUNTER</strong> saja, bukan kendaraan atau driver sungguhan.</li>
+  <li>Kolom <strong>Depo Tujuan</strong> (di BKB) maupun <strong>Dari Depo</strong> (di BTB) diisi <strong>depo sendiri</strong> (281), karena barang tidak benar-benar berpindah lokasi.</li>
+  <li>Pada <strong>BKB Depot</strong>, kolom Keterangan ditulis <strong>MORPHING</strong> (boleh ditambah keterangan, misalnya &quot;DARI BOX KE RENCENG&quot;).</li>
+  <li>Pada <strong>BTB Depot</strong>, kolom Keterangan diawali <strong>No. Dokumen BKB</strong> yang menjadi pasangannya, contoh: <code>281-0001169 | MORPHING | TERIMA MORPHING DARI BOX KE POUCH</code>.</li>
+  <li>Qty BKB harus sama dengan qty yang diterima. Hasil BTB dihitung dari isi per BOX: <strong>&times; 6</strong> untuk 214380 dan <strong>&times; 12</strong> untuk 215369.</li>
 </ol>
 </div>
 `;
 
-  var TX_BTB_BKB_SUPPLIER_CONTENT = `
+  var TX_OC_CONTENT = `
+<div class="tx-intro">
+  <p><strong>Input Opening &amp; Closing Gudang</strong> adalah pencatatan stok fisik gudang dua kali dalam sehari: <strong>Opening</strong> untuk stok di awal hari dan <strong>Closing</strong> untuk stok di akhir hari. Penginputan yang sebenarnya dilakukan di <strong>website resmi perusahaan</strong> (aplikasi AQUA &amp; VIT), bukan di website modul ini.</p>
+  <p>Di website resmi, sistem sangat ketat: <strong>setelah data disimpan (Save), isinya tidak bisa diubah lagi</strong>. Karena itu, salah memasukkan angka ke produk yang keliru bisa merepotkan. Untuk mencegahnya, website modul ini menyediakan menu <strong><a href="#/opening-closing">Website Opening &amp; Closing</a></strong> sebagai tempat <strong>latihan</strong> dan tempat <strong>menyamakan data</strong> sebelum Anda menginput di website perusahaan.</p>
+</div>
+
+<div class="tx-case-head">
+  <div class="tx-case-badge">OC</div>
+  <div>
+    <h2>Alur Input Opening &amp; Closing di Website Perusahaan</h2>
+    <p>Ikuti 5 langkah berikut, mulai dari membuka aplikasi sampai mengisi qty tiap produk di gudang.</p>
+  </div>
+</div>
+
+<div class="tx-steps">
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 1</span><img src="assets/images/opening-closing/oc-01-halaman-aplikasi-aqua-vit.webp" alt="Halaman awal Applications TUA Group dengan pilihan Aqua Vit" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">Halaman Awal &middot; Applications</span>
+      <h3 class="tx-step-title">Buka Halaman Awal, Pilih &quot;Aqua Vit&quot;</h3>
+      <p class="tx-step-desc">Buka website perusahaan. Di halaman awal (<strong>Applications &mdash; TUA Group</strong>) tersedia banyak aplikasi internal. Klik kotak <strong>Aqua Vit</strong> di baris paling atas, paling kiri. Kotak lain tidak dipakai untuk Opening &amp; Closing.</p>
+    </div>
+  </div>
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 2</span><img src="assets/images/opening-closing/oc-02-login-aqua-vit.webp" alt="Halaman login AQUA &amp; VIT: kolom Username dan Password" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">Login &middot; AQUA &amp; VIT</span>
+      <h3 class="tx-step-title">Login dengan Username dan Password Anda</h3>
+      <p class="tx-step-desc">Isi <strong>Username</strong> dan <strong>Password</strong> akun Anda sendiri, lalu klik <strong>Login</strong>. Ikon mata di kolom password dipakai untuk melihat huruf yang diketik, berguna untuk memastikan tidak salah ketik. Jangan meminjamkan akun kepada orang lain, karena data yang tersimpan akan tercatat atas nama Anda.</p>
+    </div>
+  </div>
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 3</span><img src="assets/images/opening-closing/oc-03-menu-opening-closing-gudang.webp" alt="Halaman Home setelah login, menu Opening Closing di sebelah kiri" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">Home &middot; Menu Samping</span>
+      <h3 class="tx-step-title">Pilih Menu &quot;Opening Closing&quot; lalu &quot;Opening Closing Gudang&quot;</h3>
+      <p class="tx-step-desc">Setelah login berhasil, halaman <strong>Home</strong> terbuka. Di menu biru sebelah kiri, klik <strong>Opening Closing</strong> hingga muncul submenu, lalu klik <strong>Opening Closing Gudang</strong>.</p>
+    </div>
+  </div>
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 4</span><img src="assets/images/opening-closing/oc-04-tombol-opening-closing.webp" alt="Halaman Opening Closing Gudang dengan tombol OPENING dan CLOSING" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">Halaman Rekap &middot; Opening / Closing</span>
+      <h3 class="tx-step-title">Pilih Tombol OPENING atau CLOSING</h3>
+      <p class="tx-step-desc">Di pojok kanan atas ada dua tombol. Klik <strong>OPENING</strong> (biru) untuk menginput data awal hari, atau klik <strong>CLOSING</strong> (merah) untuk menginput data akhir hari. Tabel di bawahnya adalah rekap per tanggal: qty fisik, qty DMS, selisih, nama user, dan jam penginputan. Tombol <strong>Ekspor to Excel</strong> dipakai untuk mengunduh rekap tersebut.</p>
+    </div>
+  </div>
+
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 5</span><img src="assets/images/opening-closing/oc-05-form-opening-gudang.webp" alt="Form OPENING GUDANG berisi daftar 4 gudang untuk diisi qty fisiknya" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag tag-out">Form Input &middot; QTY Fisik</span>
+      <h3 class="tx-step-title">Isi QTY Fisik Sesuai Nama Produk, Lalu Save</h3>
+      <p class="tx-step-desc">Setelah tombol dipilih, muncul form <strong>OPENING GUDANG</strong> (atau <strong>CLOSING GUDANG</strong>). Kolom <strong>Depo</strong> sudah terisi otomatis. Pada <strong>QTY Fisik</strong> terdapat 4 gudang: <strong>Layak, BS, Reject,</strong> dan <strong>Layak PET</strong>. Klik nama gudang untuk membuka daftar produknya, lalu isi qty pada baris yang <strong>namanya sama persis</strong> dengan produk yang dihitung. Setelah semua gudang terisi dan diperiksa, klik <strong>Save changes</strong>. Tombol <strong>Close</strong> menutup form tanpa menyimpan.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="tx-note"><b>Aturan Sistem yang Ketat:</b>&nbsp;Perhatikan tiga aturan berikut sebelum menekan Save.
+<ol class="tx-note-list">
+  <li><strong>Opening hanya bisa satu kali per tanggal.</strong> Jika Opening tanggal itu sudah tersimpan, Anda tidak bisa membuat Opening lagi di tanggal yang sama.</li>
+  <li><strong>Closing baru bisa dibuat setelah Opening tersimpan.</strong> Jika belum ada data Opening, tombol Closing tidak bisa dipakai. Pada rekap akan terlihat tulisan &quot;closing belum di input&quot;.</li>
+  <li><strong>Data yang sudah di-Save tidak bisa diubah.</strong> Periksa ulang setiap qty dan nama produknya sebelum menyimpan.</li>
+</ol>
+</div>
+
+<h3>Contoh Waktu Penginputan</h3>
+<p>Sebagai gambaran, berikut contoh Opening dan Closing pada tanggal yang sama:</p>
+<table>
+  <tr><th>Jenis</th><th>Tanggal</th><th>Jam</th></tr>
+  <tr><td>Opening</td><td>30/09/2026</td><td>00:10 WIB</td></tr>
+  <tr><td>Closing</td><td>30/09/2026</td><td>23:00 WIB</td></tr>
+</table>
+<p>Satu tanggal hanya punya <strong>satu Opening</strong> dan <strong>satu Closing</strong>. Jam penginputan akan tercatat di kolom <em>Time Opening</em> dan <em>Time Closing</em> pada rekap.</p>
+
+<h3>Latihan Dulu di Website Modul Ini</h3>
+<p>Agar tidak salah produk saat menginput di website perusahaan, biasakan langkah berikut:</p>
+<ol class="tx-note-list">
+  <li>Buka menu <strong><a href="#/opening-closing">Website Opening &amp; Closing</a></strong> di website modul ini.</li>
+  <li>Isi qty tiap produk di gudang yang sama, urutannya mengikuti hasil hitung fisik Anda.</li>
+  <li>Periksa lagi: apakah angka sudah berada di baris produk yang benar? Gunakan kolom <em>Cari produk</em> jika daftar terasa panjang.</li>
+  <li>Klik <strong>Unduh Excel</strong> bila ingin mencocokkan atau menunjukkan datanya kepada rekan.</li>
+  <li>Setelah yakin semuanya benar, barulah input di <strong>website resmi perusahaan</strong> dan klik Save.</li>
+</ol>
+<p>Data latihan hanya tersimpan di perangkat Anda dan <strong>tidak terkirim</strong> ke sistem perusahaan, jadi aman dicoba berulang kali.</p>
+
+<div class="tx-note"><b>Ringkasan Cepat</b>
+<ul class="tx-recap" style="margin:12px 0 0; padding:0;">
+  <li><b>Alur menu</b>Applications &rarr; Aqua Vit &rarr; Login &rarr; Opening Closing &rarr; Opening Closing Gudang</li>
+  <li><b>Opening</b>Data awal hari, hanya 1 kali per tanggal</li>
+  <li><b>Closing</b>Data akhir hari, hanya bisa jika Opening sudah tersimpan</li>
+  <li><b>Setelah Save</b>Tidak bisa diubah, periksa dulu sebelum menyimpan</li>
+  <li><b>Latihan</b>Gunakan menu Website Opening &amp; Closing di website modul ini</li>
+</ul>
+</div>
+`;
+
+    var TX_BTB_BKB_SUPPLIER_CONTENT = `
 <p><strong>Transaksi BTB BKB Supplier</strong> adalah prosedur pencatatan Bukti Terima Barang (BTB) dan Bukti Keluar Barang (BKB) untuk transaksi yang melibatkan supplier/pemasok eksternal. Materi ini memuat <strong>pembaruan resmi dari Kantor Pusat</strong> mengenai cara penginputan BTB Supplier untuk produk <strong>AQUA Gallon &amp; AQUA SPS</strong> di DMS 3, sekaligus aturan wajib saat sebuah Surat Jalan/PO dibatalkan. Pelajari dengan saksama agar setiap dokumen yang disimpan sudah sesuai format terbaru.</p>
 
 <div class="tx-note"><b>Berlaku untuk:</b>&nbsp;Seluruh penginputan BTB Supplier produk AQUA Gallon &amp; AQUA SPS, serta BTB/BKB Supplier yang mengalami pembatalan Surat Jalan, di DMS 3.</div>
@@ -674,8 +812,9 @@
       var now = new Date().toISOString();
       var defs = [
         { title: "Transaksi Flashout", desc: "Prosedur flashout & pencatatan transaksi barang berjenjang (sebelumnya dikenal sebagai Transaksi DMS 3), lengkap dengan contoh dokumen dan foto langkah demi langkah.", body: TX_DMS3_CONTENT },
-        { title: "Transaksi Produk SGM", desc: "Prosedur penerimaan produk SGM dari supplier dan cara mengubah stok dari satuan BOX ke PCS (morphing) memakai BKB/BTB Mutasi.", body: TX_SGM_CONTENT },
-        { title: "Transaksi BTB BKB Supplier", desc: "Prosedur pencatatan Bukti Terima Barang (BTB) dan Bukti Keluar Barang (BKB) untuk transaksi dengan supplier/pemasok eksternal.", body: TX_BTB_BKB_SUPPLIER_CONTENT }
+        { title: "Transaksi Produk SGM", desc: "Prosedur penerimaan produk SGM dari supplier dan cara mengubah stok dari satuan BOX ke PCS/Renceng (morphing) memakai BKB/BTB Depot, lengkap dengan contoh transaksi Depo Parung.", body: TX_SGM_CONTENT },
+        { title: "Transaksi BTB BKB Supplier", desc: "Prosedur pencatatan Bukti Terima Barang (BTB) dan Bukti Keluar Barang (BKB) untuk transaksi dengan supplier/pemasok eksternal.", body: TX_BTB_BKB_SUPPLIER_CONTENT },
+        { title: "Input Opening & Closing Gudang", desc: "Cara menginput stok fisik Opening dan Closing di website resmi perusahaan, lengkap dengan aturan sistem dan cara berlatih agar tidak salah produk.", body: TX_OC_CONTENT }
       ];
       materials = defs.map(function (d, i) {
         return {
@@ -705,7 +844,8 @@
         { id: Utils.uid("toc"), title: "Home", order: 1, active: true, materialId: null },
         { id: Utils.uid("toc"), title: "Transaksi Flashout", order: 2, active: true, materialId: findId("Transaksi Flashout") },
         { id: Utils.uid("toc"), title: "Transaksi Produk SGM", order: 3, active: true, materialId: findId("Transaksi Produk SGM") },
-        { id: Utils.uid("toc"), title: "Transaksi BTB BKB Supplier", order: 4, active: true, materialId: findId("Transaksi BTB BKB Supplier") }
+        { id: Utils.uid("toc"), title: "Transaksi BTB BKB Supplier", order: 4, active: true, materialId: findId("Transaksi BTB BKB Supplier") },
+        { id: Utils.uid("toc"), title: "Input Opening & Closing Gudang", order: 5, active: true, materialId: findId("Input Opening & Closing Gudang") }
       ];
       DataService.setContents(contents);
     }

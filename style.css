@@ -1140,3 +1140,8 @@ html.is-loading, html.is-loading body{overflow:hidden; height:100%;}
   .materi-card-placeholder b{font-size:.74rem;}
   .materi-card-placeholder{background:color-mix(in srgb, var(--bg-sunken) 60%, transparent);}
 }
+
+/* Tabel ringkas 3 kolom di materi: muat di layar HP tanpa geser */
+.reader-table-scroll table.tx-mini{min-width:0;}
+.reader-body table.tx-mini th,.reader-body table.tx-mini td{padding:10px 8px; font-size:.86rem; vertical-align:top;}
+.reader-body table.tx-mini strong{white-space:nowrap;}
