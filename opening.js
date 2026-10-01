@@ -24,7 +24,7 @@
     ["112839", "VT.330ML 1X24", "BOX"], ["157095", "VT.550ML 1X24", "BOX"],
     ["164026", "VT.220ML BOTTLE LOCAL 1X24", "BOX"], ["173022", "VT.200ML 1X48", "BOX"],
     ["74560", "VT.5GALLON ISI", "BOTOL"], ["74565", "VT.1500ML 1X12", "BOX"],
-    ["10169743", "JUGRACK", "UNIT"], ["10169732", "VT.5GALLON BTL", "BOTOL"],
+    ["10169743", "JUGRACK", "UNIT"], ["10169932", "VT.5GALLON BTL", "BOTOL"],
     ["10516937", "JUG AQUA 19L PC 55 MM", "BOTOL"]
   ];
   /* Urutan lama (versi sebelumnya) — dipakai hanya untuk memindahkan data tersimpan ke urutan baru. */
