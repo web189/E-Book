@@ -26,7 +26,7 @@
   // Bump this whenever the built-in seed content changes, so browsers that
   // already have older data in LocalStorage get refreshed automatically
   // instead of keeping stale materials forever.
-  var DATA_VERSION = "2026.09.30-sgm-parung-revisi-v10";
+  var DATA_VERSION = "2026.10.01-sgm-submenu-v12";
   var DATA_VERSION_KEY = "gdngprg_data_version";
 
   /* ------------------------------------------------------------------ */
@@ -509,20 +509,38 @@
 
   var TX_SGM_CONTENT = `
 <div class="tx-intro">
-  <p><strong>Transaksi Produk SGM</strong> adalah prosedur penerimaan produk susu SGM dari supplier, sekaligus cara mengubah satuan stok di sistem dari <strong>BOX</strong> menjadi satuan eceran: <strong>PCS/POUCH</strong> atau <strong>RENCENG</strong>. Produk SGM memang unik: saat datang dari supplier, barang tercatat per BOX, padahal sebagian dijual eceran. Karena itu diperlukan satu langkah tambahan yang disebut <strong>morphing</strong>, yaitu memindahkan stok BOX menjadi stok eceran memakai transaksi <strong>BKB Depot</strong> dan <strong>BTB Depot</strong> ke depo sendiri.</p>
-  <p>Contoh di bawah adalah transaksi nyata <strong>Depo Parung (281 - LP PARUNG)</strong> tanggal 30/09/2026. Ikuti 10 langkah secara berurutan: baca surat jalan, input BTB Supplier, tulis batch, lakukan morphing, lalu cek laporan.</p>
+  <p><strong>Transaksi Produk SGM</strong> adalah cara mencatat penerimaan susu SGM dari supplier, lalu mengubah satuan stoknya dari <strong>BOX</strong> menjadi satuan eceran (<strong>PCS/POUCH</strong> atau <strong>RENCENG</strong>). Materi ini terdiri dari <strong>tiga menu</strong>.</p>
+  <p><strong>Cara memakai:</strong> pilih menu <strong>1</strong> bila truk hanya membawa SGM, atau menu <strong>2</strong> bila satu truk membawa SGM dan Mizone. Setelah BTB Supplier tersimpan, <strong>selalu lanjutkan ke menu 3</strong> (morphing). Setiap gambar bisa diklik untuk diperbesar.</p>
 </div>
 
-<div class="tx-case-head">
-  <div class="tx-case-badge">SGM</div>
-  <div>
-    <h2>Penerimaan Barang &amp; Morphing di Depo Parung</h2>
-    <p>Dua produk SGM Vitagrow Choco diterima dari supplier ke Gudang Layak Parung, lalu di-morphing dari BOX ke PCS dan RENCENG.</p>
+<div class="tx-tabs" role="tablist" aria-label="Pilih bagian materi SGM">
+  <button type="button" class="tx-tab active" role="tab" aria-selected="true" aria-controls="txCase1" data-case-target="1">
+    <span class="tx-tab-num">01</span>
+    <span class="tx-tab-text"><span class="tx-tab-title">Input Supplier: 1 Produk SGM</span><span class="tx-tab-meta">Surat jalan SGM saja &middot; 4 langkah</span></span>
+    <span class="tx-tab-chevron">&rsaquo;</span>
+  </button>
+  <button type="button" class="tx-tab" role="tab" aria-selected="false" aria-controls="txCase2" data-case-target="2">
+    <span class="tx-tab-num">02</span>
+    <span class="tx-tab-text"><span class="tx-tab-title">Input Supplier: SGM + Mizone</span><span class="tx-tab-meta">Satu truk, dua produk &middot; 9 langkah</span></span>
+    <span class="tx-tab-chevron">&rsaquo;</span>
+  </button>
+  <button type="button" class="tx-tab" role="tab" aria-selected="false" aria-controls="txCase3" data-case-target="3">
+    <span class="tx-tab-num">03</span>
+    <span class="tx-tab-text"><span class="tx-tab-title">Morphing: BOX ke PCS</span><span class="tx-tab-meta">BKB &amp; BTB Depot &middot; 6 langkah</span></span>
+    <span class="tx-tab-chevron">&rsaquo;</span>
+  </button>
+</div>
+
+<!-- ===== MENU 1: INPUT SUPPLIER, SATU PRODUK SGM ===== -->
+<div class="tx-case" id="txCase1" data-case="1">
+  <div class="tx-case-head">
+    <div class="tx-case-badge">01</div>
+    <div>
+      <h2>Input Supplier: Surat Jalan Satu Produk SGM</h2>
+      <p>Truk hanya membawa SGM, jadi ada <strong>satu surat jalan</strong> dan <strong>satu BTB Supplier</strong>. Contoh nyata: <strong>Depo Parung (281 - LP PARUNG)</strong>, 30/09/2026, dua produk SGM Vitagrow Choco (214380 dan 215369).</p>
+    </div>
   </div>
-</div>
-
-<div class="tx-steps">
-
+  <div class="tx-steps">
   <div class="tx-step">
     <div class="tx-step-media"><span class="tx-step-num">Langkah 1</span><img src="assets/images/transaksi-produk-sgm/sgm-06-surat-jalan-batch-expired.webp" alt="Contoh surat jalan produk SGM: nomor dokumen, qty, dan batch" loading="lazy"></div>
     <div class="tx-step-body">
@@ -531,7 +549,6 @@
       <p class="tx-step-desc">Sebelum menginput, siapkan <strong>surat jalan</strong> dari pabrik. Catat tiga data ini: <strong>(1) Doc. Number</strong> di bagian atas (contoh: <code>S26092900080</code>); <strong>(2) Kode &amp; Nama Produk</strong> beserta <strong>Qty</strong>; <strong>(3) kolom BATCH</strong>, yaitu angka 8 digit berformat <em>Tahun-Bulan-Tanggal</em> yang menjadi <strong>tanggal expired</strong>. Contoh: <code>20280825</code> dibaca <strong>25 Agustus 2028</strong>. Pada contoh Depo Parung ini ada dua produk, masing-masing dengan batch sendiri: <strong>214380</strong> (136 BOX, batch 20280825) dan <strong>215369</strong> (41 BOX, batch 20280916). Pastikan batch tidak tertukar antarproduk.</p>
     </div>
   </div>
-
   <div class="tx-step">
     <div class="tx-step-media"><span class="tx-step-num">Langkah 2</span><img src="assets/images/transaksi-produk-sgm/sgm-10-btb-supplier-parung.webp" alt="Dokumen BTB Supplier Depo Parung: header dan detil produk" loading="lazy"></div>
     <div class="tx-step-body">
@@ -540,7 +557,6 @@
       <p class="tx-step-desc">Buka menu <strong>BTB Supplier</strong>, lalu isi <strong>data utama</strong>: Tanggal, Supplier (contoh: <code>90A5-9000</code>), Gudang (<code>281-W01 - GUDANG LAYAK PARUNG</code>), Tipe Stok <strong>JUAL</strong>, No. Surat Jalan, dan Tgl. Surat Jalan Pabrik. Isi juga data pengangkut: <strong>Jasa Pengangkut, Kendaraan,</strong> dan <strong>Pengemudi</strong> sesuai truk yang datang. Pada bagian <strong>referensi</strong>: <strong>No. Ref. 1</strong> diisi <strong>Nomor PO</strong> (contoh: <code>31242645</code>) supaya penerimaan ini terhubung ke PO-nya; <strong>No. Ref. 2</strong> diisi <strong>Doc. Number surat jalan</strong> (contoh: <code>S26092900080</code>); kolom <strong>Keterangan</strong> diisi catatan penerimaan. Terakhir, pada tabel <strong>Detil</strong>, isi Kode Produk dan Qty (satuan BOX): <strong>215369</strong> sebanyak 41 dan <strong>214380</strong> sebanyak 136. Lot/SN diisi pada dua langkah berikutnya, lalu klik <strong>Simpan Applied</strong> sampai status berubah menjadi <strong>Applied</strong> dan nomor dokumen muncul (contoh: <code>281-0019794</code>).</p>
     </div>
   </div>
-
   <div class="tx-step">
     <div class="tx-step-media"><span class="tx-step-num">Langkah 3</span><img src="assets/images/transaksi-produk-sgm/sgm-11-batch-215369.webp" alt="Jendela UIEntryLot produk 215369 dengan batch 20280916" loading="lazy"></div>
     <div class="tx-step-body">
@@ -549,7 +565,6 @@
       <p class="tx-step-desc">Pada baris produk <strong>215369</strong>, klik ikon kaca pembesar di kolom <strong>Lot/SN</strong> sampai jendela <strong>UIEntryLot</strong> terbuka. Klik baris baru, lalu isi <strong>No. Batch</strong> <code>20280916</code>. <strong>Tanggal Expired</strong> terisi <strong>16/Sep/2028</strong> dan <strong>Kuantiti</strong> <strong>41</strong>. Angka kuantiti harus sama persis dengan Qty produk di dokumen. Setelah benar, klik <strong>Ok</strong>.</p>
     </div>
   </div>
-
   <div class="tx-step">
     <div class="tx-step-media"><span class="tx-step-num">Langkah 4</span><img src="assets/images/transaksi-produk-sgm/sgm-12-batch-214380.webp" alt="Jendela UIEntryLot produk 214380 dengan batch 20280825" loading="lazy"></div>
     <div class="tx-step-body">
@@ -558,71 +573,198 @@
       <p class="tx-step-desc">Ulangi cara yang sama untuk baris produk <strong>214380</strong>: buka <strong>Lot/SN</strong>, isi <strong>No. Batch</strong> <code>20280825</code>, <strong>Tanggal Expired</strong> <strong>25/Agust/2028</strong>, dan <strong>Kuantiti</strong> <strong>136</strong>, lalu klik <strong>Ok</strong>. Batch yang salah tulis di sini akan ikut salah pada semua dokumen turunannya, jadi cocokkan sekali lagi dengan surat jalan (langkah 1) sebelum menyimpan.</p>
     </div>
   </div>
+  </div>
+  <div class="tx-note"><b>Selesai input supplier.</b>&nbsp;Batch yang salah di sini ikut salah di semua dokumen turunan, jadi cocokkan sekali lagi dengan surat jalan sebelum Simpan Applied. Setelah tersimpan, lanjutkan ke morphing.<br><button type="button" class="tx-jump" data-case-jump="3">Lanjut ke Menu 3: Morphing BOX ke PCS &rsaquo;</button></div>
+</div>
 
+<!-- ===== MENU 2: INPUT SUPPLIER, SGM + MIZONE ===== -->
+<div class="tx-case" id="txCase2" data-case="2" hidden>
+  <div class="tx-case-head">
+    <div class="tx-case-badge">02</div>
+    <div>
+      <h2>Input Supplier: Satu Truk Membawa SGM dan Mizone</h2>
+      <p>Supplier mengirim produk air dan SGM dalam <strong>satu armada</strong>, dengan <strong>dua kelompok surat</strong> (Delivery Note dan Point Agreement untuk masing-masing produk) dan <strong>satu Nomor PO yang sama</strong>. Hasilnya <strong>dua BTB terpisah</strong>. Contoh nyata: Depo Parung, 01/10/2026, Nomor PO <code>31242671</code>.</p>
+    </div>
+  </div>
+<div class="tx-rules">
+  <b>Empat aturan Kasus 2</b>
+  <ol class="tx-note-list">
+    <li><strong>Produk air (Mizone)</strong> diinput seperti biasa, memakai format BTB Supplier yang sedang berjalan.</li>
+    <li><strong>SGM diinput di BTB terpisah.</strong> Nomor dokumen BTB-nya tidak boleh disatukan dengan produk air, karena No. Surat Jalan/DN SGM juga berbeda.</li>
+    <li><strong>Nomor PO tetap sama.</strong> Kedua BTB memakai No. Ref. 1 yang sama, sedangkan No. Surat Jalan dan No. Ref. 2 <em>berbeda</em> untuk tiap produk.</li>
+    <li><strong>No. Ref. 2 SGM</strong> diambil dari lembar <strong>Point Agreement</strong> SGM. Jangan lupa isi <strong>Lot/Batch</strong> sebelum Simpan Applied.</li>
+  </ol>
+</div>
+
+  <div class="tx-steps">
+<h3 class="tx-part">Bagian A &middot; Dokumen &amp; Input Produk Air (Mizone)</h3>
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 5</span><img src="assets/images/transaksi-produk-sgm/sgm-13-bkb-depot-214380.webp" alt="BKB Depot morphing produk 214380 sebanyak 136 BOX" loading="lazy"></div>
+    <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 1</span><img src="assets/images/transaksi-produk-sgm/sgm2-01-surat-jalan-pabrik-po.webp" alt="Surat Jalan pabrik berisi nomor PO di pojok kanan atas dan kolom pengembalian pallet" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">Dokumen Pabrik &middot; Surat Jalan</span>
+      <h3 class="tx-step-title">Ambil Nomor PO dari Surat Jalan Pabrik</h3>
+      <p class="tx-step-desc">Truk membawa beberapa dokumen. Mulailah dari <strong>Surat Jalan</strong> berbentuk tabel (kolom Jenis Produk, Pengembalian, Permintaan). Catat <strong>nomor di pojok kanan atas</strong>, pada contoh <code>31242671</code>. Ini adalah <strong>Nomor PO</strong>. Nomor yang sama dipakai di <strong>No. Ref. 1</strong> pada <em>semua</em> BTB dan BKB dari truk ini, baik produk air maupun SGM. Lihat juga kotak <strong>Pengembalian ke Pabrik</strong> di bagian bawah: jumlah <strong>pallet</strong> yang tertulis di sana adalah pallet yang dikembalikan ke pabrik (diinput di Langkah 6).</p>
+    </div>
+  </div>
+  <div class="tx-step">
+    <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 2</span><img src="assets/images/transaksi-produk-sgm/sgm2-02-dn-mizone-halaman-1.webp" alt="Delivery Note PT Tirta Investama lembar 1 berisi produk Mizone dan pallet" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">Produk Air &middot; Delivery Note (1/2)</span>
+      <h3 class="tx-step-title">Baca Delivery Note Produk Mizone</h3>
+      <p class="tx-step-desc">Delivery Note dari <strong>PT Tirta Investama</strong> terdiri dari <strong>dua lembar</strong>. Lembar 1 memuat data barang. Catat tiga hal: <strong>(1) Delv No</strong> (contoh <code>5071697018</code>), yang nanti menjadi <strong>No. Surat Jalan</strong> di BTB; <strong>(2) kolom Material</strong>, yaitu kode produk; <strong>(3) Quantity dan UOM</strong>. Di lembar ini <code>CAR</code> berarti <strong>BOX</strong> dan <code>PC</code> berarti <strong>BUAH</strong>. Pada contoh: 145141 (1.233 BOX), 145143 (672 BOX), 206774 (672 BOX), dan <strong>Pallet Rent Double Face</strong> kode 10169749 (30 BUAH). Pallet ikut diinput sebagai baris produk.</p>
+    </div>
+  </div>
+  <div class="tx-step">
+    <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 3</span><img src="assets/images/transaksi-produk-sgm/sgm2-03-dn-mizone-halaman-2-security.webp" alt="Delivery Note lembar 2 berisi stempel Security XWH Sentul dan Security Parung" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">Produk Air &middot; Delivery Note (2/2)</span>
+      <h3 class="tx-step-title">Periksa Lembar 2: Stempel Security</h3>
+      <p class="tx-step-desc">Lembar 2 hanya berisi <strong>stempel dan tanda tangan</strong>: Security XWH Sentul (jam masuk dan jam keluar truk di pabrik) serta stempel Security Parung. Tidak ada angka yang diinput dari lembar ini. Cukup pastikan stempelnya ada sebelum Anda memproses penerimaan.</p>
+    </div>
+  </div>
+  <div class="tx-step">
+    <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 4</span><img src="assets/images/transaksi-produk-sgm/sgm2-04-point-agreement-mizone.webp" alt="Point Agreement for Finish Good produk Mizone dengan Doc. Number S26092500648" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">Produk Air &middot; Point Agreement</span>
+      <h3 class="tx-step-title">Catat Doc. Number untuk No. Ref. 2</h3>
+      <p class="tx-step-desc">Lembar <strong>Point Agreement For Finish Good</strong> (Citoxpress) adalah pasangan Delivery Note. Catat <strong>Doc. Number</strong> (contoh <code>S26092500648</code>), karena angka ini diisi di <strong>No. Ref. 2</strong>. Cocokkan juga produk dan qty-nya dengan Delivery Note. Perhatikan penulisan angka: <strong>1,233</strong> di lembar ini dibaca <strong>seribu dua ratus tiga puluh tiga (1.233)</strong>, bukan satu koma dua.</p>
+    </div>
+  </div>
+  <div class="tx-step">
+    <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 5</span><img src="assets/images/transaksi-produk-sgm/sgm2-05-btb-supplier-mizone.webp" alt="BTB Supplier produk Mizone nomor dokumen 281-0019834 dengan empat baris detil" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">BTB Supplier &middot; Produk Air</span>
+      <h3 class="tx-step-title">Input BTB Supplier Produk Mizone (Format Terbaru)</h3>
+      <p class="tx-step-desc">Input seperti biasa, mengikuti format BTB Supplier yang sedang berjalan (lihat materi <strong>Transaksi BTB BKB Supplier</strong>). Isian pada contoh: <strong>No. Surat Jalan</strong> <code>5071697018</code> (Delv No); <strong>No. Ref. 1</strong> <code>31242671</code> (PO); <strong>No. Ref. 2</strong> <code>S26092500648</code> (Doc. Number Point Agreement). Nomor dokumen BTB ini (<code>281-0019834</code>) dibuat oleh sistem. Tabel <strong>Detil</strong> berisi empat baris: 145141 (1.233 BOX), 145143 (672 BOX), 206774 (672 BOX), dan 10169749 Pallet Rent Double Face (30 BUAH). Kolom Keterangan diisi sesuai ketentuan terbaru (contoh: <code>GRFC TIDAK ADA</code>). Lalu klik <strong>Simpan Applied</strong>.</p>
+    </div>
+  </div>
+  <div class="tx-step">
+    <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 6</span><img src="assets/images/transaksi-produk-sgm/sgm2-06-bkb-supplier-pallet.webp" alt="BKB Supplier pengembalian pallet Pallet Rent Double Face ke pabrik" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag tag-out">BKB Supplier &middot; Pengembalian Pallet</span>
+      <h3 class="tx-step-title">Kembalikan Pallet ke Pabrik lewat BKB Supplier</h3>
+      <p class="tx-step-desc">Pallet yang dikembalikan ke pabrik dicatat lewat <strong>BKB Supplier</strong>. Pada contoh: Supplier <code>9013-9000</code> (Citeureup Plant TIV), <strong>No. Surat Jalan</strong> <code>MANUAL</code>, <strong>No. Ref. 1</strong> <code>31242671</code> (PO yang sama), dan Keterangan <code>AQ SPS 31242671</code>. Pada Detil, pilih <strong>10169749 Pallet Rent Double Face</strong> dan isi qty sesuai jumlah pallet yang benar-benar dikembalikan (kotak Pengembalian ke Pabrik di Langkah 1).</p>
+    </div>
+  </div>
+<h3 class="tx-part">Bagian B &middot; Dokumen &amp; Input Produk SGM (BTB Terpisah)</h3>
+  <div class="tx-step">
+    <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 7</span><img src="assets/images/transaksi-produk-sgm/sgm2-07-dn-sgm.webp" alt="Delivery Note SGM PT Sarihusada nomor DN 5071565439 dengan dua produk Vitagrow Choco" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">Produk SGM &middot; Delivery Note</span>
+      <h3 class="tx-step-title">Baca Delivery Note SGM (Dokumen Sendiri)</h3>
+      <p class="tx-step-desc">Produk SGM punya <strong>Delivery Note sendiri</strong> dari PT Sarihusada Generasi Mahardhika, terpisah dari dokumen produk air. Catat <strong>DN No.</strong> (kotak hijau, contoh <code>5071565439</code>) sebagai <strong>No. Surat Jalan</strong> BTB SGM. Lalu catat produk dan qty: <strong>215369</strong> (74 TR) dan <strong>214380</strong> (128 TR). <code>TR</code> sama dengan <strong>BOX</strong> di sistem. Kolom <strong>Batch No./Exp.</strong> menunjukkan batch tiap produk, dipakai nanti saat mengisi lot.</p>
+    </div>
+  </div>
+  <div class="tx-step">
+    <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 8</span><img src="assets/images/transaksi-produk-sgm/sgm2-08-point-agreement-sgm.webp" alt="Point Agreement SGM dengan Doc. Number S26092900130 dan batch kedua produk" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">Produk SGM &middot; Point Agreement</span>
+      <h3 class="tx-step-title">Catat Doc. Number SGM untuk No. Ref. 2</h3>
+      <p class="tx-step-desc">Point Agreement SGM punya <strong>Doc. Number sendiri</strong> (kotak hijau, contoh <code>S26092900130</code>). Nomor inilah yang diisi di <strong>No. Ref. 2</strong> BTB SGM, <strong>bukan</strong> nomor Point Agreement produk air. Lembar ini juga memuat qty dan kolom <strong>BATCH</strong>: 214380 sebanyak 128 dengan batch <code>20280825</code>, dan 215369 sebanyak 74 dengan batch <code>20280914</code>. Batch dibaca <em>Tahun-Bulan-Tanggal</em>, jadi 20280914 berarti <strong>14 September 2028</strong>.</p>
+    </div>
+  </div>
+  <div class="tx-step">
+    <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 9</span><img src="assets/images/transaksi-produk-sgm/sgm2-09-btb-supplier-sgm.webp" alt="BTB Supplier SGM nomor dokumen 281-0019835 dengan produk 214380 dan 215369" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">BTB Supplier &middot; Produk SGM</span>
+      <h3 class="tx-step-title">Input BTB Supplier SGM Terpisah, Lalu Isi Lot/Batch</h3>
+      <p class="tx-step-desc">Buat <strong>BTB Supplier baru khusus SGM</strong>. <strong>Jangan digabung</strong> dengan BTB produk air, karena Delivery Note-nya berbeda. Nomor dokumen BTB juga berbeda (contoh: SGM <code>281-0019835</code>, produk air <code>281-0019834</code>). Isian: <strong>No. Surat Jalan</strong> <code>5071565439</code>; <strong>No. Ref. 1</strong> <code>31242671</code> (<em>PO yang sama</em> dengan BTB produk air); <strong>No. Ref. 2</strong> <code>S26092900130</code>. Detil: <strong>214380</strong> = 128 BOX dan <strong>215369</strong> = 74 BOX. <strong>Sebelum Simpan Applied</strong>, isi Lot/Batch tiap produk lewat ikon <strong>Lot/SN</strong> (caranya sama seperti Langkah 3 dan 4 pada menu 1): 214380 batch <code>20280825</code> kuantiti 128; 215369 batch <code>20280914</code> kuantiti 74. Setelah semua cocok, klik <strong>Simpan Applied</strong>.</p>
+    </div>
+  </div>
+  </div>
+<h3 class="tx-part">Ringkasan: Dua BTB dari Satu Truk</h3>
+<table class="tx-mini">
+  <tr><th>Isian</th><th>BTB Produk Air</th><th>BTB SGM</th></tr>
+  <tr><td>No. Dokumen BTB</td><td><code>281-0019834</code></td><td><code>281-0019835</code> (berbeda)</td></tr>
+  <tr><td>No. Surat Jalan</td><td><code>5071697018</code><br>(Delv No)</td><td><code>5071565439</code><br>(DN No)</td></tr>
+  <tr><td>No. Ref. 1 (PO)</td><td colspan="2"><strong>31242671</strong> (sama untuk keduanya)</td></tr>
+  <tr><td>No. Ref. 2</td><td><code>S26092500648</code><br>(Point Agreement air)</td><td><code>S26092900130</code><br>(Point Agreement SGM)</td></tr>
+  <tr><td>Isi Detil</td><td>145141 &middot; 145143 &middot; 206774 &middot; Pallet 10169749</td><td>214380 (128 BOX)<br>215369 (74 BOX)</td></tr>
+  <tr><td>Lot/Batch</td><td>Mengikuti format yang berjalan</td><td><strong>Wajib diisi</strong> sebelum Simpan Applied</td></tr>
+</table>
+
+
+  <div class="tx-note"><b>Kesalahan yang sering terjadi</b>
+  <ol class="tx-note-list">
+    <li>Menggabung SGM dan produk air dalam satu BTB.</li>
+    <li>Memakai Doc. Number Point Agreement produk air untuk BTB SGM (atau sebaliknya).</li>
+    <li>Lupa mengisi Lot/Batch SGM sebelum menyimpan. Dokumen yang sudah Applied tidak bisa diubah.</li>
+    <li>Salah membaca angka berformat koma, misalnya 1,233 yang artinya 1.233.</li>
+  </ol>
+  Produk air tidak perlu di-morphing. Hanya SGM yang dilanjutkan ke morphing: 214380 (128 BOX) menjadi <strong>768 PCS</strong> dan 215369 (74 BOX) menjadi <strong>888 RENCENG</strong>.<br><button type="button" class="tx-jump" data-case-jump="3">Lanjut ke Menu 3: Morphing BOX ke PCS &rsaquo;</button></div>
+</div>
+
+<!-- ===== MENU 3: MORPHING ===== -->
+<div class="tx-case" id="txCase3" data-case="3" hidden>
+  <div class="tx-case-head">
+    <div class="tx-case-badge">03</div>
+    <div>
+      <h2>Morphing: Ubah Stok SGM dari BOX ke PCS / RENCENG</h2>
+      <p>Dilakukan <strong>setelah BTB Supplier SGM tersimpan</strong>, berlaku untuk menu 1 maupun menu 2. Barang tidak benar-benar pindah: stok BOX dikeluarkan lewat <strong>BKB Depot</strong>, lalu dimasukkan lagi sebagai stok eceran lewat <strong>BTB Depot</strong> ke depo sendiri. Contoh: Depo Parung, 30/09/2026.</p>
+    </div>
+  </div>
+
+  <h3 class="tx-part">Hasil yang akan didapat</h3>
+  <p>Setiap produk SGM punya kode berbeda untuk tiap satuan. Gunakan kode <strong>BOX</strong> saat menerima dari supplier, lalu kode berakhiran <strong>_PC</strong> atau <strong>_RE</strong> setelah morphing:</p>
+  <table class="tx-mini">
+    <tr><th>Produk</th><th>Masuk</th><th>Hasil Morphing</th></tr>
+    <tr><td><strong>214380</strong><br>Vitagrow Choco 245G, 1X6 POUCH</td><td>136 BOX<br><small>(contoh menu 3)</small></td><td><strong>214380_PC</strong><br>816 PCS (136 &times; 6)</td></tr>
+    <tr><td><strong>215369</strong><br>Vitagrow Choco 35G, 1X12 KARTON</td><td>41 BOX<br><small>(contoh menu 3)</small></td><td><strong>215369_RE</strong><br>492 RENCENG (41 &times; 12)</td></tr>
+    <tr><td><strong>214380</strong></td><td>128 BOX<br><small>(contoh menu 2)</small></td><td><strong>214380_PC</strong><br>768 PCS (128 &times; 6)</td></tr>
+    <tr><td><strong>215369</strong></td><td>74 BOX<br><small>(contoh menu 2)</small></td><td><strong>215369_RE</strong><br>888 RENCENG (74 &times; 12)</td></tr>
+  </table>
+
+  <h3 class="tx-part">Langkah-langkah (contoh: 214380 dan 215369)</h3>
+  <div class="tx-steps">
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 1</span><img src="assets/images/transaksi-produk-sgm/sgm-13-bkb-depot-214380.webp" alt="BKB Depot morphing produk 214380 sebanyak 136 BOX" loading="lazy"></div>
     <div class="tx-step-body">
       <span class="tx-step-tag tag-out">BKB Depot &middot; Mutasi (Keluar)</span>
       <h3 class="tx-step-title">Morphing Produk 214380, Bagian 1: BKB Depot</h3>
       <p class="tx-step-desc">Setelah barang diterima, ubah satuannya (<strong>morphing</strong>). Buka menu <strong>BKB Depot</strong>. Isi <strong>Depo Tujuan</strong> dengan depo sendiri (<code>281</code>, LP Parung), karena barang tidak benar-benar berpindah tempat. <strong>Driver</strong> dan <strong>Kendaraan</strong> diisi <code>COUNTER</code>. Gudang <strong>281-W01 - GUDANG LAYAK PARUNG</strong>, Tipe Stok <strong>JUAL</strong>. Kolom <strong>Keterangan</strong> ditulis <code>MORPHING</code>. Pada Detil, pilih produk <strong>214380</strong> dengan qty <strong>136 BOX</strong> (sama dengan jumlah yang diterima), lalu <strong>Simpan Applied</strong>. Catat <strong>No. Dokumen</strong> yang muncul, contoh <code>281-0001169</code>, karena dipakai di langkah berikutnya.</p>
     </div>
   </div>
-
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 6</span><img src="assets/images/transaksi-produk-sgm/sgm-14-btb-depot-214380-pc.webp" alt="BTB Depot morphing produk 214380_PC sebanyak 816 PCS" loading="lazy"></div>
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 2</span><img src="assets/images/transaksi-produk-sgm/sgm-14-btb-depot-214380-pc.webp" alt="BTB Depot morphing produk 214380_PC sebanyak 816 PCS" loading="lazy"></div>
     <div class="tx-step-body">
       <span class="tx-step-tag">BTB Depot &middot; Mutasi (Masuk)</span>
       <h3 class="tx-step-title">Morphing Produk 214380, Bagian 2: BTB Depot</h3>
       <p class="tx-step-desc">Buka menu <strong>BTB Depot</strong>. <strong>Dari Depo</strong> diisi depo sendiri (<code>281</code>), Driver dan Kendaraan tetap <code>COUNTER</code>. Pada <strong>Keterangan</strong>, tulis nomor BKB tadi diikuti kata morphing, contoh: <code>281-0001169 | MORPHING | TERIMA MORPHING DARI BOX KE POUCH</code>. Pada Detil, pilih produk berkode <strong>214380_PC</strong> (satuan <strong>PCS</strong>) dengan qty <strong>816</strong>. Angka ini berasal dari 136 BOX &times; 6 POUCH per BOX. Lalu klik <strong>Simpan Applied</strong>.</p>
     </div>
   </div>
-
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 7</span><img src="assets/images/transaksi-produk-sgm/sgm-15-bkb-depot-215369.webp" alt="BKB Depot morphing produk 215369 sebanyak 41 BOX" loading="lazy"></div>
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 3</span><img src="assets/images/transaksi-produk-sgm/sgm-15-bkb-depot-215369.webp" alt="BKB Depot morphing produk 215369 sebanyak 41 BOX" loading="lazy"></div>
     <div class="tx-step-body">
       <span class="tx-step-tag tag-out">BKB Depot &middot; Mutasi (Keluar)</span>
       <h3 class="tx-step-title">Morphing Produk 215369, Bagian 1: BKB Depot</h3>
       <p class="tx-step-desc">Lakukan hal yang sama untuk produk kedua. Di <strong>BKB Depot</strong>, isi <strong>Depo Tujuan</strong> <code>281</code>, Driver dan Kendaraan <code>COUNTER</code>, dan <strong>Keterangan</strong> <code>MORPHING DARI BOX KE RENCENG</code>. Pada Detil, pilih produk <strong>215369</strong> dengan qty <strong>41 BOX</strong>, lalu <strong>Simpan Applied</strong>. Catat No. Dokumen yang muncul, contoh <code>281-0001170</code>.</p>
     </div>
   </div>
-
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 8</span><img src="assets/images/transaksi-produk-sgm/sgm-16-btb-depot-215369-re.webp" alt="BTB Depot morphing produk 215369_RE sebanyak 492 RENCENG" loading="lazy"></div>
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 4</span><img src="assets/images/transaksi-produk-sgm/sgm-16-btb-depot-215369-re.webp" alt="BTB Depot morphing produk 215369_RE sebanyak 492 RENCENG" loading="lazy"></div>
     <div class="tx-step-body">
       <span class="tx-step-tag">BTB Depot &middot; Mutasi (Masuk)</span>
       <h3 class="tx-step-title">Morphing Produk 215369, Bagian 2: BTB Depot</h3>
       <p class="tx-step-desc">Di <strong>BTB Depot</strong>, isi <strong>Dari Depo</strong> <code>281</code> dan Driver/Kendaraan <code>COUNTER</code>. <strong>Keterangan</strong>: nomor BKB tadi diikuti keterangan, contoh <code>281-0001170 | TERIMA MORPHING DARI BOX KE RENCENG</code>. Pada Detil, pilih produk berkode <strong>215369_RE</strong> (satuan <strong>RENCENG</strong>) dengan qty <strong>492</strong>, yaitu 41 BOX &times; 12 renceng per BOX. Klik <strong>Simpan Applied</strong>.</p>
     </div>
   </div>
-
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 9</span><img src="assets/images/transaksi-produk-sgm/sgm-17-laporan-saldo-tbg.webp" alt="Laporan saldo TBG: BTB Supplier, BKB Mutasi, BTB Mutasi, dan selisih 0" loading="lazy"></div>
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 5</span><img src="assets/images/transaksi-produk-sgm/sgm-17-laporan-saldo-tbg.webp" alt="Laporan saldo TBG: BTB Supplier, BKB Mutasi, BTB Mutasi, dan selisih 0" loading="lazy"></div>
     <div class="tx-step-body">
       <span class="tx-step-tag">Pengecekan &middot; Saldo TBG</span>
       <h3 class="tx-step-title">Cek Hasil di Laporan Saldo TBG</h3>
       <p class="tx-step-desc">Setelah semua dokumen tersimpan, cek laporan <strong>Saldo TBG</strong>. Hasil yang benar pada contoh ini: produk BOX 214380 tercatat <strong>BTB Supplier 136</strong> lalu <strong>BKB Mutasi 136</strong>, sedangkan produk PCS-nya tercatat <strong>BTB Mutasi 816</strong>. Produk BOX 215369 tercatat <strong>BTB Supplier 41</strong> lalu <strong>BKB Mutasi 41</strong>, sedangkan produk RENCENG-nya tercatat <strong>BTB Mutasi 492</strong>. Stok akhir muncul di kolom <strong>Layak Jual</strong> (816 dan 492) dan kolom <strong>Selisih</strong> harus <strong>0</strong>.</p>
     </div>
   </div>
-
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 10</span><img src="assets/images/transaksi-produk-sgm/sgm-18-laporan-saldo-dms.webp" alt="Laporan saldo DMS: saldo akhir layak sama dengan saldo DMS" loading="lazy"></div>
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 6</span><img src="assets/images/transaksi-produk-sgm/sgm-18-laporan-saldo-dms.webp" alt="Laporan saldo DMS: saldo akhir layak sama dengan saldo DMS" loading="lazy"></div>
     <div class="tx-step-body">
       <span class="tx-step-tag">Pengecekan &middot; Saldo DMS</span>
       <h3 class="tx-step-title">Cocokkan dengan Saldo DMS</h3>
       <p class="tx-step-desc">Terakhir, buka laporan yang membandingkan <strong>Saldo Akhir</strong> dengan <strong>Saldo DMS</strong>. Angka <strong>Saldo Akhir Layak</strong> untuk 214380_PC (<strong>816</strong>) dan 215369_RE (<strong>492</strong>) harus sama dengan angka <strong>Saldo DMS Layak</strong>. Jika sama, penerimaan dan morphing sudah benar. Jika berbeda, periksa kembali qty, kode produk, dan batch pada dokumen sebelum melapor ke atasan.</p>
     </div>
   </div>
-
-</div>
-
-<h2>Ringkasan Produk &amp; Hasil Morphing</h2>
-<p>Setiap produk SGM punya kode berbeda untuk tiap satuan. Pakai kode <strong>BOX</strong> saat menerima dari supplier, dan kode berakhiran <strong>_PC</strong> atau <strong>_RE</strong> setelah morphing:</p>
-<table class="tx-mini">
-  <tr><th>Produk</th><th>Masuk</th><th>Hasil Morphing</th></tr>
-  <tr><td><strong>214380</strong><br>Vitagrow Choco 245G, 1X6 POUCH</td><td>136 BOX</td><td><strong>214380_PC</strong><br>816 PCS<br>(136 &times; 6)</td></tr>
-  <tr><td><strong>215369</strong><br>Vitagrow Choco 35G, 1X12 KARTON</td><td>41 BOX</td><td><strong>215369_RE</strong><br>492 RENCENG<br>(41 &times; 12)</td></tr>
-</table>
-
+  </div>
 <div class="tx-note"><b>Ingat:</b>&nbsp;Morphing susu SGM dari BOX ke satuan eceran selalu memakai <strong>BKB/BTB Depot (mutasi)</strong>, bukan BKB/BTB Supplier maupun Distribusi. Lima hal wajib diperhatikan setiap kali menginput:
 <ol class="tx-note-list">
   <li>Kolom <strong>Driver</strong> dan <strong>Kendaraan</strong> diisi <strong>COUNTER</strong> saja, bukan kendaraan atau driver sungguhan.</li>
@@ -631,6 +773,7 @@
   <li>Pada <strong>BTB Depot</strong>, kolom Keterangan diawali <strong>No. Dokumen BKB</strong> yang menjadi pasangannya, contoh: <code>281-0001169 | MORPHING | TERIMA MORPHING DARI BOX KE POUCH</code>.</li>
   <li>Qty BKB harus sama dengan qty yang diterima. Hasil BTB dihitung dari isi per BOX: <strong>&times; 6</strong> untuk 214380 dan <strong>&times; 12</strong> untuk 215369.</li>
 </ol>
+</div>
 </div>
 `;
 
@@ -812,7 +955,7 @@
       var now = new Date().toISOString();
       var defs = [
         { title: "Transaksi Flashout", desc: "Prosedur flashout & pencatatan transaksi barang berjenjang (sebelumnya dikenal sebagai Transaksi DMS 3), lengkap dengan contoh dokumen dan foto langkah demi langkah.", body: TX_DMS3_CONTENT },
-        { title: "Transaksi Produk SGM", desc: "Prosedur penerimaan produk SGM dari supplier dan cara mengubah stok dari satuan BOX ke PCS/Renceng (morphing) memakai BKB/BTB Depot, lengkap dengan contoh transaksi Depo Parung.", body: TX_SGM_CONTENT },
+        { title: "Transaksi Produk SGM", desc: "Prosedur penerimaan produk SGM dari supplier (dua kasus: truk membawa SGM saja, atau satu truk membawa produk air dan SGM) dan cara mengubah stok dari BOX ke PCS/Renceng (morphing) memakai BKB/BTB Depot, lengkap dengan contoh transaksi Depo Parung.", body: TX_SGM_CONTENT },
         { title: "Transaksi BTB BKB Supplier", desc: "Prosedur pencatatan Bukti Terima Barang (BTB) dan Bukti Keluar Barang (BKB) untuk transaksi dengan supplier/pemasok eksternal.", body: TX_BTB_BKB_SUPPLIER_CONTENT },
         { title: "Input Opening & Closing Gudang", desc: "Cara menginput stok fisik Opening dan Closing di website resmi perusahaan, lengkap dengan aturan sistem dan cara berlatih agar tidak salah produk.", body: TX_OC_CONTENT }
       ];
@@ -1166,6 +1309,13 @@
         cases.forEach(function (c) { c.hidden = c.getAttribute("data-case") !== target; });
         var tabsBar = root.querySelector(".tx-tabs");
         if (tabsBar) tabsBar.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+    root.querySelectorAll("[data-case-jump]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var n = btn.getAttribute("data-case-jump");
+        var tab = root.querySelector('.tx-tab[data-case-target="' + n + '"]');
+        if (tab) tab.click();
       });
     });
   }

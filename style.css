@@ -1145,3 +1145,26 @@ html.is-loading, html.is-loading body{overflow:hidden; height:100%;}
 .reader-table-scroll table.tx-mini{min-width:0;}
 .reader-body table.tx-mini th,.reader-body table.tx-mini td{padding:10px 8px; font-size:.86rem; vertical-align:top;}
 .reader-body table.tx-mini strong{white-space:nowrap;}
+
+/* Materi SGM kasus 2: dokumen foto tampil utuh, subjudul bagian, kotak aturan */
+.tx-step-media.is-doc{aspect-ratio:auto; max-height:460px; display:flex; align-items:center; justify-content:center; background:var(--bg-sunken);}
+.tx-step-media.is-doc img{width:100%; height:auto; max-height:460px; object-fit:contain;}
+.tx-part{margin:26px 0 12px; padding:9px 14px; border-left:5px solid var(--acc, #5156BE); background:var(--bg-sunken); border-radius:6px; font-size:1.02rem;}
+.tx-rules{margin:14px 0 20px; padding:14px 18px; border:1px solid var(--border); border-left:5px solid #1f9d55; border-radius:10px; background:var(--bg-sunken);}
+.tx-rules > b{display:block; margin-bottom:6px;}
+
+/* Sub menu materi SGM: tombol lompat, tabel responsif, tab HP tidak menutup layar */
+.tx-jump{margin-top:12px; padding:11px 18px; border:0; border-radius:12px; background:var(--accent); color:#fff; font-weight:700; font-size:.92rem; cursor:pointer; box-shadow:var(--shadow-sm); max-width:100%; text-align:left;}
+.tx-jump:hover{filter:brightness(1.08);}
+.tx-mini small{color:var(--text-faint); font-size:.78em;}
+.tx-case .tx-mini{width:100%; display:block; overflow-x:auto; -webkit-overflow-scrolling:touch;}
+.tx-case .tx-mini td, .tx-case .tx-mini th{vertical-align:top;}
+@media (max-width:700px){
+  .tx-tabs{position:static; padding:8px;}
+  .tx-tab-meta{font-size:.72rem;}
+  .tx-case-head{flex-direction:column; gap:8px;}
+  .tx-part{font-size:.95rem; padding:8px 12px;}
+  .tx-rules, .tx-note{padding:12px 14px;}
+  .tx-step-media.is-doc{max-height:320px;} .tx-step-media.is-doc img{max-height:320px;}
+  .tx-jump{width:100%;}
+}
