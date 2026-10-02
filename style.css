@@ -1168,3 +1168,9 @@ html.is-loading, html.is-loading body{overflow:hidden; height:100%;}
   .tx-step-media.is-doc{max-height:320px;} .tx-step-media.is-doc img{max-height:320px;}
   .tx-jump{width:100%;}
 }
+
+/* daftar isian formulir di langkah materi */
+.tx-fields{margin:8px 0 10px; padding:0 0 0 18px; display:flex; flex-direction:column; gap:5px; font-size:.88rem; color:var(--text-secondary); line-height:1.5;}
+.tx-fields li{padding-left:2px;}
+.tx-step-desc p{margin:0 0 8px;} .tx-step-desc p:last-child{margin-bottom:0;}
+.tx-step-desc .tx-mini{margin:12px 0;} .tx-step-desc small{color:var(--text-faint);}

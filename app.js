@@ -26,7 +26,7 @@
   // Bump this whenever the built-in seed content changes, so browsers that
   // already have older data in LocalStorage get refreshed automatically
   // instead of keeping stale materials forever.
-  var DATA_VERSION = "2026.10.01-sgm-submenu-v12";
+  var DATA_VERSION = "2026.10.02-sgm-keterangan-po-v13";
   var DATA_VERSION_KEY = "gdngprg_data_version";
 
   /* ------------------------------------------------------------------ */
@@ -516,7 +516,7 @@
 <div class="tx-tabs" role="tablist" aria-label="Pilih bagian materi SGM">
   <button type="button" class="tx-tab active" role="tab" aria-selected="true" aria-controls="txCase1" data-case-target="1">
     <span class="tx-tab-num">01</span>
-    <span class="tx-tab-text"><span class="tx-tab-title">Input Supplier: 1 Produk SGM</span><span class="tx-tab-meta">Surat jalan SGM saja &middot; 4 langkah</span></span>
+    <span class="tx-tab-text"><span class="tx-tab-title">Input Supplier: 1 Produk SGM</span><span class="tx-tab-meta">Surat jalan SGM saja &middot; 5 langkah</span></span>
     <span class="tx-tab-chevron">&rsaquo;</span>
   </button>
   <button type="button" class="tx-tab" role="tab" aria-selected="false" aria-controls="txCase2" data-case-target="2">
@@ -550,15 +550,51 @@
     </div>
   </div>
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 2</span><img src="assets/images/transaksi-produk-sgm/sgm-10-btb-supplier-parung.webp" alt="Dokumen BTB Supplier Depo Parung: header dan detil produk" loading="lazy"></div>
+    <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 2</span><img src="assets/images/transaksi-produk-sgm/sgm-10b-btb-supplier-keterangan.webp" alt="Formulir BTB Supplier dengan kotak merah pada kode Supplier 90A5-9000 dan kolom Keterangan berisi LP/SGM/002" loading="lazy"></div>
     <div class="tx-step-body">
       <span class="tx-step-tag">BTB Supplier &middot; Header &amp; Detil</span>
-      <h3 class="tx-step-title">Input Barang Masuk di BTB Supplier</h3>
-      <p class="tx-step-desc">Buka menu <strong>BTB Supplier</strong>, lalu isi <strong>data utama</strong>: Tanggal, Supplier (contoh: <code>90A5-9000</code>), Gudang (<code>281-W01 - GUDANG LAYAK PARUNG</code>), Tipe Stok <strong>JUAL</strong>, No. Surat Jalan, dan Tgl. Surat Jalan Pabrik. Isi juga data pengangkut: <strong>Jasa Pengangkut, Kendaraan,</strong> dan <strong>Pengemudi</strong> sesuai truk yang datang. Pada bagian <strong>referensi</strong>: <strong>No. Ref. 1</strong> diisi <strong>Nomor PO</strong> (contoh: <code>31242645</code>) supaya penerimaan ini terhubung ke PO-nya; <strong>No. Ref. 2</strong> diisi <strong>Doc. Number surat jalan</strong> (contoh: <code>S26092900080</code>); kolom <strong>Keterangan</strong> diisi catatan penerimaan. Terakhir, pada tabel <strong>Detil</strong>, isi Kode Produk dan Qty (satuan BOX): <strong>215369</strong> sebanyak 41 dan <strong>214380</strong> sebanyak 136. Lot/SN diisi pada dua langkah berikutnya, lalu klik <strong>Simpan Applied</strong> sampai status berubah menjadi <strong>Applied</strong> dan nomor dokumen muncul (contoh: <code>281-0019794</code>).</p>
+      <h3 class="tx-step-title">Input Data Utama di BTB Supplier</h3>
+      <div class="tx-step-desc">
+        <p>Buka menu <strong>BTB Supplier</strong>, lalu lengkapi formulir sesuai dokumen dari truk:</p>
+        <ul class="tx-fields">
+          <li><strong>Tanggal</strong> dan <strong>Tgl. Surat Jalan Pabrik</strong>: sesuai tanggal terima dan tanggal pada surat jalan.</li>
+          <li><strong>Supplier</strong>: untuk pabrik Sentul gunakan kode <code>90A5-9000</code> (XWH SENTUL).</li>
+          <li><strong>Gudang</strong>: <code>281-W01 - GUDANG LAYAK PARUNG</code>. <strong>Tipe Stok</strong>: <strong>JUAL</strong>.</li>
+          <li><strong>No. Surat Jalan</strong>: nomor <strong>DN No.</strong> pada Delivery Note.</li>
+          <li><strong>Jasa Pengangkut, Kendaraan, Pengemudi</strong>: sesuai truk yang datang.</li>
+          <li><strong>No. Ref. 1</strong>: <strong>Nomor PO</strong> (contoh <code>31242645</code>), agar penerimaan terhubung ke PO-nya.</li>
+          <li><strong>No. Ref. 2</strong>: <strong>Doc. Number</strong> surat jalan (contoh <code>S26092900080</code>).</li>
+          <li><strong>Keterangan</strong>: diisi <strong>Customer PO</strong>. Caranya ada di Langkah 3.</li>
+        </ul>
+        <p>Pada tabel <strong>Detil</strong>, isi Kode Produk dan Qty (satuan BOX): <strong>215369</strong> sebanyak 41 dan <strong>214380</strong> sebanyak 136. Lot/SN diisi pada Langkah 4 dan 5, lalu klik <strong>Simpan Applied</strong> sampai status menjadi <strong>Applied</strong> dan nomor dokumen muncul (contoh <code>281-0019794</code>).</p>
+        <p><small>Gambar contoh berasal dari depo lain. Pola pengisiannya sama.</small></p>
+      </div>
     </div>
   </div>
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 3</span><img src="assets/images/transaksi-produk-sgm/sgm-11-batch-215369.webp" alt="Jendela UIEntryLot produk 215369 dengan batch 20280916" loading="lazy"></div>
+    <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 3</span><img src="assets/images/transaksi-produk-sgm/sgm-10c-dn-customer-po.webp" alt="Delivery Note SGM dengan titik merah pada baris Customer PO TUA/LP/SGM/002" loading="lazy"></div>
+    <div class="tx-step-body">
+      <span class="tx-step-tag">Dokumen Pabrik &middot; Customer PO</span>
+      <h3 class="tx-step-title">Isi Kolom Keterangan dengan Customer PO</h3>
+      <div class="tx-step-desc">
+        <p>Kolom <strong>Keterangan</strong> diisi <strong>Customer PO</strong> dari Delivery Note SGM (titik merah pada gambar). Sesuai petunjuk Pembelian Pusat, tulis <strong>hanya sampai 3 angka setelah SGM/</strong>.</p>
+        <ol class="tx-note-list">
+          <li>Cari baris <strong>Customer PO</strong> di bagian atas Delivery Note.</li>
+          <li>Hilangkan awalan <code>TUA/</code> di bagian depan.</li>
+          <li>Salin sampai <strong>tiga angka setelah <code>SGM/</code></strong>.</li>
+          <li>Buang semua tulisan setelahnya, lalu ketik hasilnya di kolom Keterangan.</li>
+        </ol>
+        <table class="tx-mini">
+          <tr><th>Tertulis di Delivery Note</th><th>Diinput di Keterangan</th></tr>
+          <tr><td><code>TUA/LP/SGM/002/31&hellip;</code></td><td><strong><code>LP/SGM/002</code></strong><br><small>contoh pada gambar</small></td></tr>
+          <tr><td><code>TUA/TUA/SGM/004/&hellip;</code></td><td><strong><code>TUA/SGM/004</code></strong><br><small>contoh dari surat petunjuk</small></td></tr>
+        </table>
+        <p><strong>Catatan:</strong> bagian belakang Customer PO sering tertutup barcode. Itu tidak masalah karena bagian tersebut memang tidak diinput. Ketik persis dengan garis miring (/) dan tanpa spasi. Aturan ini berasal dari Surat Petunjuk Pelaksanaan Pembelian Pusat (No. 001/SPK/PEMBELIAN/IX/2026), agar PO SGM terhubung ke sistem pembayaran SPP (Surat Pengajuan Pembayaran).</p>
+      </div>
+    </div>
+  </div>
+  <div class="tx-step">
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 4</span><img src="assets/images/transaksi-produk-sgm/sgm-11-batch-215369.webp" alt="Jendela UIEntryLot produk 215369 dengan batch 20280916" loading="lazy"></div>
     <div class="tx-step-body">
       <span class="tx-step-tag">BTB Supplier &middot; Detil Lot (1)</span>
       <h3 class="tx-step-title">Tulis Batch Produk 215369 (41 BOX)</h3>
@@ -566,7 +602,7 @@
     </div>
   </div>
   <div class="tx-step">
-    <div class="tx-step-media"><span class="tx-step-num">Langkah 4</span><img src="assets/images/transaksi-produk-sgm/sgm-12-batch-214380.webp" alt="Jendela UIEntryLot produk 214380 dengan batch 20280825" loading="lazy"></div>
+    <div class="tx-step-media"><span class="tx-step-num">Langkah 5</span><img src="assets/images/transaksi-produk-sgm/sgm-12-batch-214380.webp" alt="Jendela UIEntryLot produk 214380 dengan batch 20280825" loading="lazy"></div>
     <div class="tx-step-body">
       <span class="tx-step-tag">BTB Supplier &middot; Detil Lot (2)</span>
       <h3 class="tx-step-title">Tulis Batch Produk 214380 (136 BOX)</h3>
@@ -668,7 +704,7 @@
     <div class="tx-step-body">
       <span class="tx-step-tag">BTB Supplier &middot; Produk SGM</span>
       <h3 class="tx-step-title">Input BTB Supplier SGM Terpisah, Lalu Isi Lot/Batch</h3>
-      <p class="tx-step-desc">Buat <strong>BTB Supplier baru khusus SGM</strong>. <strong>Jangan digabung</strong> dengan BTB produk air, karena Delivery Note-nya berbeda. Nomor dokumen BTB juga berbeda (contoh: SGM <code>281-0019835</code>, produk air <code>281-0019834</code>). Isian: <strong>No. Surat Jalan</strong> <code>5071565439</code>; <strong>No. Ref. 1</strong> <code>31242671</code> (<em>PO yang sama</em> dengan BTB produk air); <strong>No. Ref. 2</strong> <code>S26092900130</code>. Detil: <strong>214380</strong> = 128 BOX dan <strong>215369</strong> = 74 BOX. <strong>Sebelum Simpan Applied</strong>, isi Lot/Batch tiap produk lewat ikon <strong>Lot/SN</strong> (caranya sama seperti Langkah 3 dan 4 pada menu 1): 214380 batch <code>20280825</code> kuantiti 128; 215369 batch <code>20280914</code> kuantiti 74. Setelah semua cocok, klik <strong>Simpan Applied</strong>.</p>
+      <p class="tx-step-desc">Buat <strong>BTB Supplier baru khusus SGM</strong>. <strong>Jangan digabung</strong> dengan BTB produk air, karena Delivery Note-nya berbeda. Nomor dokumen BTB juga berbeda (contoh: SGM <code>281-0019835</code>, produk air <code>281-0019834</code>). Isian: <strong>No. Surat Jalan</strong> <code>5071565439</code>; <strong>No. Ref. 1</strong> <code>31242671</code> (<em>PO yang sama</em> dengan BTB produk air); <strong>No. Ref. 2</strong> <code>S26092900130</code>; <strong>Keterangan</strong> berisi Customer PO SGM sampai 3 angka setelah SGM/ (contoh <code>LP/SGM/002</code>, caranya di menu 1 Langkah 3). Pada gambar contoh, Keterangan masih format lama. Untuk SGM, ikuti aturan Customer PO. Detil: <strong>214380</strong> = 128 BOX dan <strong>215369</strong> = 74 BOX. <strong>Sebelum Simpan Applied</strong>, isi Lot/Batch tiap produk lewat ikon <strong>Lot/SN</strong> (caranya sama seperti Langkah 4 dan 5 pada menu 1): 214380 batch <code>20280825</code> kuantiti 128; 215369 batch <code>20280914</code> kuantiti 74. Setelah semua cocok, klik <strong>Simpan Applied</strong>.</p>
     </div>
   </div>
   </div>
@@ -680,6 +716,7 @@
   <tr><td>No. Ref. 1 (PO)</td><td colspan="2"><strong>31242671</strong> (sama untuk keduanya)</td></tr>
   <tr><td>No. Ref. 2</td><td><code>S26092500648</code><br>(Point Agreement air)</td><td><code>S26092900130</code><br>(Point Agreement SGM)</td></tr>
   <tr><td>Isi Detil</td><td>145141 &middot; 145143 &middot; 206774 &middot; Pallet 10169749</td><td>214380 (128 BOX)<br>215369 (74 BOX)</td></tr>
+  <tr><td>Keterangan</td><td>Sesuai format yang berjalan<br><small>(contoh: GRFC TIDAK ADA)</small></td><td>Customer PO, 3 angka setelah SGM/<br><small>(contoh: LP/SGM/002)</small></td></tr>
   <tr><td>Lot/Batch</td><td>Mengikuti format yang berjalan</td><td><strong>Wajib diisi</strong> sebelum Simpan Applied</td></tr>
 </table>
 
