@@ -1174,3 +1174,25 @@ html.is-loading, html.is-loading body{overflow:hidden; height:100%;}
 .tx-fields li{padding-left:2px;}
 .tx-step-desc p{margin:0 0 8px;} .tx-step-desc p:last-child{margin-bottom:0;}
 .tx-step-desc .tx-mini{margin:12px 0;} .tx-step-desc small{color:var(--text-faint);}
+
+/* Materi Laporan Manual Excel: langkah berbaris (gambar kiri, teks kanan di PC), legenda bernomor */
+.tx-steps.rows{grid-template-columns:1fr; gap:18px;}
+.tx-steps.rows .tx-step{flex-direction:column;}
+.tx-steps.rows .tx-step-media.is-doc{max-height:none; aspect-ratio:auto; display:block; border-bottom:1px solid var(--border);}
+.tx-steps.rows .tx-step-media.is-doc img{width:100%; height:auto; max-height:none; object-fit:contain; display:block;}
+.tx-steps.rows .tx-step-desc{font-size:.92rem; line-height:1.6;}
+.tx-step-text .tx-step-body{padding-top:18px;}
+.tx-step-num-inline{align-self:flex-start; background:var(--accent); color:#fff; font-size:.72rem; font-weight:800; padding:3px 9px; border-radius:999px; margin-bottom:8px;}
+@media (min-width:980px){
+  .tx-steps.rows .tx-step{flex-direction:row; align-items:flex-start;}
+  .tx-steps.rows .tx-step-media.is-doc{flex:0 0 54%; max-width:54%; border-bottom:0; border-right:1px solid var(--border);}
+  .tx-steps.rows .tx-step-body{flex:1; min-width:0;}
+  .tx-steps.rows .tx-step-text .tx-step-body{padding:20px 24px;}
+}
+.tx-legend{list-style:none; margin:10px 0 12px; padding:0; display:flex; flex-direction:column; gap:8px;}
+.tx-legend li{display:flex; gap:10px; align-items:flex-start;}
+.tx-legend .lg{flex:0 0 auto; width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-style:normal; font-weight:800; font-size:.78rem; margin-top:1px;}
+.tx-legend .c-red{background:#E02424;} .tx-legend .c-blue{background:#1E66E6;} .tx-legend .c-green{background:#12964C;}
+.tx-legend .c-orange{background:#F08C10;} .tx-legend .c-purple{background:#883CC8;} .tx-legend .c-teal{background:#0096AA;} .tx-legend .c-gray{background:#6E6E6E;}
+.tx-formula{display:block; margin:10px 0; padding:12px 16px; border-radius:10px; background:var(--accent-soft); border:1px dashed var(--accent); font-weight:800; font-size:1.02rem; text-align:center; color:var(--text-primary);}
+@media (max-width:700px){ .tx-legend li{font-size:.9rem;} .tx-formula{font-size:.95rem; padding:10px 12px;} }

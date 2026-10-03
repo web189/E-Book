@@ -26,7 +26,7 @@
   // Bump this whenever the built-in seed content changes, so browsers that
   // already have older data in LocalStorage get refreshed automatically
   // instead of keeping stale materials forever.
-  var DATA_VERSION = "2026.10.02-sgm-keterangan-po-v13";
+  var DATA_VERSION = "2026.10.03-laporan-manual-excel-v14";
   var DATA_VERSION_KEY = "gdngprg_data_version";
 
   /* ------------------------------------------------------------------ */
@@ -814,6 +814,164 @@
 </div>
 `;
 
+  var TX_LAPORAN_EXCEL_CONTENT = `
+<div class="tx-intro">
+  <p><strong>Laporan Manual Excel</strong> adalah lembar Excel yang dipakai admin untuk menyamakan <strong>saldo di Excel</strong> (yang berasal dari sistem DMS) dengan <strong>hasil hitung fisik</strong> dari tim checker. Pekerjaan ini dilakukan di <strong>akhir shift 2</strong>.</p>
+  <p><strong>Alurnya:</strong> (1) saldo sistem DMS diinput ulang ke Excel; (2) di akhir shift 2, admin menerima catatan hitungan fisik dari checker; (3) admin menyamakan saldo Excel dengan catatan tersebut. Pilih menu <strong>1</strong> untuk produk air (AQ, VIT, Mizone, SGM) atau menu <strong>2</strong> untuk galon. Setiap gambar bisa diklik untuk diperbesar, dan kotak bernomor pada gambar dijelaskan tepat di bawahnya.</p>
+</div>
+
+<div class="tx-tabs" role="tablist" aria-label="Pilih bagian materi Laporan Manual Excel">
+  <button type="button" class="tx-tab active" role="tab" aria-selected="true" aria-controls="txCase1" data-case-target="1">
+    <span class="tx-tab-num">01</span>
+    <span class="tx-tab-text"><span class="tx-tab-title">Produk Air: AQ, VIT, Mizone &amp; SGM</span><span class="tx-tab-meta">Samakan Layak, BS, Reject &middot; 4 langkah</span></span>
+    <span class="tx-tab-chevron">&rsaquo;</span>
+  </button>
+  <button type="button" class="tx-tab" role="tab" aria-selected="false" aria-controls="txCase2" data-case-target="2">
+    <span class="tx-tab-num">02</span>
+    <span class="tx-tab-text"><span class="tx-tab-title">Produk Galon: AQ &amp; VIT</span><span class="tx-tab-meta">Samakan saldo galon &middot; 5 langkah</span></span>
+    <span class="tx-tab-chevron">&rsaquo;</span>
+  </button>
+</div>
+
+<!-- ===== MENU 1: PRODUK AIR ===== -->
+<div class="tx-case" id="txCase1" data-case="1">
+  <div class="tx-case-head">
+    <div class="tx-case-badge">01</div>
+    <div>
+      <h2>Samakan Saldo Produk Air dengan Hitungan Checker</h2>
+      <p>Ubah <strong>Saldo Layak, Saldo BS, dan Saldo Reject</strong> di Excel agar sama dengan hitungan fisik checker, berdasarkan catatan tulis tangan halaman AQ dan halaman VIT/SGM.</p>
+    </div>
+  </div>
+  <div class="tx-steps rows">
+    <div class="tx-step">
+      <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 1</span><img src="assets/images/laporan-manual-excel/lme-01-excel-saldo-dms-air.webp" alt="Lembar Excel Saldo DMS produk air dengan kolom Saldo DMS dan Mutasi Internal ditandai" loading="lazy"></div>
+      <div class="tx-step-body">
+        <span class="tx-step-tag">Lembar Excel &middot; Produk Air</span>
+        <h3 class="tx-step-title">Kenali Lembar Excel Saldo DMS</h3>
+        <div class="tx-step-desc"><p>Lembar ini memuat seluruh produk air (AQ, VT, Mizone, dan lainnya) lengkap dengan kode dan namanya. Saldo yang tertulis di dalamnya adalah saldo sistem DMS yang <strong>Anda input ulang secara manual</strong> ke Excel.</p><ol class="tx-legend"><li><i class="lg c-red">1</i><span><strong>Saldo DMS</strong> (Layak, BS, Reject). Kolom inilah yang nanti <strong>disesuaikan dengan hitungan fisik</strong> checker.</span></li><li><i class="lg c-blue">2</i><span><strong>Mutasi Internal</strong> (Layak, BS, Reject, Keterangan). Mencatat perpindahan stok antarkondisi.</span></li><li><i class="lg c-orange">3</i><span>Contoh baris bermutasi: AQ.600ML 1X24 ID GOSOK tercatat <strong>Layak -4</strong> dan <strong>BS +4</strong> dengan keterangan <strong>BUFFER</strong>. Artinya 4 BOX berpindah dari kondisi Layak ke BS.</span></li></ol><p><small>Tanda &quot;-&quot; pada sel berarti nol. Angka pada gambar hanyalah contoh.</small></p></div>
+      </div>
+    </div>
+    <div class="tx-step">
+      <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 2</span><img src="assets/images/laporan-manual-excel/lme-02-catatan-checker-aqua.webp" alt="Catatan hitungan fisik tulis tangan checker untuk produk AQ dengan tanda nomor" loading="lazy"></div>
+      <div class="tx-step-body">
+        <span class="tx-step-tag">Hitungan Fisik &middot; AQ</span>
+        <h3 class="tx-step-title">Baca Catatan Checker Produk AQ</h3>
+        <div class="tx-step-desc"><p>Di akhir shift 2, tim checker menyerahkan hasil hitung fisik berupa catatan tulis tangan. Halaman ini untuk produk <strong>AQ</strong> (dan Mizone). <strong>Satu kolom sama dengan satu produk.</strong></p><ol class="tx-legend"><li><i class="lg c-red">1</i><span><strong>R.</strong> = jumlah Reject. <strong>BS.</strong> = jumlah BS.</span></li><li><i class="lg c-blue">2</i><span>Rincian hitungan. Umumnya berbentuk isi per pallet &times; jumlah pallet, ditambah sisa yang tidak penuh.</span></li><li><i class="lg c-green">3</i><span><strong>H.</strong> = hasil hitung, yaitu <strong>total fisik produk</strong> (sudah termasuk BS dan Reject). Angka dalam <strong>kurung ( )</strong> adalah angka akhir.</span></li><li><i class="lg c-purple">4</i><span>Bila <strong>H.</strong> berbeda dengan angka dalam kurung (contoh: kolom 600), <strong>pakai angka dalam kurung</strong>.</span></li><li><i class="lg c-teal">5</i><span>Baris bawah memuat produk lain, termasuk Mizone.</span></li></ol><p><strong>Pasangan tulisan checker dan produk di Excel:</strong></p><table class="tx-mini"><tr><th>Tulisan checker</th><th>Produk</th><th>Kode</th></tr><tr><td>200</td><td>AQ.200ML 1X48</td><td>204579</td></tr><tr><td>330</td><td>AQ.330ML 1X24</td><td>74556</td></tr><tr><td>600</td><td>AQ.600ML 1X24 ID GOSOK</td><td>208575</td></tr><tr><td>600 pcs</td><td>AQ.600ML 1X1 ID GOSOK</td><td>208575P</td></tr><tr><td>1500</td><td>AQ.1500ML 1X12</td><td>74553</td></tr><tr><td>220 cube</td><td>AQ.220ML MINI BOTTLE LOCAL 1X24</td><td>166126</td></tr><tr><td>330 HB</td><td>AQ.330ML LOCAL HOKBEN 1X24</td><td>74557</td></tr><tr><td>Reflexion</td><td>AQ.380ML REFLECTIONS BAL 1X12</td><td>174139</td></tr><tr><td>Tulisan mirip &quot;250&quot;</td><td>AQ.750ML 1X18</td><td>81681</td></tr><tr><td>AL, mvc, cch</td><td>Mizone Activ Lychee Lemon, Mood Up Cranberry, Coco Bost</td><td>145141, 145143, 206774</td></tr></table><p><small>Bila ragu membaca tulisan tangan, cocokkan juga dengan angka pada lembar Excel atau tanyakan langsung ke checker.</small></p></div>
+      </div>
+    </div>
+    <div class="tx-step tx-step-text">
+      <div class="tx-step-body">
+        <span class="tx-step-num tx-step-num-inline">Langkah 3</span>
+        <span class="tx-step-tag">Hitung &middot; Ubah Saldo</span>
+        <h3 class="tx-step-title">Hitung Saldo Layak, BS, dan Reject, lalu Ubah di Excel</h3>
+        <div class="tx-step-desc">
+          <p>Angka akhir checker adalah <strong>total</strong>. Karena itu saldo <strong>Layak</strong> dihitung dengan rumus berikut:</p>
+          <p class="tx-formula">Layak = Angka akhir &minus; BS &minus; Reject</p>
+          <p>Setelah itu, ubah kolom <strong>Saldo DMS</strong> (Layak, BS, Reject) pada Excel agar <strong>persis sama</strong> dengan hasil fisik checker. Contoh hitungannya:</p>
+          <table class="tx-mini">
+            <tr><th>Produk</th><th>Angka akhir</th><th>BS</th><th>Reject</th><th>Layak</th></tr>
+            <tr><td>AQ.200ML</td><td>5.594</td><td>2</td><td>23</td><td><strong>5.569</strong></td></tr>
+            <tr><td>AQ.330ML</td><td>3.823</td><td>1</td><td>0</td><td><strong>3.822</strong></td></tr>
+            <tr><td>VT.200ML</td><td>10.437</td><td>1</td><td>142</td><td><strong>10.294</strong></td></tr>
+            <tr><td>VT.550ML</td><td>3.954</td><td>25</td><td>8</td><td><strong>3.921</strong></td></tr>
+            <tr><td>Mizone Coco Bost</td><td>1.082</td><td>1</td><td>0</td><td><strong>1.081</strong></td></tr>
+          </table>
+          <p><small>Catatan checker memakai titik sebagai pemisah ribuan (5.594), sedangkan Excel memakai koma (5,594). Nilainya sama.</small></p>
+        </div>
+      </div>
+    </div>
+    <div class="tx-step">
+      <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 4</span><img src="assets/images/laporan-manual-excel/lme-03-catatan-checker-vit-sgm.webp" alt="Catatan hitungan fisik tulis tangan checker untuk produk VIT dan SGM dengan tanda nomor" loading="lazy"></div>
+      <div class="tx-step-body">
+        <span class="tx-step-tag">Hitungan Fisik &middot; VIT &amp; SGM</span>
+        <h3 class="tx-step-title">Samakan Produk VIT dan SGM</h3>
+        <div class="tx-step-desc"><p>Halaman checker untuk <strong>VIT</strong> dibaca dengan cara yang sama seperti halaman AQ: <strong>R.</strong>, <strong>BS.</strong>, <strong>H.</strong>, dan angka dalam kurung. Rumus Layak juga sama.</p><ol class="tx-legend"><li><i class="lg c-red">1</i><span><strong>R.</strong> dan <strong>BS.</strong> produk VIT.</span></li><li><i class="lg c-green">2</i><span>Angka akhir (hasil hitung) yang menjadi dasar saldo.</span></li><li><i class="lg c-orange">3</i><span>Empat kotak <strong>SGM</strong>. Pouch, renceng, dan box dihitung <strong>terpisah</strong>.</span></li><li><i class="lg c-gray">4</i><span>Catatan lain di luar produk. Tanyakan ke checker bila ingin menggunakannya.</span></li></ol><table class="tx-mini"><tr><th>Tulisan checker</th><th>Produk</th><th>Kode</th></tr><tr><td>200</td><td>VT.200ML 1X48</td><td>173022</td></tr><tr><td>330</td><td>VT.330ML 1X24</td><td>112839</td></tr><tr><td>550</td><td>VT.550ML 1X24</td><td>157095</td></tr><tr><td>1500</td><td>VT.1500ML 1X12</td><td>74565</td></tr><tr><td>220</td><td>VT.220ML BOTTLE LOCAL 1X24</td><td>164026</td></tr><tr><td>SGM 245 gr / pouch</td><td>214380 satuan PCS</td><td>214380_PC</td></tr><tr><td>SGM 35 gr / renceng</td><td>215369 satuan RENCENG</td><td>215369_RE</td></tr><tr><td>SGM 245 gr box</td><td>214380 satuan BOX</td><td>214380</td></tr><tr><td>SGM 35 gr box</td><td>215369 satuan BOX</td><td>215369</td></tr></table><p><small>Tentang kode berakhiran _PC dan _RE, lihat materi <strong>Transaksi Produk SGM</strong>, menu Morphing.</small></p></div>
+      </div>
+    </div>
+  </div>
+  <div class="tx-note"><b>Periksa sebelum menyimpan</b>
+    <ol class="tx-note-list">
+      <li>Semua produk pada catatan checker (halaman AQ dan halaman VIT/SGM) sudah terisi di Excel.</li>
+      <li>Untuk setiap produk: <strong>Layak + BS + Reject</strong> sama dengan angka akhir checker.</li>
+      <li>Perpindahan antarkondisi (misalnya BUFFER) tercatat di <strong>Mutasi Internal</strong> beserta keterangannya.</li>
+      <li>Angka yang diketik sudah dicek ulang terhadap catatan checker, bukan hanya diingat.</li>
+    </ol>
+    <button type="button" class="tx-jump" data-case-jump="2">Lanjut ke Menu 2: Produk Galon &rsaquo;</button>
+  </div>
+</div>
+
+<!-- ===== MENU 2: PRODUK GALON ===== -->
+<div class="tx-case" id="txCase2" data-case="2" hidden>
+  <div class="tx-case-head">
+    <div class="tx-case-badge">02</div>
+    <div>
+      <h2>Samakan Saldo Galon AQ dan VIT dengan Hitungan Checker</h2>
+      <p>Urutannya: samakan <strong>lembar saldo galon</strong> dengan hitungan checker lebih dahulu. Setelah itu samakan <strong>BS dan Reject</strong> pada lembar <strong>Saldo Akhir</strong> Aqua dan Vit.</p>
+    </div>
+  </div>
+  <div class="tx-steps rows">
+    <div class="tx-step">
+      <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 1</span><img src="assets/images/laporan-manual-excel/lme-05-excel-saldo-galon.webp" alt="Lembar Excel saldo galon AQ dan VT dengan kolom Layak Jual BS Reject Total Fisik Saldo TBG dan Selisih ditandai" loading="lazy"></div>
+      <div class="tx-step-body">
+        <span class="tx-step-tag">Lembar Excel &middot; Galon</span>
+        <h3 class="tx-step-title">Kenali Lembar Saldo Galon</h3>
+        <div class="tx-step-desc"><p>Lembar ini sama fungsinya dengan lembar produk air, tetapi untuk <strong>galon</strong>. Ada empat baris: AQ.5 GLN <strong>ISI</strong>, AQ.5 GLN <strong>BTL</strong> (galon kosong), VT.5 GLN <strong>ISI</strong>, dan VT.5 GLN <strong>BTL</strong>.</p><ol class="tx-legend"><li><i class="lg c-red">1</i><span><strong>Layak Jual, BS, Reject</strong>: diisi dari hitungan fisik checker (Langkah 2).</span></li><li><i class="lg c-blue">2</i><span><strong>Total Fisik</strong> = Layak Jual + BS + Reject. Khusus baris <strong>BTL</strong>, ditambah juga Total Fisik galon ISI di atasnya.</span></li><li><i class="lg c-green">3</i><span><strong>Saldo TBG</strong>: saldo menurut sistem. Angkanya sama dengan baris TOTAL di lembar Saldo Akhir (Langkah 4 dan 5).</span></li><li><i class="lg c-purple">4</i><span><strong>Selisih</strong> = Total Fisik &minus; Saldo TBG.</span></li></ol><p><small>Saldo TBG N-1 adalah saldo TBG hari sebelumnya. Kolom Keterangan dipakai untuk mencatat penjelasan selisih.</small></p><p><strong>Contoh baris BTL:</strong> AQ.5 GLN BTL = 42.854 + 13 + 0 + 84.145 (Total Fisik AQ ISI) = <strong>127.012</strong>.</p></div>
+      </div>
+    </div>
+    <div class="tx-step">
+      <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 2</span><img src="assets/images/laporan-manual-excel/lme-04-catatan-checker-galon.webp" alt="Catatan hitungan fisik galon tulis tangan checker dengan label pemetaan ke kolom Excel" loading="lazy"></div>
+      <div class="tx-step-body">
+        <span class="tx-step-tag">Hitungan Fisik &middot; Galon</span>
+        <h3 class="tx-step-title">Terima Hitungan Fisik Galon dari Checker</h3>
+        <div class="tx-step-desc"><p>Checker galon menulis hasilnya dalam satu lembar untuk AQ dan VIT. Setiap baris tulisan sudah diberi label berwarna pada gambar untuk menunjukkan <strong>kolom tujuannya</strong> di lembar Excel.</p><ol class="tx-legend"><li><i class="lg c-green">&nbsp;</i><span><strong>Hijau</strong> = kolom Layak Jual</span></li><li><i class="lg c-orange">&nbsp;</i><span><strong>Oranye</strong> = kolom BS</span></li><li><i class="lg c-red">&nbsp;</i><span><strong>Merah</strong> = kolom Reject</span></li></ol><table class="tx-mini"><tr><th>Tulisan checker</th><th>Isi (galon penuh)</th><th>Botol (galon kosong)</th></tr><tr><td>Layak Jual</td><td>&quot;isi&quot;</td><td>&quot;Botol&quot;</td></tr><tr><td>BS</td><td>&quot;RB&quot;</td><td>&quot;CG&quot;</td></tr><tr><td>Reject</td><td>&quot;RJ&quot;</td><td>&quot;RJ&quot; (baris kedua)</td></tr></table><p>Dengan catatan pada gambar, hasilnya: AQ ISI 83.925 / 219 / 1, AQ BTL 42.854 / 13 / 0, VT ISI 1.417 / 1.632 / 1, VT BTL 2.458 / 0 / 3.</p></div>
+      </div>
+    </div>
+    <div class="tx-step tx-step-text">
+      <div class="tx-step-body">
+        <span class="tx-step-num tx-step-num-inline">Langkah 3</span>
+        <span class="tx-step-tag">Isi &middot; Samakan dengan Fisik</span>
+        <h3 class="tx-step-title">Samakan Lembar Saldo Galon dengan Hitungan Checker</h3>
+        <div class="tx-step-desc">
+          <p>Isi kolom <strong>Layak Jual, BS, dan Reject</strong> pada empat baris galon dengan angka checker. Hasilnya harus <strong>sama persis</strong>. Total Fisik dan Selisih mengikuti rumus pada Langkah 1.</p>
+          <table class="tx-mini">
+            <tr><th>Baris</th><th>Layak Jual</th><th>BS</th><th>Reject</th><th>Total Fisik</th></tr>
+            <tr><td>AQ.5 GLN ISI</td><td>83.925</td><td>219</td><td>1</td><td><strong>84.145</strong></td></tr>
+            <tr><td>AQ.5 GLN BTL</td><td>42.854</td><td>13</td><td>0</td><td><strong>127.012</strong><br><small>(42.867 + 84.145)</small></td></tr>
+            <tr><td>VT.5 GLN ISI</td><td>1.417</td><td>1.632</td><td>1</td><td><strong>3.050</strong></td></tr>
+            <tr><td>VT.5 GLN BTL</td><td>2.458</td><td>0</td><td>3</td><td><strong>5.511</strong><br><small>(2.461 + 3.050)</small></td></tr>
+          </table>
+          <p>Setelah itu, bandingkan <strong>Total Fisik</strong> dengan <strong>Saldo TBG</strong>. Bila kolom <strong>Selisih</strong> tidak nol (pada contoh: AQ BTL +861 dan VT BTL &minus;861; VT ISI &minus;15), telusuri penyebabnya lalu catat di kolom <strong>Keterangan</strong>.</p>
+        </div>
+      </div>
+    </div>
+    <div class="tx-step">
+      <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 4</span><img src="assets/images/laporan-manual-excel/lme-06-excel-aqua-galon.webp" alt="Lembar Saldo Akhir Aqua galon dengan baris BS dan Reject serta TOTAL dan SELISIH ditandai" loading="lazy"></div>
+      <div class="tx-step-body">
+        <span class="tx-step-tag">Saldo Akhir &middot; Aqua Galon</span>
+        <h3 class="tx-step-title">Samakan Saldo Akhir Aqua Galon (BS dan Reject)</h3>
+        <div class="tx-step-desc"><p>Setelah lembar saldo galon sama dengan fisik, ubah juga lembar <strong>Saldo Akhir</strong> milik Aqua galon. Yang diubah <strong>hanya BS dan Reject</strong>. Baris Layak tidak diubah.</p><ol class="tx-legend"><li><i class="lg c-red">1</i><span>Baris <strong>BS</strong> dan <strong>REJECT</strong>. Blok kiri (galon ISI): BS <strong>219</strong>, Reject <strong>1</strong>. Blok kanan (galon kosong, GLN AQ K): BS <strong>232</strong> (219 + 13), Reject <strong>1</strong> (1 + 0).</span></li><li><i class="lg c-green">2</i><span>Baris <strong>TOTAL</strong> dan <strong>SELISIH</strong>. TOTAL (84.145 dan 126.151) sama dengan Saldo TBG di lembar galon. SELISIH menunjukkan &quot;-&quot; (nol).</span></li></ol><table class="tx-mini"><tr><th>Blok</th><th>BS</th><th>Reject</th></tr><tr><td>Kiri (galon ISI)</td><td>BS isi = <strong>219</strong></td><td>Reject isi = <strong>1</strong></td></tr><tr><td>Kanan (galon kosong)</td><td>BS isi + BS botol = 219 + 13 = <strong>232</strong></td><td>Reject isi + Reject botol = 1 + 0 = <strong>1</strong></td></tr></table></div>
+      </div>
+    </div>
+    <div class="tx-step">
+      <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 5</span><img src="assets/images/laporan-manual-excel/lme-07-excel-vit-galon.webp" alt="Lembar Saldo Akhir Vit galon dengan baris BS dan Reject serta TOTAL dan SELISIH ditandai" loading="lazy"></div>
+      <div class="tx-step-body">
+        <span class="tx-step-tag">Saldo Akhir &middot; Vit Galon</span>
+        <h3 class="tx-step-title">Samakan Saldo Akhir Vit Galon (BS dan Reject)</h3>
+        <div class="tx-step-desc"><p>Lakukan hal yang sama pada lembar <strong>Vit galon</strong>. Lagi-lagi hanya <strong>BS dan Reject</strong> yang disamakan dengan fisik.</p><ol class="tx-legend"><li><i class="lg c-red">1</i><span>Baris <strong>BS</strong> dan <strong>REJECT</strong>. Blok kiri (galon ISI): BS <strong>1.632</strong>, Reject <strong>1</strong>. Blok kanan (galon kosong, GLN VT K): BS <strong>1.632</strong> (1.632 + 0), Reject <strong>4</strong> (1 + 3).</span></li><li><i class="lg c-green">2</i><span>Baris <strong>TOTAL</strong> dan <strong>SELISIH</strong>. TOTAL (3.065 dan 6.372) sama dengan Saldo TBG di lembar galon.</span></li></ol><table class="tx-mini"><tr><th>Blok</th><th>BS</th><th>Reject</th></tr><tr><td>Kiri (galon ISI)</td><td>BS isi = <strong>1.632</strong></td><td>Reject isi = <strong>1</strong></td></tr><tr><td>Kanan (galon kosong)</td><td>1.632 + 0 = <strong>1.632</strong></td><td>1 + 3 = <strong>4</strong></td></tr></table><p><small>Baris Layak tidak diubah. Pada contoh, Layak di sistem 1.432 sedangkan hasil checker 1.417. Selisih 15 itu terlihat di kolom Selisih (&minus;15) pada lembar saldo galon.</small></p></div>
+      </div>
+    </div>
+  </div>
+  <div class="tx-note"><b>Periksa sebelum menyimpan</b>
+    <ol class="tx-note-list">
+      <li>Layak Jual, BS, dan Reject di lembar saldo galon sama dengan catatan checker.</li>
+      <li>BS dan Reject di lembar Saldo Akhir Aqua dan Vit sama dengan fisik (blok kanan = isi + botol).</li>
+      <li>TOTAL di Saldo Akhir sama dengan Saldo TBG, dan SELISIH menunjukkan &quot;-&quot;.</li>
+      <li>Selisih yang masih ada pada lembar saldo galon sudah dicatat penyebabnya di kolom Keterangan.</li>
+    </ol>
+  </div>
+</div>
+`;
+
   var TX_OC_CONTENT = `
 <div class="tx-intro">
   <p><strong>Input Opening &amp; Closing Gudang</strong> adalah pencatatan stok fisik gudang dua kali dalam sehari: <strong>Opening</strong> untuk stok di awal hari dan <strong>Closing</strong> untuk stok di akhir hari. Penginputan yang sebenarnya dilakukan di <strong>website resmi perusahaan</strong> (aplikasi AQUA &amp; VIT), bukan di website modul ini.</p>
@@ -994,7 +1152,8 @@
         { title: "Transaksi Flashout", desc: "Prosedur flashout & pencatatan transaksi barang berjenjang (sebelumnya dikenal sebagai Transaksi DMS 3), lengkap dengan contoh dokumen dan foto langkah demi langkah.", body: TX_DMS3_CONTENT },
         { title: "Transaksi Produk SGM", desc: "Prosedur penerimaan produk SGM dari supplier (dua kasus: truk membawa SGM saja, atau satu truk membawa produk air dan SGM) dan cara mengubah stok dari BOX ke PCS/Renceng (morphing) memakai BKB/BTB Depot, lengkap dengan contoh transaksi Depo Parung.", body: TX_SGM_CONTENT },
         { title: "Transaksi BTB BKB Supplier", desc: "Prosedur pencatatan Bukti Terima Barang (BTB) dan Bukti Keluar Barang (BKB) untuk transaksi dengan supplier/pemasok eksternal.", body: TX_BTB_BKB_SUPPLIER_CONTENT },
-        { title: "Input Opening & Closing Gudang", desc: "Cara menginput stok fisik Opening dan Closing di website resmi perusahaan, lengkap dengan aturan sistem dan cara berlatih agar tidak salah produk.", body: TX_OC_CONTENT }
+        { title: "Input Opening & Closing Gudang", desc: "Cara menginput stok fisik Opening dan Closing di website resmi perusahaan, lengkap dengan aturan sistem dan cara berlatih agar tidak salah produk.", body: TX_OC_CONTENT },
+        { title: "Laporan Manual Excel", desc: "Cara menyamakan saldo stok di Excel dengan hasil hitung fisik tim checker di akhir shift 2, untuk produk air (AQ, VIT, Mizone, SGM) dan galon, lengkap dengan gambar bertanda.", body: TX_LAPORAN_EXCEL_CONTENT }
       ];
       materials = defs.map(function (d, i) {
         return {
@@ -1025,7 +1184,8 @@
         { id: Utils.uid("toc"), title: "Transaksi Flashout", order: 2, active: true, materialId: findId("Transaksi Flashout") },
         { id: Utils.uid("toc"), title: "Transaksi Produk SGM", order: 3, active: true, materialId: findId("Transaksi Produk SGM") },
         { id: Utils.uid("toc"), title: "Transaksi BTB BKB Supplier", order: 4, active: true, materialId: findId("Transaksi BTB BKB Supplier") },
-        { id: Utils.uid("toc"), title: "Input Opening & Closing Gudang", order: 5, active: true, materialId: findId("Input Opening & Closing Gudang") }
+        { id: Utils.uid("toc"), title: "Input Opening & Closing Gudang", order: 5, active: true, materialId: findId("Input Opening & Closing Gudang") },
+        { id: Utils.uid("toc"), title: "Laporan Manual Excel", order: 6, active: true, materialId: findId("Laporan Manual Excel") }
       ];
       DataService.setContents(contents);
     }
