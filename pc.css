@@ -165,3 +165,95 @@ a.hero-eyebrow:hover{background:rgba(255,255,255,.18); border-color:rgba(255,255
   .hero-stat{padding:0 18px;}
   .nav-link{padding:8px 12px; font-size:.82rem;}
 }
+
+
+/* ==========================================================================
+   HALAMAN BACA (PC) — lebih lapang, modern, ringan. Tanpa color-mix/backdrop-filter.
+   ========================================================================== */
+body{background:var(--bg-primary);}
+.reader-shell{grid-template-columns:272px minmax(0,1fr); max-width:1560px;}
+.reader-toc{padding:30px 16px 30px 22px; background:var(--bg-secondary);}
+.reader-toc-title{padding:0 10px; margin-bottom:12px; letter-spacing:.09em;}
+.toc-item{position:relative; padding:11px 12px 11px 14px; border-radius:12px; transition:background .15s, color .15s;}
+.toc-item.active{background:var(--accent-soft); color:var(--accent-strong); box-shadow:inset 3px 0 0 var(--accent);}
+.toc-item.active .toc-num{color:var(--accent); font-weight:800;}
+
+.reader-content{max-width:1120px; padding:48px 56px 110px;}
+.reader-title{font-family:var(--font-display); font-size:clamp(1.9rem,2.6vw,2.5rem); letter-spacing:-.025em; line-height:1.12; margin-bottom:12px;}
+.reader-title::after{content:''; display:block; width:64px; height:5px; border-radius:99px; margin-top:14px; background:linear-gradient(90deg,var(--accent),var(--accent-2));}
+.reader-desc{font-size:1.06rem; line-height:1.7; max-width:72ch; margin-bottom:30px;}
+.reader-body{font-size:1.02rem; line-height:1.72;}
+
+/* Kotak pengantar materi */
+.tx-intro{
+  padding:22px 26px; margin:0 0 26px; border-radius:18px;
+  background:var(--bg-secondary); border:1px solid var(--border); border-left:6px solid var(--accent);
+  box-shadow:var(--shadow-sm);
+}
+.tx-intro p:last-child{margin-bottom:0;}
+
+/* Tab sub-menu: latar SOLID (color-mix tidak jalan di Chrome lama) */
+.tx-tabs{background:var(--bg-sunken); border-radius:18px; padding:8px; gap:8px; box-shadow:0 10px 24px -16px rgba(10,20,40,.35); -webkit-backdrop-filter:none; backdrop-filter:none;}
+.tx-tab{padding:12px 16px; border-radius:13px; background:var(--bg-secondary);}
+.tx-tab-title{font-size:.92rem;}
+.tx-tab-num{width:30px; height:30px; border-radius:10px; font-size:.8rem;}
+.tx-tab:hover{transform:translateY(-1px);}
+.tx-tab.active{background:linear-gradient(135deg,var(--accent) 0%,var(--accent-2) 100%); box-shadow:0 10px 20px -10px rgba(var(--acc-rgb),.75);}
+.tx-tab.active .tx-tab-num{background:rgba(255,255,255,.25); color:#fff;}
+.tx-tab.active .tx-tab-meta{color:rgba(255,255,255,.85);}
+
+/* Kepala sub-menu */
+.tx-case-head{align-items:center; gap:16px; padding:18px 22px; margin-bottom:22px; border-radius:18px; background:var(--accent-soft); border:1px solid var(--border);}
+.tx-case-badge{width:48px; height:48px; border-radius:15px; font-size:1.1rem; color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow:0 10px 18px -8px rgba(var(--acc-rgb),.7);}
+.tx-case-head h2{font-family:var(--font-display); font-size:1.32rem; letter-spacing:-.015em;}
+.tx-case-head p{font-size:.96rem; line-height:1.6;}
+
+/* Kartu langkah */
+.tx-steps{gap:22px;}
+.tx-step{border-radius:20px; box-shadow:0 16px 36px -26px rgba(14,20,32,.45);}
+.tx-step-body{padding:20px 22px 22px;}
+.tx-step-title{font-family:var(--font-display); font-size:1.08rem; letter-spacing:-.01em; margin-bottom:8px;}
+.tx-step-desc{font-size:.93rem; line-height:1.65;}
+.tx-step-media{isolation:isolate;}
+.tx-step-num{top:12px; left:12px; padding:5px 12px; font-size:.76rem; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow:0 6px 12px -6px rgba(var(--acc-rgb),.8);}
+
+/* Langkah berbaris (gambar besar kiri, teks kanan menempel saat digulir) */
+.tx-steps.rows{gap:26px;}
+.tx-steps.rows .tx-step{overflow:visible;}
+.tx-steps.rows .tx-step:hover{transform:none;}
+.tx-steps.rows .tx-step-media{border-radius:20px 0 0 20px;}
+.tx-steps.rows .tx-step-media.is-doc{
+  flex:0 0 58%; max-width:58%; align-self:flex-start; padding:14px; background:var(--bg-sunken);
+  border-right:1px solid var(--border); border-bottom:0;
+}
+.tx-steps.rows .tx-step-media.is-doc img{border-radius:10px; box-shadow:0 8px 22px -12px rgba(10,20,40,.5); background:#fff;}
+.tx-steps.rows .tx-step-num{top:22px; left:22px;}
+.tx-steps.rows .tx-step-body{position:sticky; top:calc(var(--header-h) + 78px); align-self:flex-start; padding:24px 26px 26px;}
+.tx-steps.rows .tx-step-text{display:block;}
+.tx-steps.rows .tx-step-text .tx-step-body{position:static; padding:24px 30px 28px;}
+.tx-steps.rows .tx-step-desc{font-size:.95rem;}
+.tx-step-num-inline{padding:5px 12px; background:linear-gradient(135deg,var(--accent),var(--accent-2));}
+
+/* Legenda, rumus, tabel, catatan */
+.tx-legend{gap:10px;}
+.tx-legend .lg{width:26px; height:26px; box-shadow:0 4px 8px -4px rgba(0,0,0,.45);}
+.tx-formula{font-size:1.1rem; padding:14px 18px; border-radius:14px; background:var(--accent-soft); border:2px dashed var(--accent);}
+.reader-body table.tx-mini{border-collapse:separate; border-spacing:0; border:1px solid var(--border); border-radius:12px; overflow:hidden;}
+.reader-body table.tx-mini th{background:var(--accent-soft); color:var(--accent-strong); font-size:.8rem; letter-spacing:.02em; border:0; border-bottom:1px solid var(--border);}
+.reader-body table.tx-mini td{border:0; border-bottom:1px solid var(--border); padding:10px 12px;}
+.reader-body table.tx-mini tr:last-child td{border-bottom:0;}
+.reader-body table.tx-mini tr:nth-child(even) td{background:var(--bg-primary);}
+.tx-note{padding:18px 22px; border-radius:16px; border-left:5px solid var(--accent); background:var(--bg-secondary); box-shadow:var(--shadow-sm);}
+.tx-rules{border-radius:16px;}
+.tx-jump{padding:12px 22px; border-radius:999px; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow:0 10px 20px -10px rgba(var(--acc-rgb),.75);}
+
+/* Layar sempit (laptop 1366px ke bawah): kolom gambar sedikit lebih ramping */
+@media (max-width:1280px){
+  .reader-shell{grid-template-columns:236px minmax(0,1fr);}
+  .reader-content{padding:40px 36px 100px;}
+}
+@media (max-width:1100px){
+  .tx-steps.rows .tx-step{flex-direction:column;}
+  .tx-steps.rows .tx-step-media.is-doc{flex:none; max-width:none; width:100%; border-radius:20px 20px 0 0; border-right:0; border-bottom:1px solid var(--border);}
+  .tx-steps.rows .tx-step-body{position:static;}
+}
