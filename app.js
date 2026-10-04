@@ -1304,16 +1304,6 @@
           '</div>' +
         '</div>' +
       '</section>' +
-      '<section class="section flow">' +
-        '<div class="section-head"><div><h2 class="section-title">Alur Kerja Admin Sehari-hari</h2><p class="section-desc">Ikuti urutan ini. Ketuk salah satu langkah untuk membuka materinya.</p></div></div>' +
-        '<ol class="flow-list">' +
-          '<li data-n="1"><a href="#/materi/input-opening-closing-gudang"><b>Opening</b><span>Catat stok awal hari di website perusahaan.</span></a></li>' +
-          '<li data-n="2"><a href="#/materi/transaksi-btb-bkb-supplier"><b>Terima / kirim supplier</b><span>BTB dan BKB Supplier dengan format terbaru.</span></a></li>' +
-          '<li data-n="3"><a href="#/materi/transaksi-produk-sgm"><b>Produk SGM</b><span>Input supplier lalu morphing BOX ke PCS.</span></a></li>' +
-          '<li data-n="4"><a href="#/materi/transaksi-flashout"><b>Flashout</b><span>Pindah stok antar-depo lewat DMS 3 dan DMS 5.</span></a></li>' +
-          '<li data-n="5"><a href="#/materi/laporan-manual-excel"><b>Laporan &amp; Closing</b><span>Samakan Excel dengan hitungan checker, lalu Closing.</span></a></li>' +
-        '</ol>' +
-      '</section>' +
       '<section class="section features-section">' +
         '<button type="button" class="mobile-collapsible-toggle" aria-expanded="false" aria-controls="featuresPanel">' +
           '<span>Kenapa Pakai Modul Ini?</span>' +
