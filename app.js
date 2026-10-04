@@ -26,7 +26,7 @@
   // Bump this whenever the built-in seed content changes, so browsers that
   // already have older data in LocalStorage get refreshed automatically
   // instead of keeping stale materials forever.
-  var DATA_VERSION = "2026.10.03-laporan-manual-excel-v15";
+  var DATA_VERSION = "2026.10.04-flashout-v4";
   var DATA_VERSION_KEY = "gdngprg_data_version";
 
   /* ------------------------------------------------------------------ */
@@ -160,10 +160,17 @@
       document.addEventListener("keydown", function (e) { if (e.key === "Escape") self.close(); });
       document.addEventListener("click", function (e) {
         var img = e.target.closest("#app img");
-        if (img && img.getAttribute("src")) self.open(img.getAttribute("src"), img.getAttribute("alt") || "");
+        if (img && img.getAttribute("src")) self.open(img.getAttribute("src"), img.getAttribute("alt") || "", img.closest(".annot-wrap"));
       });
     },
-    open: function (src, alt) {
+    open: function (src, alt, wrap) {
+      var old = this.overlay.querySelector(".annot-wrap");
+      if (old) old.parentNode.removeChild(old);
+      if (wrap) {
+        var c = wrap.cloneNode(true);
+        this.imgEl.style.display = "none";
+        this.imgEl.parentNode.insertBefore(c, this.imgEl);
+      } else { this.imgEl.style.display = ""; }
       this.imgEl.src = src;
       this.imgEl.alt = alt;
       this.captionEl.textContent = alt;
@@ -269,8 +276,10 @@
 
   var TX_DMS3_CONTENT = `
 <div class="tx-intro">
-  <p><strong>Transaksi Flashout</strong> (dikenal juga sebagai <strong>Transaksi DMS 3</strong>) adalah prosedur pemindahan stok berjenjang antar-depo yang wajib dilakukan admin sebelum barang dari depo pemasok bisa "mendarat" sebagai stok siap jual di depo tujuan. Setiap perpindahan barang selalu dicatat dua kali: satu <strong>Bukti Keluar Barang (BKB)</strong> di sisi pengirim, satu <strong>Bukti Terima Barang (BTB)</strong> di sisi penerima &mdash; berpindah dari sistem lama <strong>DMS 3</strong>, transit di <strong>LP Pool Cicurug</strong>, lalu masuk ke <strong>DMS 5 (port 9301)</strong> sampai akhirnya siap dijual di depo tujuan.</p>
-  <p>Di bawah ini disusun 3 skenario nyata beserta urutan dokumen dan tangkapan layarnya, supaya admin baru bisa langsung mengikuti alurnya persis seperti aslinya. Pilih skenario dari menu tab di bawah &mdash; setiap gambar juga bisa diklik untuk diperbesar.</p>
+  <p>Bayangkan sebuah mobil pengantar galon yang berangkat pagi-pagi menuju deretan toko pelanggan Depo Parung. Penjualan seperti inilah yang disebut <strong>Flashout</strong>. Barangnya dijual lewat jalur <strong>NG (Non Gudang)</strong>, yaitu <strong>Pool Cicurug</strong>, dan tujuannya adalah toko-toko penjualan Depo Parung. Nama toko bisa Anda lihat di kolom <strong>Keterangan</strong> pada dokumen <strong>BKB Distribusi DMS 5</strong>, ditandai dengan awalan <strong>FO</strong>, singkatan dari Flashout (contoh: FO TK DK TIRTA).</p>
+  <p>Dalam cerita ini, NG berperan sebagai <strong>perantara</strong> yang membantu menambah kontribusi penjualan. Ada satu hal yang paling penting untuk diingat: <strong>semua BKB Distribusi hanya dibuat di sistem DMS 5 atas nama NG (Pool Cicurug)</strong>. Karena itu, ketika Anda membuka sistem, akan terlihat seolah-olah Pool Cicurug yang mengeluarkan barang ke toko. Padahal barang itu sebenarnya berasal dari gudang <strong>Parung, Sentul, atau Cianjur</strong>.</p>
+  <p>Itulah sebabnya cerita Flashout selalu melibatkan lebih dari satu depo. Fisik barang diambil dari gudang Sentul atau Cianjur, tetapi yang tercatat menjual ke toko adalah NG. Dokumen BKB dan BTB lain yang menyertainya adalah jalan yang harus dilewati supaya barang tercatat sampai ke NG, dan supaya barang yang tidak jadi terjual bisa pulang ke depo asalnya.</p>
+  <p>Ada tiga cerita di bawah ini: galon dari Parung, galon dari Sentul, dan Aqua kemasan dus (SPS) dari Cianjur. Pilih satu pada tab, lalu ikuti dari gambar pertama. Kotak merah bernomor pada gambar dijelaskan tepat di bawahnya, dan gambar bisa diketuk untuk memperbesar.</p>
 </div>
 
 <!-- ================= TAB MENU: pilih skenario ================= -->
@@ -298,8 +307,8 @@
   <div class="tx-case-head">
     <div class="tx-case-badge">01</div>
     <div>
-      <h2>Flashout Galon dari Parung &rarr; Penjualan Parung</h2>
-      <p>Stok galon isi ulang (Jug Aqua 19L, tissue &amp; galon kosong) diputar melalui Pool Cicurug sebelum kembali menjadi stok jual di Gudang Layak Pet Parung. 528 botol bergerak di setiap tahap.</p>
+      <h2>Cerita 1: Galon dari Gudang Parung ke Toko-toko Parung</h2>
+      <p>Dalam cerita pertama ini, barangnya diambil dari gudang Parung sendiri, lalu dijual lewat NG ke toko-toko Parung. Ada enam dokumen yang akan kita lewati, termasuk satu dokumen penting di akhir tentang barang yang tidak jadi terjual.</p>
     </div>
   </div>
   <div class="tx-steps">
@@ -307,59 +316,59 @@
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 1</span><img src="assets/images/transaksi-dms-3/parung-01-bkb-dms-3-ke-pol-cicurug.webp" alt="BKB DMS 3 ke Pool Cicurug" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag tag-out">BKB Depo &middot; Barang Keluar</span>
-        <h3 class="tx-step-title">Keluarkan Barang Menuju Pool Cicurug (DMS 3)</h3>
-        <p class="tx-step-desc">Titik awal siklus: <strong>Bukti Keluar Barang Cabang</strong> diterbitkan dari Gudang Layak Pet Parung dengan Depo Tujuan 288 (LP Pool Cicurug), mengeluarkan 528 unit Jug Aqua 19L, tissue, dan galon isi sebagai titik transit sebelum masuk DMS 5.</p>
+        <span class="tx-step-tag tag-out">BKB Depo &middot; DMS 3</span>
+        <h3 class="tx-step-title">Pagi hari di Gudang Layak PET Parung</h3>
+        <div class="tx-step-desc"><p>Pagi itu, 8 September 2026, mobil F 9073 SB milik Angkutan Prima Jaya dengan sopir Jejen sudah siap di depan gudang. Muatannya 528 galon isi air (Galon Layak), lengkap dengan 528 botol galon (Jug Aqua 19L) dan 528 lembar tissue. Semuanya akan dijual ke toko-toko Parung, tetapi tidak atas nama Parung.</p><p>Karena itu langkah pertama admin adalah membuat <strong>BKB</strong> di DMS 3. Pada kolom <strong>Depo Tujuan</strong> isi <strong>288</strong>, yaitu LP Pool Cicurug. Gudang asalnya <strong>281-W13 Gudang Layak PET Parung</strong> dengan tipe stok JUAL. Di <strong>Keterangan</strong> tulis nama sopir dan nomor kendaraan, lalu isi Qty 528 pada setiap produk.</p></div>
       </div>
     </div>
 
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 2</span><img src="assets/images/transaksi-dms-3/parung-03-btb-dms-5-port-9301-dari-depo-parung.webp" alt="BTB DMS 5 port 9301 dari Depo Parung" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag">BTB Depo &middot; Barang Masuk</span>
-        <h3 class="tx-step-title">Lanjutkan ke Distribution Management System 5.0</h3>
-        <p class="tx-step-desc">Di sistem baru <strong>DMS 5.0 (port 9301)</strong>, menu <em>BTB Depot</em> menerima kembali barang dari Depo 281 (LP Parung) ke gudang <strong>002-W01 Gudang NGG LP</strong> &mdash; menandai barang resmi tercatat di sistem terbaru.</p>
+        <span class="tx-step-tag">BTB Depo &middot; DMS 5</span>
+        <h3 class="tx-step-title">Barang tercatat masuk ke Pool Cicurug</h3>
+        <div class="tx-step-desc"><p>Di sisi lain sistem, Pool Cicurug harus mencatat bahwa kiriman tadi sudah diterima. Admin berpindah ke <strong>DMS 5 (port 9301)</strong>, membuka menu <em>BTB Depot</em>, lalu mencatat barang dari <strong>Depo 281</strong> masuk ke gudang <strong>002-W01 Gudang NGG LP</strong>.</p><p>Jumlahnya harus sama dengan BKB tadi, yaitu 528 untuk setiap produk, karena belum ada satu botol pun yang terjual. Di Keterangan tulis nomor BKB DMS 3 tadi (281-0001112), diikuti nama sopir dan nomor kendaraan, supaya dua dokumen ini mudah dicari pasangannya.</p></div>
       </div>
     </div>
 
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 3</span><img src="assets/images/transaksi-dms-3/parung-04-bkb-distribus-dms-5-port-9301.webp" alt="BKB Distribusi DMS 5 port 9301" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag tag-out">BKB Distribusi &middot; Keluar</span>
-        <h3 class="tx-step-title">Proses Bukti Keluar Barang Distribusi</h3>
-        <p class="tx-step-desc">Melalui menu <em>Transaksi Distribusi</em>, dokumen BKB Distribusi diterbitkan lengkap dengan referensi Dokumen Permintaan Barang dan keterangan salesman/driver, menyiapkan barang untuk didistribusikan ke tujuan penjualan.</p>
+        <span class="tx-step-tag tag-out">BKB Distribusi &middot; ke Toko</span>
+        <h3 class="tx-step-title">Inti ceritanya: BKB Distribusi berangkat ke toko</h3>
+        <div class="tx-step-desc"><p>Sampai di sini barang sudah berada di NG, dan inilah saat penjualannya dicatat. Admin membuat <strong>BKB Distribusi</strong> di DMS 5. Ingat aturan pentingnya: BKB Distribusi hanya dibuat di DMS 5 atas nama NG (Pool Cicurug). Di layar terlihat seolah-olah Pool Cicurug yang mengeluarkan barang ke toko, padahal fisiknya berasal dari gudang Parung.</p><p>Lengkapi kolom bertanda bintang (*) seperti Dok. Permintaan Barang, Salesman/Driver, Gudang, Tipe Stok, dan Kendaraan. Lalu tulis <strong>nama toko tujuan</strong> di kolom <strong>Keterangan</strong>. Pada gambar tertulis <em>FO TK DK TIRTA</em>: FO adalah singkatan dari Flashout, diikuti nama toko. Setelah dokumen tersimpan, mobil berangkat menuju toko-toko Parung.</p></div>
       </div>
     </div>
 
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 4</span><img src="assets/images/transaksi-dms-3/parung-05-btb-distribus-dms-5-port-9301.webp" alt="BTB Distribusi DMS 5 port 9301" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag">BTB Distribusi &middot; Masuk</span>
-        <h3 class="tx-step-title">Konfirmasi Penerimaan Distribusi</h3>
-        <p class="tx-step-desc">Sebagai pasangannya, <em>BTB Distribusi</em> mengonfirmasi barang telah diterima di gudang tujuan dengan salesman dan kendaraan yang sama, menutup siklus distribusi internal dengan rapi.</p>
+        <span class="tx-step-tag">BTB Distribusi &middot; Balikan Fisik</span>
+        <h3 class="tx-step-title">Sore hari: mobil pulang membawa balikan</h3>
+        <div class="tx-step-desc"><p>Menjelang sore, mobil kembali. Tidak semua yang berangkat habis terjual. Dari 528 galon isi yang dibawa, ada <strong>3 galon yang isi airnya berkurang</strong>, sehingga dianggap <strong>tidak layak jual</strong>. Ada pula 3 tissue yang tidak terjual. Semuanya dibawa pulang.</p><p>Sementara itu, setiap toko menyiapkan galon kosong sebagai tukarannya, sehingga semua botol galon ikut kembali, totalnya tetap <strong>528</strong>. Maka <strong>BTB Distribusi</strong> ini mencatat apa yang <strong>benar-benar kembali secara fisik</strong>: botol galon 528, air isi 3, dan tissue 3. Inilah yang disebut <strong>balikan fisik</strong>. Angka 3 itu bukan salah ketik, jadi jangan disamakan dengan 528.</p></div>
       </div>
     </div>
 
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 5</span><img src="assets/images/transaksi-dms-3/parung-06-bkb-dms-5-port-9301-ke-depo-parung.webp" alt="BKB DMS 5 port 9301 ke Depo Parung" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag tag-out">BKB Depo &middot; Barang Keluar</span>
-        <h3 class="tx-step-title">Selesai &mdash; Barang Siap Jual di Parung</h3>
-        <p class="tx-step-desc">Dokumen penutup <em>BKB Depot</em> di DMS 5.0 mengeluarkan barang menuju Depo Tujuan 281 (LP Parung), menandakan seluruh 528 unit Jug Aqua, tissue, dan galon isi resmi kembali menjadi stok Depo Parung.</p>
+        <span class="tx-step-tag tag-out">BKB Depo &middot; DMS 5</span>
+        <h3 class="tx-step-title">Balikan dikirim pulang ke Depo Parung</h3>
+        <div class="tx-step-desc"><p>Barang balikan tidak boleh tinggal di NG. Ia harus pulang ke depo asalnya. Admin membuat <strong>BKB Depot</strong> di DMS 5 dengan <strong>Depo Tujuan 281</strong> (LP Parung), dikeluarkan dari gudang NGG LP.</p><p>Qty-nya mengikuti balikan fisik tadi: air isi 3, botol galon 528, dan tissue 3. Bukan 528 untuk semuanya, karena yang kembali memang hanya sebanyak itu.</p></div>
       </div>
     </div>
 
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 6</span><img src="assets/images/transaksi-dms-3/parung-02-btb-dms-3-dari-pol-cicurug.webp" alt="BTB DMS 3 dari Pool Cicurug" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag">BTB Depo &middot; Barang Masuk</span>
-        <h3 class="tx-step-title">Terima Barang di Gudang Layak Pet Parung (DMS 3)</h3>
-        <p class="tx-step-desc">Menutup siklus di sistem DMS 3: dokumen <strong>Bukti Terima Barang Cabang</strong> dibuat di gudang <strong>281-W13 Gudang Layak Pet Parung</strong>, mencatat kedatangan barang dari LP Pool Cicurug: Jug Aqua 19L, tissue, dan galon isi masing-masing 528 unit dengan tipe stok Jual &mdash; barang resmi siap jual di Parung.</p>
+        <span class="tx-step-tag">BTB Depo &middot; DMS 3</span>
+        <h3 class="tx-step-title">Parung menerima balikan, cerita selesai</h3>
+        <div class="tx-step-desc"><p>Penutupnya ada di DMS 3. Admin membuat <strong>BTB</strong> di <strong>281-W13 Gudang Layak PET Parung</strong>, dari Depo 288 (LP Pool Cicurug), tipe stok JUAL. Qty mengikuti balikan: Jug Aqua 528, tissue 3, galon isi 3.</p><p>Dengan dokumen ini, barang yang tidak jadi terjual resmi kembali ke stok Depo Parung.</p></div>
       </div>
     </div>
 
   </div>
-  <div class="tx-note"><b>Catatan:</b>&nbsp;Total 6 dokumen (3 pasang BKB/BTB) harus selesai berurutan pada tanggal transaksi yang sama agar posisi stok di kedua sistem (DMS 3 &amp; DMS 5) tetap sinkron.</div>
+  <p class="story-end">Keenam dokumen tadi dikerjakan berurutan pada tanggal transaksi yang sama. Ingatlah bahwa angka pada dokumen 4, 5, dan 6 mengikuti hitungan fisik balikan, jadi memang tidak sama dengan dokumen 1.</p>
 </div>
 
 <!-- ================= CASE 2: GALON DARI SENTUL ================= -->
@@ -367,8 +376,8 @@
   <div class="tx-case-head">
     <div class="tx-case-badge">02</div>
     <div>
-      <h2>Flashout Galon dari Sentul &rarr; Penjualan Parung</h2>
-      <p>Skenario ini lebih panjang: selain memindahkan 528 unit galon &amp; Jug Aqua dari Sentul ke Parung, ada siklus tambahan untuk mengembalikan Jug Aqua kosong dari Pool Cicurug ke Depo Sentul.</p>
+      <h2>Cerita 2: Galon dari Depo Sentul ke Toko-toko Parung</h2>
+      <p>Kali ini fisik barang diambil dari Depo Sentul. Tokonya tetap toko-toko Parung, dan penjualannya tetap lewat NG. Itulah sebabnya Sentul ikut muncul di dokumen, dan ceritanya lebih panjang, yaitu delapan dokumen.</p>
     </div>
   </div>
   <div class="tx-steps">
@@ -376,77 +385,77 @@
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 1</span><img src="assets/images/transaksi-dms-3/sentul-01-btb-dms-3-dari-depo-sentul.webp" alt="BTB DMS 3 dari Depo Sentul" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag">BTB Depo &middot; Barang Masuk</span>
-        <h3 class="tx-step-title">Terima Kiriman dari Depo Sentul</h3>
-        <p class="tx-step-desc">Gudang Layak Pet Parung menerima 528 unit Jug Aqua 19L, tissue, dan galon isi yang dikirim dari <strong>LP Sentul (Depo 283)</strong>, diangkut Angkutan Prima Jaya.</p>
+        <span class="tx-step-tag">BTB Depo &middot; DMS 3</span>
+        <h3 class="tx-step-title">Barang diambil dari Depo Sentul</h3>
+        <div class="tx-step-desc"><p>Cerita bergeser ke 12 September 2026. Kali ini fisik barang berada di <strong>Depo Sentul (283)</strong>, sehingga mobil D 9363 YA dengan sopir Desnadi mengambilnya di sana. Supaya tercatat di sistem Parung, admin membuat <strong>BTB</strong> di DMS 3 untuk gudang <strong>281-W13 Gudang Layak PET Parung</strong>.</p><p>Isi <strong>Dari Depo 283</strong> (LP Sentul) dan Qty 528 untuk setiap produk. Di Keterangan tulis nomor BKB dari Sentul (283-0001186), nama sopir, nomor kendaraan, dan tanda <em>FO BJS</em>.</p></div>
       </div>
     </div>
 
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 2</span><img src="assets/images/transaksi-dms-3/sentul-02-bkb-dms-3-ke-pol-cicurug.webp" alt="BKB DMS 3 ke Pool Cicurug" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag tag-out">BKB Depo &middot; Barang Keluar</span>
-        <h3 class="tx-step-title">Teruskan ke LP Pool Cicurug</h3>
-        <p class="tx-step-desc">Barang yang sama langsung diteruskan keluar menuju Depo Tujuan 288 (LP Pool Cicurug), menjaga kuantitas tetap 528 unit sebagai titik transit sebelum masuk DMS 5.</p>
+        <span class="tx-step-tag tag-out">BKB Depo &middot; DMS 3</span>
+        <h3 class="tx-step-title">Barang tidak menetap: langsung diteruskan ke Pool Cicurug</h3>
+        <div class="tx-step-desc"><p>Barang yang baru dicatat masuk di Parung itu tidak akan dijual dari Parung. Admin langsung membuat <strong>BKB</strong> DMS 3 dengan <strong>Depo Tujuan 288</strong> (LP Pool Cicurug). Qty tetap 528 untuk tiap produk, sama seperti BTB sebelumnya.</p></div>
       </div>
     </div>
 
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 3</span><img src="assets/images/transaksi-dms-3/sentul-03-btb-dms-5-port-9301-dari-depo-parung.webp" alt="BTB DMS 5 port 9301 dari Depo Parung" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag">BTB Depo &middot; Barang Masuk</span>
-        <h3 class="tx-step-title">Masuk Resmi ke DMS 5.0</h3>
-        <p class="tx-step-desc">Di <em>Distribution Management System 5.0</em>, BTB Depot mencatat kedatangan barang dari Depo 281 ke Gudang NGG LP &mdash; melanjutkan alur ke sistem port 9301.</p>
+        <span class="tx-step-tag">BTB Depo &middot; DMS 5</span>
+        <h3 class="tx-step-title">Pool Cicurug menerima di DMS 5</h3>
+        <div class="tx-step-desc"><p>Seperti pada cerita pertama, admin berpindah ke DMS 5 dan membuat <strong>BTB Depot</strong>: barang dari <strong>Depo 281</strong> masuk ke gudang <strong>002-W01 Gudang NGG LP</strong>. Qty sama dengan BKB sebelumnya, yaitu 528 untuk setiap produk.</p></div>
       </div>
     </div>
 
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 4</span><img src="assets/images/transaksi-dms-3/sentul-04-bkb-distribusi-dms-5-port-9301.webp" alt="BKB Distribusi DMS 5 port 9301" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag tag-out">BKB Distribusi &middot; Keluar</span>
-        <h3 class="tx-step-title">Siapkan Distribusi ke Tujuan Jual</h3>
-        <p class="tx-step-desc">Menu Transaksi Distribusi menerbitkan BKB Distribusi dengan referensi Dokumen Permintaan Barang, salesman/driver, dan kendaraan lengkap sebelum barang berangkat ke lokasi penjualan.</p>
+        <span class="tx-step-tag tag-out">BKB Distribusi &middot; ke Toko</span>
+        <h3 class="tx-step-title">Di sistem terlihat Pool Cicurug yang berjualan</h3>
+        <div class="tx-step-desc"><p>Inilah dokumen penjualannya: <strong>BKB Distribusi</strong> di DMS 5 atas nama NG. Layar akan menampilkan seolah-olah Pool Cicurug yang mengeluarkan barang ke toko, padahal fisiknya berasal dari Depo Sentul.</p><p>Seperti biasa, <strong>nama toko tujuan</strong> ditulis di Keterangan. Pada gambar tertulis <em>FO BJS 3</em>, dengan FO sebagai singkatan Flashout. Setelah itu mobil berangkat ke toko Parung.</p></div>
       </div>
     </div>
 
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 5</span><img src="assets/images/transaksi-dms-3/sentul-05-btb-distribusi-dms-5-port-9301.webp" alt="BTB Distribusi DMS 5 port 9301" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag">BTB Distribusi &middot; Masuk</span>
-        <h3 class="tx-step-title">Barang Tiba di Tujuan Distribusi</h3>
-        <p class="tx-step-desc">BTB Distribusi menutup pasangan dokumen sebelumnya, mengonfirmasi seluruh unit sampai dengan aman ke gudang tujuan.</p>
+        <span class="tx-step-tag">BTB Distribusi &middot; Balikan Fisik</span>
+        <h3 class="tx-step-title">Sore hari: hanya botol kosong yang pulang</h3>
+        <div class="tx-step-desc"><p>Pada cerita Sentul ini, hari penjualan berjalan lancar. Air isi dan tissue habis terjual, jadi tidak ada balikan air dan tidak ada balikan tissue. Yang kembali hanya <strong>528 botol galon</strong> kosong, karena toko menyiapkan galon kosong untuk ditukar dengan galon isi.</p><p>Maka pada <strong>BTB Distribusi</strong> ini hanya ada satu baris, yaitu Jug Aqua 19L sebanyak 528. Catat hanya barang yang benar-benar dibawa pulang.</p></div>
       </div>
     </div>
 
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 6</span><img src="assets/images/transaksi-dms-3/sentul-06-bkb-dms-5-por-9301-ke-depo-parung.webp" alt="BKB DMS 5 port 9301 ke Depo Parung" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag tag-out">BKB Depo &middot; Barang Keluar</span>
-        <h3 class="tx-step-title">Stok Resmi Jadi Milik Parung</h3>
-        <p class="tx-step-desc">BKB Depot mengeluarkan barang menuju Depo Tujuan 281 (LP Parung) &mdash; babak utama flashout selesai, 528 unit siap dijual.</p>
+        <span class="tx-step-tag tag-out">BKB Depo &middot; DMS 5</span>
+        <h3 class="tx-step-title">Botol kosong dikirim kembali ke Parung</h3>
+        <div class="tx-step-desc"><p>Botol kosong itu tidak berhenti di NG. Admin membuat <strong>BKB Depot</strong> di DMS 5 dengan <strong>Depo Tujuan 281</strong> (LP Parung) untuk 528 botol galon.</p></div>
       </div>
     </div>
 
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 7</span><img src="assets/images/transaksi-dms-3/sentul-07-btb-dms-3-dari-pol-cicurug.webp" alt="BTB DMS 3 dari Pool Cicurug" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag">BTB Depo &middot; Barang Masuk</span>
-        <h3 class="tx-step-title">Babak Tambahan: Galon Kosong Kembali</h3>
-        <p class="tx-step-desc">Sebagai siklus balik, Gudang Layak Pet Parung kembali menerima 528 botol Jug Aqua 19L (galon kosong) dari LP Pool Cicurug &mdash; siap dikembalikan ke titik asalnya.</p>
+        <span class="tx-step-tag">BTB Depo &middot; DMS 3</span>
+        <h3 class="tx-step-title">Botol kosong sampai di Parung</h3>
+        <div class="tx-step-desc"><p>Di DMS 3, admin Parung membuat <strong>BTB</strong> untuk menerima 528 botol Jug Aqua 19L dari LP Pool Cicurug (288) ke gudang Layak PET Parung.</p></div>
       </div>
     </div>
 
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 8</span><img src="assets/images/transaksi-dms-3/sentul-08-bkb-dms-3-ke-depo-sentul.webp" alt="BKB DMS 3 ke Depo Sentul" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag tag-out">BKB Depo &middot; Barang Keluar</span>
-        <h3 class="tx-step-title">Galon Kosong Pulang ke Sentul</h3>
-        <p class="tx-step-desc">Dokumen penutup BKB Depot mengirim 528 botol Jug Aqua kosong kembali ke Depo Tujuan 283 (LP Sentul), menyelesaikan siklus penuh bolak-balik galon.</p>
+        <span class="tx-step-tag tag-out">BKB Depo &middot; DMS 3</span>
+        <h3 class="tx-step-title">Botol pulang ke asalnya: Depo Sentul</h3>
+        <div class="tx-step-desc"><p>Karena botol itu berasal dari Sentul, perjalanannya belum selesai. Admin membuat <strong>BKB</strong> dengan <strong>Depo Tujuan 283</strong> (LP Sentul), Qty 528, supaya botol galon itu tercatat kembali di Sentul.</p></div>
       </div>
     </div>
 
   </div>
-  <div class="tx-note"><b>Catatan:</b>&nbsp;Skenario Sentul terdiri dari 8 dokumen: 6 dokumen pertama memindahkan stok isi ke Parung, 2 dokumen terakhir mengembalikan galon kosong ke Sentul &mdash; jangan sampai terlewat salah satu arah.</div>
+  <p class="story-end">Delapan dokumen ini punya dua babak. Dokumen 1 sampai 6 membawa barang sampai ke toko dan mencatat balikannya. Dokumen 7 dan 8 mengantar botol galon kembali ke Sentul. Jangan sampai dua dokumen terakhir terlewat.</p>
 </div>
 
 <!-- ================= CASE 3: SPS DARI CIANJUR ================= -->
@@ -454,8 +463,8 @@
   <div class="tx-case-head">
     <div class="tx-case-badge">03</div>
     <div>
-      <h2>Flashout SPS dari Cianjur &rarr; Penjualan Parung</h2>
-      <p>Berbeda produk: skenario ini memindahkan air mineral kemasan <strong>600ml (1x24, sablon gosok)</strong> sebanyak 1.440 box beserta 36 pallet sewa <em>double face</em> dari Depo Cianjur menuju Parung.</p>
+      <h2>Cerita 3: Aqua Kemasan (SPS) dari Depo Cianjur ke Toko-toko Parung</h2>
+      <p>Cerita ketiga berbeda dari dua cerita sebelumnya. Barangnya bukan galon, melainkan SPS, yaitu Aqua kemasan di dalam kardus: 1.440 box Aqua 600ml (1x24, sablon gosok) dan 36 pallet sewa, yang fisiknya diambil dari Depo Cianjur. Karena itu ceritanya lebih pendek, hanya empat dokumen.</p>
     </div>
   </div>
   <div class="tx-steps">
@@ -463,41 +472,41 @@
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 1</span><img src="assets/images/transaksi-dms-3/cianjur-01-btb-dms-3-dari-depo-cianjur.webp" alt="BTB DMS 3 dari Depo Cianjur" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag">BTB Depo &middot; Barang Masuk</span>
-        <h3 class="tx-step-title">Terima Kiriman SPS dari Cianjur</h3>
-        <p class="tx-step-desc">Gudang Layak Parung menerima 1.440 box Aqua 600ml (1x24, sablon gosok) dan 36 buah pallet rent double face dari <strong>LP Cianjur (Depo 285)</strong>, diangkut Tirta Utama Abadi.</p>
+        <span class="tx-step-tag">BTB Depo &middot; DMS 3</span>
+        <h3 class="tx-step-title">Barang diambil dari Depo Cianjur</h3>
+        <div class="tx-step-desc"><p>Pada 7 September 2026, mobil F 9012 SJ milik Tirta Utama Abadi dengan sopir Ading mengambil barang di <strong>Depo Cianjur (285)</strong>: <strong>1.440 box Aqua 600ml (1x24)</strong> dan <strong>36 pallet</strong> sewa double face. Supaya tercatat di sistem Parung, admin membuat <strong>BTB</strong> DMS 3 ke <strong>Gudang Layak Parung (281-W01)</strong>, Dari Depo 285.</p><p>Di Keterangan tulis nomor BKB dari Cianjur (285-0006208), nama sopir, dan nomor kendaraan.</p></div>
       </div>
     </div>
 
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 2</span><img src="assets/images/transaksi-dms-3/cianjur-02-bkb-dms-3-dari-pol-cicurug.webp" alt="BKB DMS 3 ke Pool Cicurug" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag tag-out">BKB Depo &middot; Barang Keluar</span>
-        <h3 class="tx-step-title">Lanjutkan ke LP Pool Cicurug</h3>
-        <p class="tx-step-desc">1.440 box Aqua 600ml diteruskan keluar menuju Depo Tujuan 288 (LP Pool Cicurug) sebagai titik transit sebelum diproses di DMS 5.</p>
+        <span class="tx-step-tag tag-out">BKB Depo &middot; DMS 3</span>
+        <h3 class="tx-step-title">Diteruskan ke Pool Cicurug</h3>
+        <div class="tx-step-desc"><p>Seperti pada dua cerita sebelumnya, barang tidak dijual dari Parung. Admin membuat <strong>BKB</strong> DMS 3 dengan <strong>Depo Tujuan 288</strong> (LP Pool Cicurug) untuk 1.440 box dan 36 pallet.</p></div>
       </div>
     </div>
 
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 3</span><img src="assets/images/transaksi-dms-3/cianjur-03-btb-dms-5-port-9301-dari-depo-parung.webp" alt="BTB DMS 5 port 9301 dari Depo Parung" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag">BTB Depo &middot; Barang Masuk</span>
-        <h3 class="tx-step-title">Masuk ke Distribution Management System 5.0</h3>
-        <p class="tx-step-desc">BTB Depot di DMS 5.0 mencatat kedatangan 1.440 box Aqua 600ml dari Depo 281 ke Gudang NGG LP, meneruskan alur pencatatan ke sistem terbaru.</p>
+        <span class="tx-step-tag">BTB Depo &middot; DMS 5</span>
+        <h3 class="tx-step-title">Pool Cicurug menerima di DMS 5</h3>
+        <div class="tx-step-desc"><p>Di DMS 5, admin membuat <strong>BTB Depot</strong>: 1.440 box dari <strong>Depo 281</strong> masuk ke gudang <strong>002-W01 Gudang NGG LP</strong>. Di Keterangan tulis nomor BKB DMS 3 tadi, lalu sopir dan kendaraan.</p></div>
       </div>
     </div>
 
     <div class="tx-step">
       <div class="tx-step-media"><span class="tx-step-num">Langkah 4</span><img src="assets/images/transaksi-dms-3/cianjur-04-bkb-dms-5-port-9301.webp" alt="BKB Distribusi DMS 5 port 9301" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag tag-out">BKB Distribusi &middot; Keluar</span>
-        <h3 class="tx-step-title">Selesai &mdash; Siap Didistribusikan untuk Dijual</h3>
-        <p class="tx-step-desc">Dokumen penutup BKB Distribusi mengeluarkan 1.440 box Aqua 600ml melalui menu Transaksi Distribusi, lengkap dengan referensi Dokumen Permintaan Barang &mdash; produk resmi siap dipasarkan dari Parung.</p>
+        <span class="tx-step-tag tag-out">BKB Distribusi &middot; ke Toko</span>
+        <h3 class="tx-step-title">Penjualan dicatat, dan ceritanya berhenti di sini</h3>
+        <div class="tx-step-desc"><p>Terakhir, admin membuat <strong>BKB Distribusi</strong> di DMS 5 atas nama NG. Seperti biasa, di sistem terlihat Pool Cicurug yang mengeluarkan barang, padahal fisiknya dari Cianjur. Nama toko tujuan ditulis di Keterangan; pada gambar tertulis <em>FO MEBBY</em>, dengan FO sebagai singkatan Flashout.</p><p>Perhatikan bedanya dengan galon. Galon dijual ke toko, dan toko harus menyiapkan galon kosong untuk ditukar. SPS tidak begitu: seluruh produknya menjadi milik toko, dijual putus. Tidak ada wadah yang kembali dan tidak ada barang balikan, sehingga ceritanya berhenti di dokumen ini.</p></div>
       </div>
     </div>
 
   </div>
-  <div class="tx-note"><b>Catatan:</b>&nbsp;Karena tidak ada kemasan yang perlu dikembalikan (bukan galon guna ulang), skenario SPS cukup 4 dokumen: sepasang di DMS 3 dan sepasang lagi di DMS 5.</div>
+  <p class="story-end">Empat dokumen ini cukup untuk SPS, karena tidak ada barang yang kembali.</p>
 </div>
 
 <ul class="tx-recap">
@@ -509,10 +518,10 @@
 
   var TX_SGM_CONTENT = `
 <div class="tx-intro">
-  <p><strong>Transaksi Produk SGM</strong> adalah cara mencatat penerimaan susu SGM dari supplier, lalu mengubah satuan stoknya dari <strong>BOX</strong> menjadi satuan eceran (<strong>PCS/POUCH</strong> atau <strong>RENCENG</strong>). Materi ini terdiri dari <strong>tiga menu</strong>.</p>
-  <p><strong>Cara memakai:</strong> pilih menu <strong>1</strong> bila truk hanya membawa SGM, atau menu <strong>2</strong> bila satu truk membawa SGM dan Mizone. Setelah BTB Supplier tersimpan, <strong>selalu lanjutkan ke menu 3</strong> (morphing). Setiap gambar bisa diklik untuk diperbesar.</p>
+  <p><strong>Transaksi Produk SGM</strong> adalah cara mencatat susu SGM yang datang dari supplier, lalu mengubah satuannya dari <strong>BOX</strong> menjadi <strong>PCS/POUCH</strong> atau <strong>RENCENG</strong> supaya bisa dijual eceran. Materi ini punya <strong>tiga menu</strong>.</p>
+  <p><strong>Cara memakai:</strong> pilih menu <strong>1</strong> bila truk hanya membawa SGM, atau menu <strong>2</strong> bila satu truk membawa SGM dan Mizone. Setelah BTB Supplier tersimpan, <strong>selalu lanjutkan ke menu 3 (morphing)</strong>. Ketuk gambar untuk memperbesar.</p>
 </div>
-
+<div class="pipe"><p class="pipe-title">Urutan kerja SGM</p><div class="pipe-row"><div class="pipe-node in"><b>1. Baca surat jalan</b>Catat PO, Doc. Number, batch</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node in"><b>2. BTB Supplier</b>Isi Ref, Keterangan, Lot/Batch, lalu Simpan Applied</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node mid"><b>3. Morphing</b>BKB Depot lalu BTB Depot ke depo sendiri</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node in"><b>4. Cek laporan</b>Saldo TBG dan Saldo DMS harus cocok</div></div></div><details class="gloss"><summary>Istilah penting di materi ini</summary><dl><dt>Morphing</dt><dd>Mengubah satuan stok (BOX jadi PCS/RENCENG). Barang tidak berpindah tempat.</dd><dt>Batch / Lot</dt><dd>Kode produksi 8 angka di surat jalan. Hasilnya sekaligus tanggal expired.</dd><dt>Customer PO</dt><dd>Nomor PO dari pelanggan di Delivery Note. Diinput 3 angka setelah SGM/.</dd><dt>Doc. Number</dt><dd>Nomor di lembar Point Agreement. Diisi di No. Ref. 2.</dd><dt>COUNTER</dt><dd>Isian Driver dan Kendaraan khusus untuk morphing.</dd><dt>BOX / PCS / RENCENG</dt><dd>BOX = satu dus. PCS = pouch satuan. RENCENG = rangkaian sachet.</dd></dl></details>
 <div class="tx-tabs" role="tablist" aria-label="Pilih bagian materi SGM">
   <button type="button" class="tx-tab active" role="tab" aria-selected="true" aria-controls="txCase1" data-case-target="1">
     <span class="tx-tab-num">01</span>
@@ -820,6 +829,7 @@
   <p><strong>Alurnya:</strong> (1) saldo sistem DMS diinput ulang ke Excel; (2) di akhir shift 2, admin menerima catatan hitungan fisik dari checker; (3) admin menyamakan saldo Excel dengan catatan tersebut. Pilih menu <strong>1</strong> untuk produk air (AQ, VIT, Mizone, SGM) atau menu <strong>2</strong> untuk galon. Setiap gambar bisa diklik untuk diperbesar, dan kotak bernomor pada gambar dijelaskan tepat di bawahnya.</p>
 </div>
 
+<div class="pipe"><p class="pipe-title">Alur di akhir shift 2</p><div class="pipe-row"><div class="pipe-node in"><b>1. Input saldo DMS</b>Ketik saldo sistem ke Excel</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node mid"><b>2. Terima catatan checker</b>Hasil hitung fisik tulis tangan</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node out"><b>3. Samakan</b>Layak, BS, Reject sama dengan fisik</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node in"><b>4. Periksa</b>Layak + BS + Reject = angka akhir</div></div></div><details class="gloss"><summary>Istilah penting di materi ini</summary><dl><dt>Layak</dt><dd>Barang bagus yang boleh dijual.</dd><dt>BS</dt><dd>Barang rusak ringan (bad stock).</dd><dt>Reject</dt><dd>Barang rusak/ditolak.</dd><dt>Saldo TBG</dt><dd>Saldo menurut pencatatan sistem untuk dicocokkan dengan fisik.</dd><dt>Selisih</dt><dd>Total Fisik dikurangi Saldo TBG. Idealnya nol.</dd><dt>BTL</dt><dd>Botol/galon kosong.</dd></dl></details><p class="warn"><b>Rumus yang dipakai:</b> Layak = Angka akhir &minus; BS &minus; Reject. Catatan checker memakai titik (5.594), Excel memakai koma (5,594). Nilainya sama.</p>
 <div class="tx-tabs" role="tablist" aria-label="Pilih bagian materi Laporan Manual Excel">
   <button type="button" class="tx-tab active" role="tab" aria-selected="true" aria-controls="txCase1" data-case-target="1">
     <span class="tx-tab-num">01</span>
@@ -978,6 +988,7 @@
   <p>Di website resmi, sistem sangat ketat: <strong>setelah data disimpan (Save), isinya tidak bisa diubah lagi</strong>. Karena itu, salah memasukkan angka ke produk yang keliru bisa merepotkan. Untuk mencegahnya, website modul ini menyediakan menu <strong><a href="#/opening-closing">Website Opening &amp; Closing</a></strong> sebagai tempat <strong>latihan</strong> dan tempat <strong>menyamakan data</strong> sebelum Anda menginput di website perusahaan.</p>
 </div>
 
+<div class="pipe"><p class="pipe-title">Alur menu di website perusahaan</p><div class="pipe-row"><div class="pipe-node mid"><b>Applications</b>Klik kotak Aqua Vit</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node in"><b>Login</b>Username dan password sendiri</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node mid"><b>Opening Closing</b>Lalu Opening Closing Gudang</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node out"><b>OPENING / CLOSING</b>Pilih tombol sesuai waktu</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node in"><b>Isi QTY Fisik</b>4 gudang, lalu Save changes</div></div></div><details class="gloss"><summary>Istilah penting di materi ini</summary><dl><dt>Opening</dt><dd>Stok awal hari. Hanya 1 kali per tanggal.</dd><dt>Closing</dt><dd>Stok akhir hari. Bisa dibuat setelah Opening tersimpan.</dd><dt>Layak / BS / Reject / Layak PET</dt><dd>Empat gudang yang harus diisi sesuai kondisi barang.</dd><dt>QTY Fisik</dt><dd>Jumlah hasil hitung langsung di gudang, bukan angka sistem.</dd></dl></details><p class="warn"><b>Penting:</b> setelah Save, data tidak bisa diubah. Periksa nama produk dan angka sebelum menekan Save.</p>
 <div class="tx-case-head">
   <div class="tx-case-badge">OC</div>
   <div>
@@ -1077,6 +1088,7 @@
     var TX_BTB_BKB_SUPPLIER_CONTENT = `
 <p><strong>Transaksi BTB BKB Supplier</strong> adalah prosedur pencatatan Bukti Terima Barang (BTB) dan Bukti Keluar Barang (BKB) untuk transaksi yang melibatkan supplier/pemasok eksternal. Materi ini memuat <strong>pembaruan resmi dari Kantor Pusat</strong> mengenai cara penginputan BTB Supplier untuk produk <strong>AQUA Gallon &amp; AQUA SPS</strong> di DMS 3, sekaligus aturan wajib saat sebuah Surat Jalan/PO dibatalkan. Pelajari dengan saksama agar setiap dokumen yang disimpan sudah sesuai format terbaru.</p>
 
+<div class="pipe"><p class="pipe-title">Isian yang berubah (ringkas)</p><div class="pipe-row"><div class="pipe-node in"><b>AQUA Gallon</b>No. Ref. 3 = HPPP/Retur/Botol/Jugrack. Keterangan = No. GRFC</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node mid"><b>AQUA SPS</b>No. Ref. 3 kosong. Keterangan = GRFC/Qty GRFC</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node out"><b>PO dibatalkan</b>No. Surat Jalan = BATAL di BTB dan BKB</div></div></div><details class="gloss"><summary>Istilah penting di materi ini</summary><dl><dt>HPPP</dt><dd>Nomor dokumen dari pabrik yang diawali 90A.</dd><dt>GRFC</dt><dd>Dokumen penerimaan barang dari pabrik. Bila tidak ada, tulis TIDAK ADA GRFC.</dd><dt>Jugrack</dt><dd>Rak/penyangga galon.</dd><dt>SPS</dt><dd>Produk air kemasan (bukan galon).</dd></dl></details>
 <div class="tx-note"><b>Berlaku untuk:</b>&nbsp;Seluruh penginputan BTB Supplier produk AQUA Gallon &amp; AQUA SPS, serta BTB/BKB Supplier yang mengalami pembatalan Surat Jalan, di DMS 3.</div>
 
 <h2>Format Baru: No. Ref. 3 &amp; Keterangan pada BTB Supplier</h2>
@@ -1089,7 +1101,7 @@
     <div class="tx-step-body">
       <span class="tx-step-tag">BTB Supplier &middot; AQUA Gallon</span>
       <h3 class="tx-step-title">No. Ref. 3 Diisi Berurutan, Keterangan Diisi No. GRFC</h3>
-      <p class="tx-step-desc">Kolom <strong>No. Ref. 3</strong> diisi berurutan sesuai formula <strong>HPPP / Qty Retur Air / Qty Total Botol / Qty Jugrack</strong>, dan pemisah antar-angka <strong>wajib menggunakan tanda "/"</strong> &mdash; contoh pada gambar: <code>90A0260923-005/24/960/20</code>. Kolom <strong>Keterangan</strong> diisi dengan <strong>No. GRFC</strong>; jika dokumen GRFC belum tersedia, tulis <strong>"TIDAK ADA GRFC"</strong> &mdash; jangan dibiarkan kosong.</p>
+      <p class="tx-step-desc">Kolom <strong>No. Ref. 3</strong> diisi berurutan sesuai formula <strong>HPPP / Qty Retur Air / Qty Total Botol / Qty Jugrack</strong>, dan pemisah antar-angka <strong>wajib menggunakan tanda "/"</strong> &mdash; contoh pada gambar: <code>90A0260923-005/24/960/20</code>.</p><table class="tx-mini"><tr><th>Bagian</th><th>Isi pada contoh</th><th>Artinya</th></tr><tr><td>1. HPPP</td><td>90A0260923-005</td><td>Nomor dokumen pabrik (awalan 90A)</td></tr><tr><td>2. Qty Retur Air</td><td>24</td><td>Galon isi air yang dikembalikan</td></tr><tr><td>3. Qty Total Botol</td><td>960</td><td>Jumlah botol galon (lihat baris Jug Aqua di Detil)</td></tr><tr><td>4. Qty Jugrack</td><td>20</td><td>Jumlah jugrack (lihat baris Jugrack di Detil)</td></tr></table><p class="tx-step-desc"> Kolom <strong>Keterangan</strong> diisi dengan <strong>No. GRFC</strong>; jika dokumen GRFC belum tersedia, tulis <strong>"TIDAK ADA GRFC"</strong> &mdash; jangan dibiarkan kosong.</p>
     </div>
   </div>
 
@@ -1149,7 +1161,7 @@
     if (force || materials.length === 0) {
       var now = new Date().toISOString();
       var defs = [
-        { title: "Transaksi Flashout", desc: "Prosedur flashout & pencatatan transaksi barang berjenjang (sebelumnya dikenal sebagai Transaksi DMS 3), lengkap dengan contoh dokumen dan foto langkah demi langkah.", body: TX_DMS3_CONTENT },
+        { title: "Transaksi Flashout", desc: "Program penjualan lewat NG (Pool Cicurug) ke toko-toko Depo Parung: urutan dokumen BKB/BTB di DMS 3 dan DMS 5, termasuk balikan fisik dari toko, lengkap dengan gambar bertanda.", body: TX_DMS3_CONTENT },
         { title: "Transaksi Produk SGM", desc: "Prosedur penerimaan produk SGM dari supplier (dua kasus: truk membawa SGM saja, atau satu truk membawa produk air dan SGM) dan cara mengubah stok dari BOX ke PCS/Renceng (morphing) memakai BKB/BTB Depot, lengkap dengan contoh transaksi Depo Parung.", body: TX_SGM_CONTENT },
         { title: "Transaksi BTB BKB Supplier", desc: "Prosedur pencatatan Bukti Terima Barang (BTB) dan Bukti Keluar Barang (BKB) untuk transaksi dengan supplier/pemasok eksternal.", body: TX_BTB_BKB_SUPPLIER_CONTENT },
         { title: "Input Opening & Closing Gudang", desc: "Cara menginput stok fisik Opening dan Closing di website resmi perusahaan, lengkap dengan aturan sistem dan cara berlatih agar tidak salah produk.", body: TX_OC_CONTENT },
@@ -1291,6 +1303,16 @@
             '</div>' +
           '</div>' +
         '</div>' +
+      '</section>' +
+      '<section class="section flow">' +
+        '<div class="section-head"><div><h2 class="section-title">Alur Kerja Admin Sehari-hari</h2><p class="section-desc">Ikuti urutan ini. Ketuk salah satu langkah untuk membuka materinya.</p></div></div>' +
+        '<ol class="flow-list">' +
+          '<li data-n="1"><a href="#/materi/input-opening-closing-gudang"><b>Opening</b><span>Catat stok awal hari di website perusahaan.</span></a></li>' +
+          '<li data-n="2"><a href="#/materi/transaksi-btb-bkb-supplier"><b>Terima / kirim supplier</b><span>BTB dan BKB Supplier dengan format terbaru.</span></a></li>' +
+          '<li data-n="3"><a href="#/materi/transaksi-produk-sgm"><b>Produk SGM</b><span>Input supplier lalu morphing BOX ke PCS.</span></a></li>' +
+          '<li data-n="4"><a href="#/materi/transaksi-flashout"><b>Flashout</b><span>Pindah stok antar-depo lewat DMS 3 dan DMS 5.</span></a></li>' +
+          '<li data-n="5"><a href="#/materi/laporan-manual-excel"><b>Laporan &amp; Closing</b><span>Samakan Excel dengan hitungan checker, lalu Closing.</span></a></li>' +
+        '</ol>' +
       '</section>' +
       '<section class="section features-section">' +
         '<button type="button" class="mobile-collapsible-toggle" aria-expanded="false" aria-controls="featuresPanel">' +
@@ -2490,7 +2512,7 @@
   function initLoadingScreen() {
     var screen = document.getElementById("loadingScreen");
     if (!screen) return;
-    var MIN_DISPLAY_MS = 5000;
+    var MIN_DISPLAY_MS = 1200;
     startLoadingStatusTyper();
     setTimeout(function () {
       screen.classList.add("loading-hide");

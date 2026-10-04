@@ -5,7 +5,7 @@
    load even with a flaky/offline connection. Bump CACHE_NAME whenever the
    list below changes so old caches are cleaned up automatically.
    ========================================================================== */
-var CACHE_NAME = "gdng-prg-shell-v19";
+var CACHE_NAME = "gdng-prg-shell-v23";
 var CORE_ASSETS = [
   "./",
   "./index.html",
@@ -15,6 +15,9 @@ var CORE_ASSETS = [
   "./opening.js",
   "./opening-tools.css",
   "./opening-tools.js",
+  "./theme.css",
+  "./annot.js",
+  "./annot-data.js",
   "./app.js",
   "./manifest.json",
   "./assets/icons/logo-dms.webp",
