@@ -26,7 +26,7 @@
   // Bump this whenever the built-in seed content changes, so browsers that
   // already have older data in LocalStorage get refreshed automatically
   // instead of keeping stale materials forever.
-  var DATA_VERSION = "2026.10.03-laporan-manual-excel-v14";
+  var DATA_VERSION = "2026.10.03-laporan-manual-excel-v15";
   var DATA_VERSION_KEY = "gdngprg_data_version";
 
   /* ------------------------------------------------------------------ */
@@ -1374,6 +1374,13 @@
     });
   }
 
+  function materialStats(m) {
+    var c = m.content || "";
+    var imgs = (c.match(/<img /g) || []).length;
+    var tabs = (c.match(/data-case-target=/g) || []).length;
+    return { imgs: imgs, tabs: tabs };
+  }
+
   function renderMateriCards(list, padTo) {
     if (list.length === 0) {
       return '<div class="empty-state" style="grid-column:1/-1;"><b>Belum ada materi</b>Materi yang dipublikasikan akan tampil di sini.</div>';
@@ -1387,6 +1394,7 @@
           '<span class="materi-num">' + String(idx + 1).padStart(2, "0") + '</span>' +
           '<h3 class="materi-title">' + Utils.escapeHtml(m.title) + '</h3>' +
           '<p class="materi-desc">' + Utils.escapeHtml(m.description) + '</p>' +
+          (function () { var st = materialStats(m); var h = ""; if (st.tabs) h += '<span class="materi-chip">' + st.tabs + ' sub-menu</span>'; if (st.imgs) h += '<span class="materi-chip">' + st.imgs + ' gambar</span>'; return h ? '<div class="materi-chips">' + h + '</div>' : ""; })() +
           '<div class="materi-foot">' +
             '<span class="materi-status status-' + m.status + '">' + (m.status === "published" ? "Published" : "Draft") + '</span>' +
             '<span class="materi-link">Baca Materi</span>' +
@@ -1421,6 +1429,7 @@
       '<section class="section" style="padding-top:44px;">' +
         '<div class="section-head">' +
           '<div><h2 class="section-title">Daftar Materi</h2><p class="section-desc">Seluruh modul pelatihan admin GDNG PRG 2026 yang tersedia untuk dipelajari.</p></div>' +
+          '<div class="materi-count"><b>' + materials.length + '</b><span>materi tersedia</span></div>' +
         '</div>' +
         '<div class="materi-grid">' + renderMateriCards(materials, 3) + '</div>' +
       '</section>';
@@ -1448,14 +1457,31 @@
     }).join("");
 
     appEl.innerHTML =
+      '<div class="read-prog" id="readProg"></div>' +
       '<div class="toc-mobile-bar" id="tocMobileBar">&#9776; Daftar Isi</div>' +
       '<div class="reader-shell">' +
         '<aside class="reader-toc"><p class="reader-toc-title">Daftar Isi</p>' + tocHtml + '</aside>' +
         '<article class="reader-content">' +
-          '<h1 class="reader-title">' + Utils.escapeHtml(material.title) + '</h1>' +
-          '<p class="reader-desc">' + Utils.escapeHtml(material.description) + '</p>' +
+          '<nav class="reader-crumb" aria-label="Breadcrumb"><a href="#/">Beranda</a><i>&rsaquo;</i><a href="#/materi">Materi</a><i>&rsaquo;</i><span>' + Utils.escapeHtml(material.title) + '</span></nav>' +
+          '<header class="reader-hero">' +
+            '<span class="reader-hero-num">' + String(Math.max(1, materials.filter(function (m) { return m.status === "published"; }).sort(function (a, b) { return a.order - b.order; }).map(function (m) { return m.id; }).indexOf(material.id) + 1)).padStart(2, "0") + '</span>' +
+            '<div class="reader-hero-text">' +
+              '<h1 class="reader-title">' + Utils.escapeHtml(material.title) + '</h1>' +
+              '<p class="reader-desc">' + Utils.escapeHtml(material.description) + '</p>' +
+              (function () { var st = materialStats(material); var h = '<span class="materi-chip on-dark">Panduan langkah demi langkah</span>'; if (st.tabs) h += '<span class="materi-chip on-dark">' + st.tabs + ' sub-menu</span>'; if (st.imgs) h += '<span class="materi-chip on-dark">' + st.imgs + ' gambar (klik untuk perbesar)</span>'; return '<div class="materi-chips">' + h + '</div>'; })() +
+            '</div>' +
+          '</header>' +
           (material.image ? '<img class="reader-image" src="' + material.image + '" alt="' + Utils.escapeHtml(material.title) + '">' : "") +
           '<div class="reader-body">' + Utils.sanitizeHtml(material.content) + '</div>' +
+          (function () {
+            var pub = contents.filter(function (c) { return c.materialId; });
+            var i = -1; pub.forEach(function (c, k) { if (c.materialId === material.id) i = k; });
+            function link(c, cls, lab) {
+              var m = c && materials.filter(function (x) { return x.id === c.materialId; })[0];
+              return m ? '<a class="reader-pn ' + cls + '" href="#/materi/' + m.slug + '"><small>' + lab + '</small><b>' + Utils.escapeHtml(c.title) + '</b></a>' : '<span></span>';
+            }
+            return '<div class="reader-pager">' + link(pub[i - 1], "prev", "&lsaquo; Materi sebelumnya") + link(pub[i + 1], "next", "Materi berikutnya &rsaquo;") + '</div>';
+          })() +
         '</article>' +
       '</div>' +
       '<div class="toc-drawer-overlay" id="tocDrawerOverlay"></div>' +
@@ -1469,6 +1495,14 @@
     if (overlay) overlay.addEventListener("click", closeDrawer);
     drawer.querySelectorAll(".toc-item").forEach(function (a) { a.addEventListener("click", closeDrawer); });
 
+    if (!window.__readProgBound) {
+      window.__readProgBound = true;
+      window.addEventListener("scroll", function () {
+        var p = document.getElementById("readProg"); if (!p) return;
+        var h = document.documentElement.scrollHeight - window.innerHeight;
+        p.style.width = (h > 0 ? Math.min(100, Math.max(0, window.scrollY / h * 100)) : 0) + "%";
+      }, { passive: true });
+    }
     initTxTabs(document.querySelector(".reader-body"));
     wrapReaderTables(document.querySelector(".reader-body"));
   }
