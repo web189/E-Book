@@ -26,7 +26,7 @@
   // Bump this whenever the built-in seed content changes, so browsers that
   // already have older data in LocalStorage get refreshed automatically
   // instead of keeping stale materials forever.
-  var DATA_VERSION = "2026.10.05-materi-v7";
+  var DATA_VERSION = "2026.10.05-materi-v12";
   var DATA_VERSION_KEY = "gdngprg_data_version";
 
   /* ------------------------------------------------------------------ */
@@ -280,6 +280,7 @@
   <p>Dalam cerita ini, NG berperan sebagai <strong>perantara</strong> yang membantu menambah kontribusi penjualan. Ada satu aturan yang paling penting: <strong>semua BKB Distribusi hanya dibuat di sistem DMS 5 atas nama NG (Pool Cicurug)</strong>.</p>
   <p>Kenapa harus di sana? Karena mobil yang mengantar barang ke toko adalah <strong>kendaraan dan driver milik NG (Pool Cicurug)</strong>, bukan milik Parung, Sentul, atau Cianjur. Kendaraan dan driver itu terdaftar di DMS 5 atas nama NG, dan BKB Distribusi memang mewajibkan keduanya diisi. Jadi dokumen pengirimannya harus dibuat di tempat kendaraan dan driver itu berada. Anda bisa melihat buktinya pada gambar: kode driver di DMS 5 berawalan <strong>002</strong> (kode NG), sedangkan di DMS 3 berawalan <strong>281</strong> (kode Parung).</p>
   <p>Akibatnya, ketika Anda membuka sistem, terlihat seolah-olah Pool Cicurug yang mengeluarkan barang ke toko. Padahal barang itu sebenarnya berasal dari gudang <strong>Parung, Sentul, atau Cianjur</strong>. Itulah juga sebabnya cerita Flashout selalu melibatkan lebih dari satu depo: fisik barang diambil dari gudang asalnya, tetapi yang tercatat menjual ke toko adalah NG. Dokumen BKB dan BTB lain yang menyertainya adalah jalan yang harus dilewati supaya barang tercatat sampai ke NG, dan supaya barang yang tidak jadi terjual bisa pulang ke depo asalnya.</p>
+  <p>Satu catatan tentang sistem. Pool Cicurug memakai <strong>DMS 5 NG</strong> (kode 9301), yang di materi ini disingkat DMS 5, sedangkan depo memakai <strong>DMS 3</strong> (kode 7281). Daftar kode DMS, kode pabrik, dan kode item lengkap ada di menu <a href="https://web189.github.io/UangRitase/" target="_blank" rel="noopener noreferrer">Uang Ritase TUA</a>.</p>
   <p>Ada tiga cerita di bawah ini: galon dari Parung, galon dari Sentul, dan Aqua kemasan dus (SPS) dari Cianjur. Pilih satu pada tab, lalu ikuti dari gambar pertama. Kotak merah bernomor pada gambar dijelaskan tepat di bawahnya, dan gambar bisa diketuk untuk memperbesar.</p>
 </div>
 
@@ -319,7 +320,7 @@
       <div class="tx-step-body">
         <span class="tx-step-tag tag-out">BKB Depo &middot; DMS 3</span>
         <h3 class="tx-step-title">Pagi hari di Gudang Layak PET Parung</h3>
-        <div class="tx-step-desc"><p>Pagi itu, 8 September 2026, mobil F 9073 SB milik Angkutan Prima Jaya dengan sopir Jejen sudah siap di depan gudang. Muatannya 528 galon isi air (Galon Layak), lengkap dengan 528 botol galon (Jug Aqua 19L) dan 528 lembar tissue. Semuanya akan dijual ke toko-toko Parung, tetapi tidak atas nama Parung.</p><p>Karena itu langkah pertama admin adalah membuat <strong>BKB</strong> di DMS 3. Pada kolom <strong>Depo Tujuan</strong> isi <strong>288</strong>, yaitu LP Pool Cicurug. Gudang asalnya <strong>281-W13 Gudang Layak PET Parung</strong> dengan tipe stok JUAL. Di <strong>Keterangan</strong> tulis nama sopir dan nomor kendaraan, lalu isi Qty 528 pada setiap produk.</p></div>
+        <div class="tx-step-desc"><p>Pagi itu, 8 September 2026, mobil F 9073 SB milik Angkutan Prima Jaya dengan sopir Jejen sudah siap di depan gudang. Muatannya 528 galon isi air (Galon Layak), lengkap dengan 528 botol galon (Jug Aqua 19L) dan 528 lembar tissue. Semuanya akan dijual ke toko-toko Parung, tetapi tidak atas nama Parung.</p><p>Karena itu langkah pertama admin adalah membuat <strong>BKB</strong> di DMS 3. Pada kolom <strong>Depo Tujuan</strong> isi <strong>288</strong>, yaitu LP Pool Cicurug. Gudang asalnya <strong>281-W13 Gudang Layak PET Parung</strong> dengan tipe stok JUAL. Perhatikan kata <strong>PET</strong> pada nama gudang itu. Nama produk galon tetap JUG AQUA 19L PC 55 MM, baik untuk galon PC maupun PET, jadi yang menandai jenis galonnya adalah gudang yang dipilih admin: Gudang Layak untuk galon PC, Gudang Layak PET untuk galon PET. Di <strong>Keterangan</strong> tulis nama sopir dan nomor kendaraan, lalu isi Qty 528 pada setiap produk.</p></div>
       </div>
     </div>
 
@@ -328,7 +329,7 @@
       <div class="tx-step-body">
         <span class="tx-step-tag">BTB Depo &middot; DMS 5</span>
         <h3 class="tx-step-title">Barang tercatat masuk ke Pool Cicurug</h3>
-        <div class="tx-step-desc"><p>Di sisi lain sistem, Pool Cicurug harus mencatat bahwa kiriman tadi sudah diterima. Admin berpindah ke <strong>DMS 5 (port 9301)</strong>, membuka menu <em>BTB Depot</em>, lalu mencatat barang dari <strong>Depo 281</strong> masuk ke gudang <strong>002-W01 Gudang NGG LP</strong>.</p><p>Jumlahnya harus sama dengan BKB tadi, yaitu 528 untuk setiap produk, karena belum ada satu botol pun yang terjual. Di Keterangan tulis nomor BKB DMS 3 tadi (281-0001112), diikuti nama sopir dan nomor kendaraan, supaya dua dokumen ini mudah dicari pasangannya.</p></div>
+        <div class="tx-step-desc"><p>Di sisi lain sistem, Pool Cicurug harus mencatat bahwa kiriman tadi sudah diterima. Admin berpindah ke <strong>DMS 5 NG (port 9301)</strong>, membuka menu <em>BTB Depot</em>, lalu mencatat barang dari <strong>Depo 281</strong> masuk ke gudang <strong>002-W01 Gudang NGG LP</strong>. Berbeda dengan depo yang punya dua pilihan, Gudang Layak atau Gudang Layak PET, di Pool Cicurug hanya ada <strong>satu pilihan gudang</strong>, karena Pool Cicurug memakai sistem DMS 5 NG.</p><p>Jumlahnya harus sama dengan BKB tadi, yaitu 528 untuk setiap produk, karena belum ada satu botol pun yang terjual. Di Keterangan tulis nomor BKB DMS 3 tadi (281-0001112), diikuti nama sopir dan nomor kendaraan, supaya dua dokumen ini mudah dicari pasangannya.</p></div>
       </div>
     </div>
 
@@ -519,10 +520,10 @@
 
   var TX_SGM_CONTENT = `
 <div class="tx-intro">
-  <p>Modul ini dibuat untuk transaksi di <strong>Depo Parung</strong>. Depo Parung adalah <strong>gudang sementara</strong>, dan <strong>Parung</strong> adalah nama tempat gudang itu berada. Susu SGM dan produk-produk lain berasal dari <strong>pabrik</strong>. Dari pabrik, barang diantar ke Depo Parung, lalu dari Depo Parung barang disebar ke <strong>warung-warung</strong> oleh <strong>sales dan driver Depo Parung</strong>. Begitulah jalur datangnya barang yang akan Anda catat di sistem.</p>
-  <p>Dari pabrik, susu SGM datang dalam satuan <strong>BOX</strong>, yaitu satu dus besar berisi banyak pouch atau renceng. Padahal warung membeli secara eceran, jadi stok BOX di Depo Parung harus diubah dulu menjadi <strong>PCS (pouch)</strong> atau <strong>RENCENG</strong> sebelum disebar. Karena itu, perjalanan satu truk SGM di sistem dibagi menjadi dua babak: mencatat barang yang datang dari pabrik, lalu mengubah satuannya.</p>
-  <p>Babak pertama dikerjakan lewat <strong>BTB Supplier</strong>, yaitu dokumen penerimaan barang dari pabrik ke Depo Parung. Di sinilah Anda membaca surat jalan, mencatat <strong>batch</strong> (yang sekaligus menjadi tanggal expired), dan menulis <strong>Customer PO</strong> di kolom Keterangan. Ada dua keadaan: truk yang hanya membawa SGM (cerita 1), atau truk yang membawa SGM bersama Mizone (cerita 2), sehingga hasilnya dua BTB terpisah.</p>
-  <p>Babak kedua adalah <strong>morphing</strong> (cerita 3). Barangnya tidak pindah ke mana-mana. Stok BOX dikeluarkan lewat BKB Depot, lalu dimasukkan lagi sebagai stok eceran lewat BTB Depot ke depo sendiri. Apa pun ceritanya, morphing selalu menjadi langkah penutup setelah BTB Supplier SGM tersimpan, sehingga stok siap disebar ke warung. Pilih satu cerita pada tab di bawah, dan ketuk gambar untuk memperbesar.</p>
+  <p>Modul ini dibuat untuk transaksi di <strong>Depo Parung</strong>. Depo Parung adalah <strong>gudang sementara</strong>, dan <strong>Parung</strong> adalah nama tempat gudang itu berada. Susu SGM dan produk-produk lain berasal dari <strong>pabrik</strong>. Dari pabrik, barang diantar ke Depo Parung, lalu dari Depo Parung barang disebar ke <strong>toko-toko pelanggan</strong> oleh <strong>sales dan driver Depo Parung</strong>. Begitulah jalur datangnya barang yang akan Anda catat di sistem.</p>
+  <p>Dari pabrik, susu bubuk SGM datang dalam satuan <strong>BOX</strong>, yaitu satu dus besar berisi banyak pouch atau renceng. Padahal toko pelanggan membeli secara eceran, jadi stok BOX di Depo Parung harus diubah dulu menjadi <strong>PCS (pouch)</strong> atau <strong>RENCENG</strong> sebelum disebar. Karena itu, perjalanan satu truk SGM di sistem dibagi menjadi dua babak: mencatat barang yang datang dari pabrik, lalu mengubah satuannya.</p>
+  <p>Babak pertama dikerjakan lewat <strong>BTB Supplier</strong>, yaitu dokumen penerimaan barang dari pabrik ke Depo Parung. Di sinilah Anda membaca surat jalan, mencatat <strong>batch</strong> (yang sekaligus menjadi tanggal expired), dan menulis <strong>Customer PO</strong> di kolom Keterangan. Ada dua keadaan: truk yang hanya membawa SGM (cerita 1), atau truk yang membawa SGM (susu bubuk) bersama Mizone (air kemasan, termasuk produk SPS) pada cerita 2, sehingga hasilnya dua BTB terpisah.</p>
+  <p>Babak kedua adalah <strong>morphing</strong> (cerita 3). Barangnya tidak pindah ke mana-mana. Stok BOX dikeluarkan lewat BKB Depot, lalu dimasukkan lagi sebagai stok eceran lewat BTB Depot ke depo sendiri. Apa pun ceritanya, morphing selalu menjadi langkah penutup setelah BTB Supplier SGM tersimpan, sehingga stok siap disebar ke toko pelanggan. Pilih satu cerita pada tab di bawah, dan ketuk gambar untuk memperbesar.</p>
 </div>
 
 <div class="tx-tabs" role="tablist" aria-label="Pilih bagian materi SGM">
@@ -631,25 +632,25 @@
     <div class="tx-case-badge">02</div>
     <div>
       <h2>Input Supplier: Satu Truk Membawa SGM dan Mizone</h2>
-      <p>Supplier mengirim produk air dan SGM dalam <strong>satu armada</strong>, dengan <strong>dua kelompok surat</strong> (Delivery Note dan Point Agreement untuk masing-masing produk) dan <strong>satu Nomor PO yang sama</strong>. Hasilnya <strong>dua BTB terpisah</strong>. Contoh nyata: Depo Parung, 01/10/2026, Nomor PO <code>31242671</code>.</p>
+      <p>Supplier mengirim produk SPS (Mizone, air kemasan) dan SGM (susu bubuk) dalam <strong>satu armada</strong>, dengan <strong>dua kelompok surat</strong> (Delivery Note dan Point Agreement untuk masing-masing produk) dan <strong>satu Nomor PO yang sama</strong>. Hasilnya <strong>dua BTB terpisah</strong>. Contoh nyata: Depo Parung, 01/10/2026, Nomor PO <code>31242671</code>.</p>
     </div>
   </div>
-<p class="story-end">Ada empat hal yang perlu Anda pegang dalam cerita ini. Produk air (Mizone) diinput seperti biasa memakai format BTB Supplier yang berjalan. SGM diinput di <strong>BTB terpisah</strong>, karena No. Surat Jalan dan DN SGM memang berbeda dan tidak boleh disatukan dengan produk air. Nomor PO tetap sama, jadi kedua BTB memakai No. Ref. 1 yang sama, sedangkan No. Surat Jalan dan No. Ref. 2 berbeda untuk tiap produk. Terakhir, No. Ref. 2 SGM diambil dari lembar Point Agreement SGM, dan Lot/Batch harus terisi sebelum Simpan Applied.</p>
+<p class="story-end">Ada empat hal yang perlu Anda pegang dalam cerita ini. Produk SPS (Mizone, air kemasan) diinput seperti biasa memakai format BTB Supplier yang berjalan. SGM diinput di <strong>BTB terpisah</strong>, karena No. Surat Jalan dan DN SGM memang berbeda dan tidak boleh disatukan dengan produk SPS. Nomor PO tetap sama, jadi kedua BTB memakai No. Ref. 1 yang sama, sedangkan No. Surat Jalan dan No. Ref. 2 berbeda untuk tiap produk. Terakhir, No. Ref. 2 SGM diambil dari lembar Point Agreement SGM, dan Lot/Batch harus terisi sebelum Simpan Applied.</p>
 
   <div class="tx-steps">
-<h3 class="tx-part">Bagian A &middot; Dokumen &amp; Input Produk Air (Mizone)</h3>
+<h3 class="tx-part">Bagian A &middot; Dokumen &amp; Input Produk SPS (Mizone)</h3>
   <div class="tx-step">
     <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 1</span><img src="assets/images/transaksi-produk-sgm/sgm2-01-surat-jalan-pabrik-po.webp" alt="Surat Jalan pabrik berisi nomor PO di pojok kanan atas dan kolom pengembalian pallet" loading="lazy"></div>
     <div class="tx-step-body">
       <span class="tx-step-tag">Dokumen Pabrik &middot; Surat Jalan</span>
       <h3 class="tx-step-title">Ambil Nomor PO dari Surat Jalan Pabrik</h3>
-      <p class="tx-step-desc">Truk membawa beberapa dokumen. Mulailah dari <strong>Surat Jalan</strong> berbentuk tabel (kolom Jenis Produk, Pengembalian, Permintaan). Catat <strong>nomor di pojok kanan atas</strong>, pada contoh <code>31242671</code>. Ini adalah <strong>Nomor PO</strong>. Nomor yang sama dipakai di <strong>No. Ref. 1</strong> pada <em>semua</em> BTB dan BKB dari truk ini, baik produk air maupun SGM. Lihat juga kotak <strong>Pengembalian ke Pabrik</strong> di bagian bawah: jumlah <strong>pallet</strong> yang tertulis di sana adalah pallet yang dikembalikan ke pabrik (diinput di Langkah 6).</p>
+      <p class="tx-step-desc">Truk membawa beberapa dokumen. Mulailah dari <strong>Surat Jalan</strong> berbentuk tabel (kolom Jenis Produk, Pengembalian, Permintaan). Catat <strong>nomor di pojok kanan atas</strong>, pada contoh <code>31242671</code>. Ini adalah <strong>Nomor PO</strong>. Nomor yang sama dipakai di <strong>No. Ref. 1</strong> pada <em>semua</em> BTB dan BKB dari truk ini, baik produk SPS maupun SGM. Lihat juga kotak <strong>Pengembalian ke Pabrik</strong> di bagian bawah: jumlah <strong>pallet</strong> yang tertulis di sana adalah pallet yang dikembalikan ke pabrik (diinput di Langkah 6).</p>
     </div>
   </div>
   <div class="tx-step">
     <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 2</span><img src="assets/images/transaksi-produk-sgm/sgm2-02-dn-mizone-halaman-1.webp" alt="Delivery Note PT Tirta Investama lembar 1 berisi produk Mizone dan pallet" loading="lazy"></div>
     <div class="tx-step-body">
-      <span class="tx-step-tag">Produk Air &middot; Delivery Note (1/2)</span>
+      <span class="tx-step-tag">Produk SPS &middot; Delivery Note (1/2)</span>
       <h3 class="tx-step-title">Baca Delivery Note Produk Mizone</h3>
       <p class="tx-step-desc">Delivery Note dari <strong>PT Tirta Investama</strong> terdiri dari <strong>dua lembar</strong>. Lembar 1 memuat data barang. Catat tiga hal: <strong>(1) Delv No</strong> (contoh <code>5071697018</code>), yang nanti menjadi <strong>No. Surat Jalan</strong> di BTB; <strong>(2) kolom Material</strong>, yaitu kode produk; <strong>(3) Quantity dan UOM</strong>. Di lembar ini <code>CAR</code> berarti <strong>BOX</strong> dan <code>PC</code> berarti <strong>BUAH</strong>. Pada contoh: 145141 (1.233 BOX), 145143 (672 BOX), 206774 (672 BOX), dan <strong>Pallet Rent Double Face</strong> kode 10169749 (30 BUAH). Pallet ikut diinput sebagai baris produk.</p>
     </div>
@@ -657,7 +658,7 @@
   <div class="tx-step">
     <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 3</span><img src="assets/images/transaksi-produk-sgm/sgm2-03-dn-mizone-halaman-2-security.webp" alt="Delivery Note lembar 2 berisi stempel Security XWH Sentul dan Security Parung" loading="lazy"></div>
     <div class="tx-step-body">
-      <span class="tx-step-tag">Produk Air &middot; Delivery Note (2/2)</span>
+      <span class="tx-step-tag">Produk SPS &middot; Delivery Note (2/2)</span>
       <h3 class="tx-step-title">Periksa Lembar 2: Stempel Security</h3>
       <p class="tx-step-desc">Lembar 2 hanya berisi <strong>stempel dan tanda tangan</strong>: Security XWH Sentul (jam masuk dan jam keluar truk di pabrik) serta stempel Security Parung. Tidak ada angka yang diinput dari lembar ini. Cukup pastikan stempelnya ada sebelum Anda memproses penerimaan.</p>
     </div>
@@ -665,7 +666,7 @@
   <div class="tx-step">
     <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 4</span><img src="assets/images/transaksi-produk-sgm/sgm2-04-point-agreement-mizone.webp" alt="Point Agreement for Finish Good produk Mizone dengan Doc. Number S26092500648" loading="lazy"></div>
     <div class="tx-step-body">
-      <span class="tx-step-tag">Produk Air &middot; Point Agreement</span>
+      <span class="tx-step-tag">Produk SPS &middot; Point Agreement</span>
       <h3 class="tx-step-title">Catat Doc. Number untuk No. Ref. 2</h3>
       <p class="tx-step-desc">Lembar <strong>Point Agreement For Finish Good</strong> (Citoxpress) adalah pasangan Delivery Note. Catat <strong>Doc. Number</strong> (contoh <code>S26092500648</code>), karena angka ini diisi di <strong>No. Ref. 2</strong>. Cocokkan juga produk dan qty-nya dengan Delivery Note. Perhatikan penulisan angka: <strong>1,233</strong> di lembar ini dibaca <strong>seribu dua ratus tiga puluh tiga (1.233)</strong>, bukan satu koma dua.</p>
     </div>
@@ -673,7 +674,7 @@
   <div class="tx-step">
     <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 5</span><img src="assets/images/transaksi-produk-sgm/sgm2-05-btb-supplier-mizone.webp" alt="BTB Supplier produk Mizone nomor dokumen 281-0019834 dengan empat baris detil" loading="lazy"></div>
     <div class="tx-step-body">
-      <span class="tx-step-tag">BTB Supplier &middot; Produk Air</span>
+      <span class="tx-step-tag">BTB Supplier &middot; Produk SPS</span>
       <h3 class="tx-step-title">Input BTB Supplier Produk Mizone (Format Terbaru)</h3>
       <p class="tx-step-desc">Input seperti biasa, mengikuti format BTB Supplier yang sedang berjalan (lihat materi <strong>Transaksi BTB BKB Supplier</strong>). Isian pada contoh: <strong>No. Surat Jalan</strong> <code>5071697018</code> (Delv No); <strong>No. Ref. 1</strong> <code>31242671</code> (PO); <strong>No. Ref. 2</strong> <code>S26092500648</code> (Doc. Number Point Agreement). Nomor dokumen BTB ini (<code>281-0019834</code>) dibuat oleh sistem. Tabel <strong>Detil</strong> berisi empat baris: 145141 (1.233 BOX), 145143 (672 BOX), 206774 (672 BOX), dan 10169749 Pallet Rent Double Face (30 BUAH). Kolom Keterangan diisi sesuai ketentuan terbaru (contoh: <code>GRFC TIDAK ADA</code>). Lalu klik <strong>Simpan Applied</strong>.</p>
     </div>
@@ -683,7 +684,7 @@
     <div class="tx-step-body">
       <span class="tx-step-tag tag-out">BKB Supplier &middot; Pengembalian Pallet</span>
       <h3 class="tx-step-title">Kembalikan Pallet ke Pabrik lewat BKB Supplier</h3>
-      <p class="tx-step-desc">Pallet yang dikembalikan ke pabrik dicatat lewat <strong>BKB Supplier</strong>. Pada contoh: Supplier <code>9013-9000</code> (Citeureup Plant TIV), <strong>No. Surat Jalan</strong> <code>MANUAL</code>, <strong>No. Ref. 1</strong> <code>31242671</code> (PO yang sama), dan Keterangan <code>AQ SPS 31242671</code>. Pada Detil, pilih <strong>10169749 Pallet Rent Double Face</strong> dan isi qty sesuai jumlah pallet yang benar-benar dikembalikan (kotak Pengembalian ke Pabrik di Langkah 1).</p>
+      <p class="tx-step-desc">Armada pabrik membawa SPS di atas pallet kayu. Setelah barang diturunkan dengan forklift di Depo Parung, pallet itu diganti dengan pallet kayu kosong supaya armada kembali ke pabrik dan membawa produk lagi. Penggantian ini dicatat lewat <strong>BKB Supplier</strong>. Pada contoh: Supplier <code>9013-9000</code> (Citeureup Plant TIV), <strong>No. Surat Jalan</strong> <code>MANUAL</code>, <strong>No. Ref. 1</strong> <code>31242671</code> (PO yang sama), dan Keterangan <code>AQ SPS 31242671</code>. Pada Detil, pilih <strong>10169749 Pallet Rent Double Face</strong> dan isi qty sesuai jumlah pallet yang benar-benar dikembalikan (kotak Pengembalian ke Pabrik di Langkah 1).</p>
     </div>
   </div>
 <h3 class="tx-part">Bagian B &middot; Dokumen &amp; Input Produk SGM (BTB Terpisah)</h3>
@@ -692,7 +693,7 @@
     <div class="tx-step-body">
       <span class="tx-step-tag">Produk SGM &middot; Delivery Note</span>
       <h3 class="tx-step-title">Baca Delivery Note SGM (Dokumen Sendiri)</h3>
-      <p class="tx-step-desc">Produk SGM punya <strong>Delivery Note sendiri</strong> dari PT Sarihusada Generasi Mahardhika, terpisah dari dokumen produk air. Catat <strong>DN No.</strong> (kotak hijau, contoh <code>5071565439</code>) sebagai <strong>No. Surat Jalan</strong> BTB SGM. Lalu catat produk dan qty: <strong>215369</strong> (74 TR) dan <strong>214380</strong> (128 TR). <code>TR</code> sama dengan <strong>BOX</strong> di sistem. Kolom <strong>Batch No./Exp.</strong> menunjukkan batch tiap produk, dipakai nanti saat mengisi lot.</p>
+      <p class="tx-step-desc">Produk SGM punya <strong>Delivery Note sendiri</strong> dari PT Sarihusada Generasi Mahardhika, terpisah dari dokumen produk SPS. Catat <strong>DN No.</strong> (kotak hijau, contoh <code>5071565439</code>) sebagai <strong>No. Surat Jalan</strong> BTB SGM. Lalu catat produk dan qty: <strong>215369</strong> (74 TR) dan <strong>214380</strong> (128 TR). <code>TR</code> sama dengan <strong>BOX</strong> di sistem. Kolom <strong>Batch No./Exp.</strong> menunjukkan batch tiap produk, dipakai nanti saat mengisi lot.</p>
     </div>
   </div>
   <div class="tx-step">
@@ -700,7 +701,7 @@
     <div class="tx-step-body">
       <span class="tx-step-tag">Produk SGM &middot; Point Agreement</span>
       <h3 class="tx-step-title">Catat Doc. Number SGM untuk No. Ref. 2</h3>
-      <p class="tx-step-desc">Point Agreement SGM punya <strong>Doc. Number sendiri</strong> (kotak hijau, contoh <code>S26092900130</code>). Nomor inilah yang diisi di <strong>No. Ref. 2</strong> BTB SGM, <strong>bukan</strong> nomor Point Agreement produk air. Lembar ini juga memuat qty dan kolom <strong>BATCH</strong>: 214380 sebanyak 128 dengan batch <code>20280825</code>, dan 215369 sebanyak 74 dengan batch <code>20280914</code>. Batch dibaca <em>Tahun-Bulan-Tanggal</em>, jadi 20280914 berarti <strong>14 September 2028</strong>.</p>
+      <p class="tx-step-desc">Point Agreement SGM punya <strong>Doc. Number sendiri</strong> (kotak hijau, contoh <code>S26092900130</code>). Nomor inilah yang diisi di <strong>No. Ref. 2</strong> BTB SGM, <strong>bukan</strong> nomor Point Agreement produk SPS. Lembar ini juga memuat qty dan kolom <strong>BATCH</strong>: 214380 sebanyak 128 dengan batch <code>20280825</code>, dan 215369 sebanyak 74 dengan batch <code>20280914</code>. Batch dibaca <em>Tahun-Bulan-Tanggal</em>, jadi 20280914 berarti <strong>14 September 2028</strong>.</p>
     </div>
   </div>
   <div class="tx-step">
@@ -708,17 +709,17 @@
     <div class="tx-step-body">
       <span class="tx-step-tag">BTB Supplier &middot; Produk SGM</span>
       <h3 class="tx-step-title">Input BTB Supplier SGM Terpisah, Lalu Isi Lot/Batch</h3>
-      <p class="tx-step-desc">Buat <strong>BTB Supplier baru khusus SGM</strong>. <strong>Jangan digabung</strong> dengan BTB produk air, karena Delivery Note-nya berbeda. Nomor dokumen BTB juga berbeda (contoh: SGM <code>281-0019835</code>, produk air <code>281-0019834</code>). Isian: <strong>No. Surat Jalan</strong> <code>5071565439</code>; <strong>No. Ref. 1</strong> <code>31242671</code> (<em>PO yang sama</em> dengan BTB produk air); <strong>No. Ref. 2</strong> <code>S26092900130</code>; <strong>Keterangan</strong> berisi Customer PO SGM sampai 3 angka setelah SGM/ (contoh <code>LP/SGM/002</code>, caranya di menu 1 Langkah 3). Pada gambar contoh, Keterangan masih format lama. Untuk SGM, ikuti aturan Customer PO. Detil: <strong>214380</strong> = 128 BOX dan <strong>215369</strong> = 74 BOX. <strong>Sebelum Simpan Applied</strong>, isi Lot/Batch tiap produk lewat ikon <strong>Lot/SN</strong> (caranya sama seperti Langkah 4 dan 5 pada menu 1): 214380 batch <code>20280825</code> kuantiti 128; 215369 batch <code>20280914</code> kuantiti 74. Setelah semua cocok, klik <strong>Simpan Applied</strong>.</p>
+      <p class="tx-step-desc">Buat <strong>BTB Supplier baru khusus SGM</strong>. <strong>Jangan digabung</strong> dengan BTB produk SPS, karena Delivery Note-nya berbeda. Nomor dokumen BTB juga berbeda (contoh: SGM <code>281-0019835</code>, produk SPS <code>281-0019834</code>). Isian: <strong>No. Surat Jalan</strong> <code>5071565439</code>; <strong>No. Ref. 1</strong> <code>31242671</code> (<em>PO yang sama</em> dengan BTB produk SPS); <strong>No. Ref. 2</strong> <code>S26092900130</code>; <strong>Keterangan</strong> berisi Customer PO SGM sampai 3 angka setelah SGM/ (contoh <code>LP/SGM/002</code>, caranya di menu 1 Langkah 3). Pada gambar contoh, Keterangan masih format lama. Untuk SGM, ikuti aturan Customer PO. Detil: <strong>214380</strong> = 128 BOX dan <strong>215369</strong> = 74 BOX. <strong>Sebelum Simpan Applied</strong>, isi Lot/Batch tiap produk lewat ikon <strong>Lot/SN</strong> (caranya sama seperti Langkah 4 dan 5 pada menu 1): 214380 batch <code>20280825</code> kuantiti 128; 215369 batch <code>20280914</code> kuantiti 74. Setelah semua cocok, klik <strong>Simpan Applied</strong>.</p>
     </div>
   </div>
   </div>
 <h3 class="tx-part">Ringkasan: Dua BTB dari Satu Truk</h3>
 <table class="tx-mini">
-  <tr><th>Isian</th><th>BTB Produk Air</th><th>BTB SGM</th></tr>
+  <tr><th>Isian</th><th>BTB Produk SPS</th><th>BTB SGM</th></tr>
   <tr><td>No. Dokumen BTB</td><td><code>281-0019834</code></td><td><code>281-0019835</code> (berbeda)</td></tr>
   <tr><td>No. Surat Jalan</td><td><code>5071697018</code><br>(Delv No)</td><td><code>5071565439</code><br>(DN No)</td></tr>
   <tr><td>No. Ref. 1 (PO)</td><td colspan="2"><strong>31242671</strong> (sama untuk keduanya)</td></tr>
-  <tr><td>No. Ref. 2</td><td><code>S26092500648</code><br>(Point Agreement air)</td><td><code>S26092900130</code><br>(Point Agreement SGM)</td></tr>
+  <tr><td>No. Ref. 2</td><td><code>S26092500648</code><br>(Point Agreement Mizone)</td><td><code>S26092900130</code><br>(Point Agreement SGM)</td></tr>
   <tr><td>Isi Detil</td><td>145141 &middot; 145143 &middot; 206774 &middot; Pallet 10169749</td><td>214380 (128 BOX)<br>215369 (74 BOX)</td></tr>
   <tr><td>Keterangan</td><td>Sesuai format yang berjalan<br><small>(contoh: GRFC TIDAK ADA)</small></td><td>Customer PO, 3 angka setelah SGM/<br><small>(contoh: LP/SGM/002)</small></td></tr>
   <tr><td>Lot/Batch</td><td>Mengikuti format yang berjalan</td><td><strong>Wajib diisi</strong> sebelum Simpan Applied</td></tr>
@@ -727,12 +728,12 @@
 
   <div class="tx-note"><b>Kesalahan yang sering terjadi</b>
   <ol class="tx-note-list">
-    <li>Menggabung SGM dan produk air dalam satu BTB.</li>
-    <li>Memakai Doc. Number Point Agreement produk air untuk BTB SGM (atau sebaliknya).</li>
+    <li>Menggabung SGM dan produk SPS dalam satu BTB.</li>
+    <li>Memakai Doc. Number Point Agreement produk SPS untuk BTB SGM (atau sebaliknya).</li>
     <li>Lupa mengisi Lot/Batch SGM sebelum menyimpan. Dokumen yang sudah Applied tidak bisa diubah.</li>
     <li>Salah membaca angka berformat koma, misalnya 1,233 yang artinya 1.233.</li>
   </ol>
-  Produk air tidak perlu di-morphing. Hanya SGM yang dilanjutkan ke morphing: 214380 (128 BOX) menjadi <strong>768 PCS</strong> dan 215369 (74 BOX) menjadi <strong>888 RENCENG</strong>.<br><button type="button" class="tx-jump" data-case-jump="3">Lanjut ke Menu 3: Morphing BOX ke PCS &rsaquo;</button></div>
+  Produk SPS tidak perlu di-morphing. Hanya SGM yang dilanjutkan ke morphing: 214380 (128 BOX) menjadi <strong>768 PCS</strong> dan 215369 (74 BOX) menjadi <strong>888 RENCENG</strong>.<br><button type="button" class="tx-jump" data-case-jump="3">Lanjut ke Menu 3: Morphing BOX ke PCS &rsaquo;</button></div>
 </div>
 
 <!-- ===== MENU 3: MORPHING ===== -->
@@ -820,49 +821,50 @@
 
   var TX_LAPORAN_EXCEL_CONTENT = `
 <div class="tx-intro">
-  <p>Di akhir shift 2, gudang sudah sepi dan tim checker selesai menghitung barang dengan tangan. Hasil hitungannya ditulis di kertas. Tugas admin pada saat itu adalah memastikan angka di <strong>Laporan Manual Excel</strong>, yang berasal dari sistem DMS, sama dengan <strong>hitungan fisik</strong> checker.</p>
-  <p>Pekerjaannya berurutan. Pertama, saldo sistem DMS diinput ulang ke Excel. Kedua, di akhir shift 2 admin menerima catatan hitungan fisik dari checker. Ketiga, admin menyamakan saldo Excel dengan catatan itu: <strong>Layak</strong> (barang bagus), <strong>BS</strong> (rusak ringan), dan <strong>Reject</strong> (ditolak) harus sama dengan hitungan fisik. Satu hal kecil yang sering membingungkan: catatan checker memakai titik (5.594) sedangkan Excel memakai koma (5,594), padahal nilainya sama.</p>
-  <p>Pilih cerita 1 untuk produk air (AQ, VIT, Mizone, SGM) atau cerita 2 untuk galon. Setiap gambar bisa diketuk untuk memperbesar, dan kotak bernomor pada gambar dijelaskan tepat di bawahnya.</p>
+  <p>Sebagian besar barang di gudang Depo Parung adalah air kemasan, hanya bentuk kemasannya yang berbeda. Ada <strong>produk SPS</strong>, yaitu AQUA, VIT, dan Mizone dalam kemasan dus, dan ada <strong>galon</strong> AQUA dan VIT. Di samping itu ada <strong>SGM</strong>, yang bukan air melainkan susu bubuk, dan dihitung terpisah dalam pouch, renceng, dan box. Setiap hari semua barang itu dihitung, dan di akhir shift 2 admin harus memastikan catatan di sistem sama dengan barang yang benar-benar ada di gudang.</p>
+  <p>Inilah tujuan <strong>Laporan Manual Excel</strong>: <strong>menyamakan data fisik</strong>. Saldo di Excel berasal dari sistem DMS, sedangkan data fisik berasal dari hitungan tim checker yang ditulis tangan. Kondisi barang dicatat dalam tiga kelompok. <strong>Layak</strong> adalah barang yang bagus dan bisa dijual. <strong>BS</strong> adalah barang yang sedikit kurang bagus: bila produk SPS masih bisa diperbaiki, tetapi bila galon harus dikembalikan ke pabrik. <strong>Reject</strong> adalah barang yang sudah rusak, misalnya pecah atau bocor.</p>
+  <p>Pekerjaannya berurutan. Pertama, saldo sistem DMS diinput ulang ke Excel. Kedua, di akhir shift 2 admin menerima catatan hitungan fisik dari checker. Ketiga, admin menyamakan Layak, BS, dan Reject di Excel dengan catatan itu. Satu hal kecil yang sering membingungkan: catatan checker memakai titik (5.594), sedangkan Excel memakai koma (5,594), padahal nilainya sama.</p>
+  <p>Pilih cerita 1 untuk produk SPS (AQUA dan VIT) atau cerita 2 untuk galon (AQUA dan VIT). Setiap gambar bisa diketuk untuk memperbesar, dan kotak bernomor pada gambar dijelaskan tepat di bawahnya.</p>
 </div>
 
 
 <div class="tx-tabs" role="tablist" aria-label="Pilih bagian materi Laporan Manual Excel">
   <button type="button" class="tx-tab active" role="tab" aria-selected="true" aria-controls="txCase1" data-case-target="1">
     <span class="tx-tab-num">01</span>
-    <span class="tx-tab-text"><span class="tx-tab-title">Produk Air: AQ, VIT, Mizone &amp; SGM</span><span class="tx-tab-meta">Samakan Layak, BS, Reject &middot; 4 langkah</span></span>
+    <span class="tx-tab-text"><span class="tx-tab-title">Produk SPS: AQUA &amp; VIT</span><span class="tx-tab-meta">Samakan Layak, BS, Reject &middot; 4 langkah</span></span>
     <span class="tx-tab-chevron">&rsaquo;</span>
   </button>
   <button type="button" class="tx-tab" role="tab" aria-selected="false" aria-controls="txCase2" data-case-target="2">
     <span class="tx-tab-num">02</span>
-    <span class="tx-tab-text"><span class="tx-tab-title">Produk Galon: AQ &amp; VIT</span><span class="tx-tab-meta">Samakan saldo galon &middot; 5 langkah</span></span>
+    <span class="tx-tab-text"><span class="tx-tab-title">Produk Galon: AQUA &amp; VIT</span><span class="tx-tab-meta">Samakan saldo galon &middot; 5 langkah</span></span>
     <span class="tx-tab-chevron">&rsaquo;</span>
   </button>
 </div>
 
-<!-- ===== MENU 1: PRODUK AIR ===== -->
+<!-- ===== MENU 1: PRODUK SPS ===== -->
 <div class="tx-case" id="txCase1" data-case="1">
   <div class="tx-case-head">
     <div class="tx-case-badge">01</div>
     <div>
-      <h2>Samakan Saldo Produk Air dengan Hitungan Checker</h2>
+      <h2>Samakan Saldo Produk SPS (AQUA &amp; VIT) dengan Hitungan Checker</h2>
       <p>Ubah <strong>Saldo Layak, Saldo BS, dan Saldo Reject</strong> di Excel agar sama dengan hitungan fisik checker, berdasarkan catatan tulis tangan halaman AQ dan halaman VIT/SGM.</p>
     </div>
   </div>
   <div class="tx-steps rows">
     <div class="tx-step">
-      <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 1</span><img src="assets/images/laporan-manual-excel/lme-01-excel-saldo-dms-air.webp" alt="Lembar Excel Saldo DMS produk air dengan kolom Saldo DMS dan Mutasi Internal ditandai" loading="lazy"></div>
+      <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 1</span><img src="assets/images/laporan-manual-excel/lme-01-excel-saldo-dms-air.webp" alt="Lembar Excel Saldo DMS produk SPS dengan kolom Saldo DMS dan Mutasi Internal ditandai" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag">Lembar Excel &middot; Produk Air</span>
+        <span class="tx-step-tag">Lembar Excel &middot; Produk SPS</span>
         <h3 class="tx-step-title">Kenali Lembar Excel Saldo DMS</h3>
-        <div class="tx-step-desc"><p>Lembar ini memuat seluruh produk air (AQ, VT, Mizone, dan lainnya) lengkap dengan kode dan namanya. Saldo yang tertulis di dalamnya adalah saldo sistem DMS yang <strong>Anda input ulang secara manual</strong> ke Excel.</p><ol class="tx-legend"><li><i class="lg c-red">1</i><span><strong>Saldo DMS</strong> (Layak, BS, Reject). Kolom inilah yang nanti <strong>disesuaikan dengan hitungan fisik</strong> checker.</span></li><li><i class="lg c-blue">2</i><span><strong>Mutasi Internal</strong> (Layak, BS, Reject, Keterangan). Mencatat perpindahan stok antarkondisi.</span></li><li><i class="lg c-orange">3</i><span>Contoh baris bermutasi: AQ.600ML 1X24 ID GOSOK tercatat <strong>Layak -4</strong> dan <strong>BS +4</strong> dengan keterangan <strong>BUFFER</strong>. Artinya 4 BOX berpindah dari kondisi Layak ke BS.</span></li></ol><p><small>Tanda &quot;-&quot; pada sel berarti nol. Angka pada gambar hanyalah contoh.</small></p></div>
+        <div class="tx-step-desc"><p>Lembar ini memuat seluruh produk SPS yang ada di gudang Depo Parung, yaitu AQUA (AQ) dan VIT (VT), lengkap dengan kode dan namanya. Mizone, yang juga air kemasan, ikut tercatat di lembar ini sebagai produk SPS. Saldo yang tertulis di dalamnya adalah saldo sistem DMS yang <strong>Anda input ulang secara manual</strong> ke Excel.</p><ol class="tx-legend"><li><i class="lg c-red">1</i><span><strong>Saldo DMS</strong> (Layak, BS, Reject). Kolom inilah yang nanti <strong>disesuaikan dengan hitungan fisik</strong> checker.</span></li><li><i class="lg c-blue">2</i><span><strong>Mutasi Internal</strong> (Layak, BS, Reject, Keterangan). Mencatat perpindahan stok antarkondisi.</span></li><li><i class="lg c-orange">3</i><span>Contoh baris bermutasi: AQ.600ML 1X24 ID GOSOK tercatat <strong>Layak -4</strong> dan <strong>BS +4</strong> dengan keterangan <strong>BUFFER</strong>. Artinya 4 BOX berpindah dari kondisi Layak ke BS.</span></li></ol><p><small>Tanda &quot;-&quot; pada sel berarti nol. Angka pada gambar hanyalah contoh.</small></p></div>
       </div>
     </div>
     <div class="tx-step">
       <div class="tx-step-media is-doc"><span class="tx-step-num">Langkah 2</span><img src="assets/images/laporan-manual-excel/lme-02-catatan-checker-aqua.webp" alt="Catatan hitungan fisik tulis tangan checker untuk produk AQ dengan tanda nomor" loading="lazy"></div>
       <div class="tx-step-body">
-        <span class="tx-step-tag">Hitungan Fisik &middot; AQ</span>
-        <h3 class="tx-step-title">Baca Catatan Checker Produk AQ</h3>
-        <div class="tx-step-desc"><p>Di akhir shift 2, tim checker menyerahkan hasil hitung fisik berupa catatan tulis tangan. Halaman ini untuk produk <strong>AQ</strong> (dan Mizone). <strong>Satu kolom sama dengan satu produk.</strong></p><ol class="tx-legend"><li><i class="lg c-red">1</i><span><strong>R.</strong> = jumlah Reject. <strong>BS.</strong> = jumlah BS.</span></li><li><i class="lg c-blue">2</i><span>Rincian hitungan. Umumnya berbentuk isi per pallet &times; jumlah pallet, ditambah sisa yang tidak penuh.</span></li><li><i class="lg c-green">3</i><span><strong>H.</strong> = hasil hitung, yaitu <strong>total fisik produk</strong> (sudah termasuk BS dan Reject). Angka dalam <strong>kurung ( )</strong> adalah angka akhir.</span></li><li><i class="lg c-purple">4</i><span>Bila <strong>H.</strong> berbeda dengan angka dalam kurung (contoh: kolom 600), <strong>pakai angka dalam kurung</strong>.</span></li><li><i class="lg c-teal">5</i><span>Baris bawah memuat produk lain, termasuk Mizone.</span></li></ol><p><strong>Pasangan tulisan checker dan produk di Excel:</strong></p><table class="tx-mini"><tr><th>Tulisan checker</th><th>Produk</th><th>Kode</th></tr><tr><td>200</td><td>AQ.200ML 1X48</td><td>204579</td></tr><tr><td>330</td><td>AQ.330ML 1X24</td><td>74556</td></tr><tr><td>600</td><td>AQ.600ML 1X24 ID GOSOK</td><td>208575</td></tr><tr><td>600 pcs</td><td>AQ.600ML 1X1 ID GOSOK</td><td>208575P</td></tr><tr><td>1500</td><td>AQ.1500ML 1X12</td><td>74553</td></tr><tr><td>220 cube</td><td>AQ.220ML MINI BOTTLE LOCAL 1X24</td><td>166126</td></tr><tr><td>330 HB</td><td>AQ.330ML LOCAL HOKBEN 1X24</td><td>74557</td></tr><tr><td>Reflexion</td><td>AQ.380ML REFLECTIONS BAL 1X12</td><td>174139</td></tr><tr><td>Tulisan mirip &quot;250&quot;</td><td>AQ.750ML 1X18</td><td>81681</td></tr><tr><td>AL, mvc, cch</td><td>Mizone Activ Lychee Lemon, Mood Up Cranberry, Coco Bost</td><td>145141, 145143, 206774</td></tr></table><p><small>Bila ragu membaca tulisan tangan, cocokkan juga dengan angka pada lembar Excel atau tanyakan langsung ke checker.</small></p></div>
+        <span class="tx-step-tag">Hitungan Fisik &middot; AQUA</span>
+        <h3 class="tx-step-title">Baca Catatan Checker Produk AQUA</h3>
+        <div class="tx-step-desc"><p>Di akhir shift 2, tim checker menyerahkan hasil hitung fisik berupa catatan tulis tangan. Halaman ini untuk produk <strong>AQUA</strong> (dan Mizone, yang juga air kemasan). <strong>Satu kolom sama dengan satu produk.</strong></p><ol class="tx-legend"><li><i class="lg c-red">1</i><span><strong>R.</strong> = jumlah Reject. <strong>BS.</strong> = jumlah BS.</span></li><li><i class="lg c-blue">2</i><span>Rincian hitungan. Umumnya berbentuk isi per pallet &times; jumlah pallet, ditambah sisa yang tidak penuh.</span></li><li><i class="lg c-green">3</i><span><strong>H.</strong> = hasil hitung, yaitu <strong>total fisik produk</strong> (sudah termasuk BS dan Reject). Angka dalam <strong>kurung ( )</strong> adalah angka akhir.</span></li><li><i class="lg c-purple">4</i><span>Bila <strong>H.</strong> berbeda dengan angka dalam kurung (contoh: kolom 600), <strong>pakai angka dalam kurung</strong>.</span></li><li><i class="lg c-teal">5</i><span>Baris bawah memuat produk SPS lain, termasuk Mizone.</span></li></ol><p><strong>Pasangan tulisan checker dan produk di Excel:</strong></p><table class="tx-mini"><tr><th>Tulisan checker</th><th>Produk</th><th>Kode</th></tr><tr><td>200</td><td>AQ.200ML 1X48</td><td>204579</td></tr><tr><td>330</td><td>AQ.330ML 1X24</td><td>74556</td></tr><tr><td>600</td><td>AQ.600ML 1X24 ID GOSOK</td><td>208575</td></tr><tr><td>600 pcs</td><td>AQ.600ML 1X1 ID GOSOK</td><td>208575P</td></tr><tr><td>1500</td><td>AQ.1500ML 1X12</td><td>74553</td></tr><tr><td>220 cube</td><td>AQ.220ML MINI BOTTLE LOCAL 1X24</td><td>166126</td></tr><tr><td>330 HB</td><td>AQ.330ML LOCAL HOKBEN 1X24</td><td>74557</td></tr><tr><td>Reflexion</td><td>AQ.380ML REFLECTIONS BAL 1X12</td><td>174139</td></tr><tr><td>Tulisan mirip &quot;250&quot;</td><td>AQ.750ML 1X18</td><td>81681</td></tr><tr><td>AL, mvc, cch</td><td>Mizone Activ Lychee Lemon, Mood Up Cranberry, Coco Bost</td><td>145141, 145143, 206774</td></tr></table><p><small>Bila ragu membaca tulisan tangan, cocokkan juga dengan angka pada lembar Excel atau tanyakan langsung ke checker.</small></p></div>
       </div>
     </div>
     <div class="tx-step tx-step-text">
@@ -871,7 +873,7 @@
         <span class="tx-step-tag">Hitung &middot; Ubah Saldo</span>
         <h3 class="tx-step-title">Hitung Saldo Layak, BS, dan Reject, lalu Ubah di Excel</h3>
         <div class="tx-step-desc">
-          <p>Angka akhir checker adalah <strong>total</strong>. Karena itu saldo <strong>Layak</strong> dihitung dengan rumus berikut:</p>
+          <p>Saat menyalin angka, ingat arti tiga kondisinya: <strong>Layak</strong> adalah barang bagus yang bisa dijual, <strong>BS</strong> adalah barang yang sedikit kurang bagus (produk SPS masih bisa diperbaiki), dan <strong>Reject</strong> adalah barang yang sudah rusak, seperti pecah atau bocor.</p><p>Angka akhir checker adalah <strong>total</strong>. Karena itu saldo <strong>Layak</strong> dihitung dengan rumus berikut:</p>
           <p class="tx-formula">Layak = Angka akhir &minus; BS &minus; Reject</p>
           <p>Setelah itu, ubah kolom <strong>Saldo DMS</strong> (Layak, BS, Reject) pada Excel agar <strong>persis sama</strong> dengan hasil fisik checker. Contoh hitungannya:</p>
           <table class="tx-mini">
@@ -891,7 +893,7 @@
       <div class="tx-step-body">
         <span class="tx-step-tag">Hitungan Fisik &middot; VIT &amp; SGM</span>
         <h3 class="tx-step-title">Samakan Produk VIT dan SGM</h3>
-        <div class="tx-step-desc"><p>Halaman checker untuk <strong>VIT</strong> dibaca dengan cara yang sama seperti halaman AQ: <strong>R.</strong>, <strong>BS.</strong>, <strong>H.</strong>, dan angka dalam kurung. Rumus Layak juga sama.</p><ol class="tx-legend"><li><i class="lg c-red">1</i><span><strong>R.</strong> dan <strong>BS.</strong> produk VIT.</span></li><li><i class="lg c-green">2</i><span>Angka akhir (hasil hitung) yang menjadi dasar saldo.</span></li><li><i class="lg c-orange">3</i><span>Empat kotak <strong>SGM</strong>. Pouch, renceng, dan box dihitung <strong>terpisah</strong>.</span></li><li><i class="lg c-gray">4</i><span>Catatan lain di luar produk. Tanyakan ke checker bila ingin menggunakannya.</span></li></ol><table class="tx-mini"><tr><th>Tulisan checker</th><th>Produk</th><th>Kode</th></tr><tr><td>200</td><td>VT.200ML 1X48</td><td>173022</td></tr><tr><td>330</td><td>VT.330ML 1X24</td><td>112839</td></tr><tr><td>550</td><td>VT.550ML 1X24</td><td>157095</td></tr><tr><td>1500</td><td>VT.1500ML 1X12</td><td>74565</td></tr><tr><td>220</td><td>VT.220ML BOTTLE LOCAL 1X24</td><td>164026</td></tr><tr><td>SGM 245 gr / pouch</td><td>214380 satuan PCS</td><td>214380_PC</td></tr><tr><td>SGM 35 gr / renceng</td><td>215369 satuan RENCENG</td><td>215369_RE</td></tr><tr><td>SGM 245 gr box</td><td>214380 satuan BOX</td><td>214380</td></tr><tr><td>SGM 35 gr box</td><td>215369 satuan BOX</td><td>215369</td></tr></table><p><small>Tentang kode berakhiran _PC dan _RE, lihat materi <strong>Transaksi Produk SGM</strong>, menu Morphing.</small></p></div>
+        <div class="tx-step-desc"><p>Halaman checker untuk <strong>VIT</strong> dibaca dengan cara yang sama seperti halaman AQ: <strong>R.</strong>, <strong>BS.</strong>, <strong>H.</strong>, dan angka dalam kurung. Rumus Layak juga sama.</p><ol class="tx-legend"><li><i class="lg c-red">1</i><span><strong>R.</strong> dan <strong>BS.</strong> produk VIT.</span></li><li><i class="lg c-green">2</i><span>Angka akhir (hasil hitung) yang menjadi dasar saldo.</span></li><li><i class="lg c-orange">3</i><span>Empat kotak <strong>SGM</strong> (susu bubuk, bukan air kemasan). Pouch, renceng, dan box dihitung <strong>terpisah</strong>.</span></li><li><i class="lg c-gray">4</i><span>Catatan lain di luar produk. Tanyakan ke checker bila ingin menggunakannya.</span></li></ol><table class="tx-mini"><tr><th>Tulisan checker</th><th>Produk</th><th>Kode</th></tr><tr><td>200</td><td>VT.200ML 1X48</td><td>173022</td></tr><tr><td>330</td><td>VT.330ML 1X24</td><td>112839</td></tr><tr><td>550</td><td>VT.550ML 1X24</td><td>157095</td></tr><tr><td>1500</td><td>VT.1500ML 1X12</td><td>74565</td></tr><tr><td>220</td><td>VT.220ML BOTTLE LOCAL 1X24</td><td>164026</td></tr><tr><td>SGM 245 gr / pouch</td><td>214380 satuan PCS</td><td>214380_PC</td></tr><tr><td>SGM 35 gr / renceng</td><td>215369 satuan RENCENG</td><td>215369_RE</td></tr><tr><td>SGM 245 gr box</td><td>214380 satuan BOX</td><td>214380</td></tr><tr><td>SGM 35 gr box</td><td>215369 satuan BOX</td><td>215369</td></tr></table><p><small>Tentang kode berakhiran _PC dan _RE, lihat materi <strong>Transaksi Produk SGM</strong>, menu Morphing.</small></p></div>
       </div>
     </div>
   </div>
@@ -911,7 +913,7 @@
   <div class="tx-case-head">
     <div class="tx-case-badge">02</div>
     <div>
-      <h2>Samakan Saldo Galon AQ dan VIT dengan Hitungan Checker</h2>
+      <h2>Samakan Saldo Galon AQUA dan VIT dengan Hitungan Checker</h2>
       <p>Urutannya: samakan <strong>lembar saldo galon</strong> dengan hitungan checker lebih dahulu. Setelah itu samakan <strong>BS dan Reject</strong> pada lembar <strong>Saldo Akhir</strong> Aqua dan Vit.</p>
     </div>
   </div>
@@ -921,7 +923,7 @@
       <div class="tx-step-body">
         <span class="tx-step-tag">Lembar Excel &middot; Galon</span>
         <h3 class="tx-step-title">Kenali Lembar Saldo Galon</h3>
-        <div class="tx-step-desc"><p>Lembar ini sama fungsinya dengan lembar produk air, tetapi untuk <strong>galon</strong>. Ada empat baris: AQ.5 GLN <strong>ISI</strong>, AQ.5 GLN <strong>BTL</strong> (galon kosong), VT.5 GLN <strong>ISI</strong>, dan VT.5 GLN <strong>BTL</strong>.</p><ol class="tx-legend"><li><i class="lg c-red">1</i><span><strong>Layak Jual, BS, Reject</strong>: diisi dari hitungan fisik checker (Langkah 2).</span></li><li><i class="lg c-blue">2</i><span><strong>Total Fisik</strong> = Layak Jual + BS + Reject. Khusus baris <strong>BTL</strong>, ditambah juga Total Fisik galon ISI di atasnya.</span></li><li><i class="lg c-green">3</i><span><strong>Saldo TBG</strong>: saldo menurut sistem. Angkanya sama dengan baris TOTAL di lembar Saldo Akhir (Langkah 4 dan 5).</span></li><li><i class="lg c-purple">4</i><span><strong>Selisih</strong> = Total Fisik &minus; Saldo TBG.</span></li></ol><p><small>Saldo TBG N-1 adalah saldo TBG hari sebelumnya. Kolom Keterangan dipakai untuk mencatat penjelasan selisih.</small></p><p><strong>Contoh baris BTL:</strong> AQ.5 GLN BTL = 42.854 + 13 + 0 + 84.145 (Total Fisik AQ ISI) = <strong>127.012</strong>.</p></div>
+        <div class="tx-step-desc"><p>Lembar ini sama fungsinya dengan lembar produk SPS, tetapi untuk <strong>galon</strong> AQUA dan VIT. Ada empat baris: AQ.5 GLN <strong>ISI</strong>, AQ.5 GLN <strong>BTL</strong> (galon kosong), VT.5 GLN <strong>ISI</strong>, dan VT.5 GLN <strong>BTL</strong>.</p><ol class="tx-legend"><li><i class="lg c-red">1</i><span><strong>Layak Jual, BS, Reject</strong>: diisi dari hitungan fisik checker (Langkah 2).</span></li><li><i class="lg c-blue">2</i><span><strong>Total Fisik</strong> = Layak Jual + BS + Reject. Khusus baris <strong>BTL</strong>, ditambah juga Total Fisik galon ISI di atasnya.</span></li><li><i class="lg c-green">3</i><span><strong>Saldo TBG</strong>: saldo menurut sistem. Angkanya sama dengan baris TOTAL di lembar Saldo Akhir (Langkah 4 dan 5).</span></li><li><i class="lg c-purple">4</i><span><strong>Selisih</strong> = Total Fisik &minus; Saldo TBG.</span></li></ol><p><small>Saldo TBG N-1 adalah saldo TBG hari sebelumnya. Kolom Keterangan dipakai untuk mencatat penjelasan selisih.</small></p><p><strong>Contoh baris BTL:</strong> AQ.5 GLN BTL = 42.854 + 13 + 0 + 84.145 (Total Fisik AQ ISI) = <strong>127.012</strong>.</p></div>
       </div>
     </div>
     <div class="tx-step">
@@ -929,7 +931,7 @@
       <div class="tx-step-body">
         <span class="tx-step-tag">Hitungan Fisik &middot; Galon</span>
         <h3 class="tx-step-title">Terima Hitungan Fisik Galon dari Checker</h3>
-        <div class="tx-step-desc"><p>Checker galon menulis hasilnya dalam satu lembar untuk AQ dan VIT. Setiap baris tulisan sudah diberi label berwarna pada gambar untuk menunjukkan <strong>kolom tujuannya</strong> di lembar Excel.</p><ol class="tx-legend"><li><i class="lg c-green">&nbsp;</i><span><strong>Hijau</strong> = kolom Layak Jual</span></li><li><i class="lg c-orange">&nbsp;</i><span><strong>Oranye</strong> = kolom BS</span></li><li><i class="lg c-red">&nbsp;</i><span><strong>Merah</strong> = kolom Reject</span></li></ol><table class="tx-mini"><tr><th>Tulisan checker</th><th>Isi (galon penuh)</th><th>Botol (galon kosong)</th></tr><tr><td>Layak Jual</td><td>&quot;isi&quot;</td><td>&quot;Botol&quot;</td></tr><tr><td>BS</td><td>&quot;RB&quot;</td><td>&quot;CG&quot;</td></tr><tr><td>Reject</td><td>&quot;RJ&quot;</td><td>&quot;RJ&quot; (baris kedua)</td></tr></table><p>Dengan catatan pada gambar, hasilnya: AQ ISI 83.925 / 219 / 1, AQ BTL 42.854 / 13 / 0, VT ISI 1.417 / 1.632 / 1, VT BTL 2.458 / 0 / 3.</p></div>
+        <div class="tx-step-desc"><p>Checker galon menulis hasilnya dalam satu lembar untuk AQ dan VIT. Setiap baris tulisan sudah diberi label berwarna pada gambar untuk menunjukkan <strong>kolom tujuannya</strong> di lembar Excel. Untuk galon, ingat bahwa barang <strong>BS</strong> harus dikembalikan ke pabrik, sedangkan <strong>Reject</strong> adalah galon yang sudah rusak, misalnya pecah atau bocor.</p><ol class="tx-legend"><li><i class="lg c-green">&nbsp;</i><span><strong>Hijau</strong> = kolom Layak Jual</span></li><li><i class="lg c-orange">&nbsp;</i><span><strong>Oranye</strong> = kolom BS</span></li><li><i class="lg c-red">&nbsp;</i><span><strong>Merah</strong> = kolom Reject</span></li></ol><table class="tx-mini"><tr><th>Tulisan checker</th><th>Isi (galon penuh)</th><th>Botol (galon kosong)</th></tr><tr><td>Layak Jual</td><td>&quot;isi&quot;</td><td>&quot;Botol&quot;</td></tr><tr><td>BS</td><td>&quot;RB&quot;</td><td>&quot;CG&quot;</td></tr><tr><td>Reject</td><td>&quot;RJ&quot;</td><td>&quot;RJ&quot; (baris kedua)</td></tr></table><p>Dengan catatan pada gambar, hasilnya: AQ ISI 83.925 / 219 / 1, AQ BTL 42.854 / 13 / 0, VT ISI 1.417 / 1.632 / 1, VT BTL 2.458 / 0 / 3.</p></div>
       </div>
     </div>
     <div class="tx-step tx-step-text">
@@ -980,7 +982,7 @@
 
   var TX_OC_CONTENT = `
 <div class="tx-intro">
-  <p>Setiap hari gudang punya dua momen penting: saat pintu dibuka di pagi hari dan saat pekerjaan ditutup di akhir hari. Stok fisik pada kedua momen itulah yang dicatat sebagai <strong>Opening</strong> (stok awal) dan <strong>Closing</strong> (stok akhir). Pencatatannya dilakukan di <strong>website resmi perusahaan</strong> (aplikasi AQUA &amp; VIT), bukan di website modul ini.</p>
+  <p>Setiap hari, stok fisik di gudang Depo Parung dicatat pada dua titik penting: di awal hari dan di akhir hari. Stok pada kedua titik itulah yang dicatat sebagai <strong>Opening</strong> (stok awal) dan <strong>Closing</strong> (stok akhir). Pencatatannya dilakukan di <strong>website resmi perusahaan</strong> (aplikasi AQUA &amp; VIT), bukan di website modul ini.</p>
   <p>Website resmi itu sangat ketat: <strong>setelah Anda menekan Save, isinya tidak bisa diubah lagi</strong>. Satu angka yang salah atau satu produk yang tertukar bisa merepotkan sampai ke laporan. Karena itu website modul ini menyediakan menu <strong><a href="#/opening-closing">Website Opening &amp; Closing</a></strong> sebagai tempat <strong>latihan</strong> sekaligus tempat menyamakan data sebelum Anda menginput di website perusahaan.</p>
   <p>Ikuti lima gambar di bawah dari atas ke bawah, mulai dari halaman aplikasi sampai mengisi qty di empat gudang. Kotak merah bernomor menunjukkan bagian yang harus Anda klik atau isi, dan penjelasannya ada tepat di bawah gambar.</p>
 </div>
@@ -1037,7 +1039,7 @@
     <div class="tx-step-body">
       <span class="tx-step-tag tag-out">Form Input &middot; QTY Fisik</span>
       <h3 class="tx-step-title">Isi QTY Fisik Sesuai Nama Produk, Lalu Save</h3>
-      <p class="tx-step-desc">Setelah tombol dipilih, muncul form <strong>OPENING GUDANG</strong> (atau <strong>CLOSING GUDANG</strong>). Kolom <strong>Depo</strong> sudah terisi otomatis. Pada <strong>QTY Fisik</strong> terdapat 4 gudang: <strong>Layak, BS, Reject,</strong> dan <strong>Layak PET</strong>. Klik nama gudang untuk membuka daftar produknya, lalu isi qty pada baris yang <strong>namanya sama persis</strong> dengan produk yang dihitung. Setelah semua gudang terisi dan diperiksa, klik <strong>Save changes</strong>. Tombol <strong>Close</strong> menutup form tanpa menyimpan.</p>
+      <p class="tx-step-desc">Setelah tombol dipilih, muncul form <strong>OPENING GUDANG</strong> (atau <strong>CLOSING GUDANG</strong>). Kolom <strong>Depo</strong> sudah terisi otomatis. Pada <strong>QTY Fisik</strong> terdapat 4 gudang: <strong>Layak, BS, Reject,</strong> dan <strong>Layak PET</strong>. Isi tiap gudang sesuai kondisi barangnya: <strong>Layak</strong> untuk barang bagus yang bisa dijual, <strong>BS</strong> untuk barang yang sedikit kurang bagus, dan <strong>Reject</strong> untuk barang yang sudah rusak, seperti pecah atau bocor. Perhatikan juga dua gudang yang bernama Layak. Nama dan kode produk galon selalu sama, yaitu, untuk galon AQUA, <strong>JUG AQUA 19L PC 55 MM</strong>, baik galon PC maupun PET. Yang membedakan jenisnya adalah gudangnya: <strong>Gudang Layak</strong> untuk galon <strong>PC</strong> (<em>polycarbonate</em>, plastik keras dan transparan), dan <strong>Gudang Layak PET</strong> untuk galon <strong>PET</strong> (<em>polyethylene terephthalate</em>, jenis baru). Galon PC mulai dihilangkan dan sudah tidak diproduksi lagi, walaupun sebagian masih beredar di masyarakat. Karena itu, isi qty galon pada gudang yang sesuai jenisnya. Klik nama gudang untuk membuka daftar produknya, lalu isi qty pada baris yang <strong>namanya sama persis</strong> dengan produk yang dihitung. Setelah semua gudang terisi dan diperiksa, klik <strong>Save changes</strong>. Tombol <strong>Close</strong> menutup form tanpa menyimpan.</p>
     </div>
   </div>
 
@@ -1075,8 +1077,18 @@
 `;
 
     var TX_BTB_BKB_SUPPLIER_CONTENT = `
-<p><strong>Transaksi BTB BKB Supplier</strong> adalah prosedur pencatatan Bukti Terima Barang (BTB) dan Bukti Keluar Barang (BKB) untuk transaksi yang melibatkan supplier/pemasok eksternal. Materi ini memuat <strong>pembaruan resmi dari Kantor Pusat</strong> mengenai cara penginputan BTB Supplier untuk produk <strong>AQUA Gallon &amp; AQUA SPS</strong> di DMS 3, sekaligus aturan wajib saat sebuah Surat Jalan/PO dibatalkan. Pelajari dengan saksama agar setiap dokumen yang disimpan sudah sesuai format terbaru.</p>
+<p>Di Depo Parung, barang berasal dari pabrik, yang di sistem disebut <strong>supplier</strong>. Ketika truk dari pabrik tiba, barang yang masuk dicatat lewat <strong>BTB Supplier</strong> (Bukti Terima Barang). Sebaliknya, ada barang yang harus pulang bersama armada ke pabrik, dan itu dicatat lewat <strong>BKB Supplier</strong> (Bukti Keluar Barang). Materi ini memuat pembaruan resmi dari Kantor Pusat tentang cara mengisi BTB Supplier untuk produk <strong>AQUA Galon</strong> dan <strong>AQUA SPS</strong> di DMS 3, sekaligus aturan wajib saat sebuah Surat Jalan/PO dibatalkan. Pelajari dengan saksama supaya setiap dokumen yang disimpan sesuai format terbaru.</p>
+<p>BKB Supplier punya beberapa jenis, tergantung produknya. Pada <strong>produk SPS</strong>, armada pabrik membawa barang di atas <strong>pallet kayu</strong> sebagai alasnya. Sesampainya di Depo Parung, barang diturunkan memakai <strong>forklift</strong>. Setelah semua barang turun, pallet kayu itu diganti dengan <strong>pallet kayu kosong</strong>, yaitu pallet tanpa produk, supaya armada bisa kembali ke pabrik dan membawa produk lagi. Begitulah siklusnya, dan penggantian pallet inilah yang dicatat lewat BKB Supplier.</p>
+<p>Pada <strong>produk galon</strong>, yang berubah adalah barang yang dikembalikan: <strong>galon kosong</strong> dan <strong>jugrak</strong> (di sistem tertulis <em>Jugrack</em>). Jugrak adalah semacam kandang besi yang menjaga galon tidak bergeser selama berada di atas armada, dan satu jugrak berisi <strong>48 galon</strong>. Perlu diingat bahwa tidak semua produk memakai alas yang sama. Sebagian produk SPS tidak memakai pallet kayu, dan galon yang tidak memakai jugrak disebut <strong>lasah</strong>.</p>
 
+<h2>Galon PC atau Galon PET? Lihat Gudangnya</h2>
+<p>Ada satu hal yang sering membuat bingung. Di sistem, <strong>nama dan kode produk galon selalu sama</strong>, yaitu, untuk galon AQUA, <strong>JUG AQUA 19L PC 55 MM</strong> (kode 10516937), baik galonnya jenis PC maupun jenis PET. Galon VIT punya kode botol sendiri, yaitu 10169932. Padahal keduanya berbeda. Galon <strong>PC</strong> terbuat dari plastik <em>polycarbonate</em> yang keras dan transparan, sedangkan galon <strong>PET</strong> terbuat dari plastik <em>polyethylene terephthalate</em>, jenis yang lebih baru.</p>
+<p>Lalu bagaimana sistem membedakannya? Jawabannya ada pada <strong>gudang yang dipilih admin</strong> saat membuat dokumen. Untuk galon PC, pilih <strong>Gudang Layak</strong>. Untuk galon PET, pilih <strong>Gudang Layak PET</strong>. Gambar pertama di bawah memperlihatkan pilihan Gudang Layak (285-W01 Gudang Layak Cianjur), sedangkan gambar kedua memperlihatkan Gudang Layak PET (284-W13 Gudang Layak PET Sukabumi). Perhatikan bahwa pada gambar kedua, baris produknya tetap tertulis JUG AQUA 19L PC 55 MM.</p>
+<div class="gfig-pair">
+  <figure class="gfig"><img src="assets/images/transaksi-btb-bkb-supplier/gudang-layak-cianjur.webp" alt="Pilihan Gudang Layak: 285-W01 Gudang Layak Cianjur" loading="lazy"><figcaption><b>Gudang Layak</b>: dipilih untuk galon PC. Contoh: 285-W01 Gudang Layak Cianjur.</figcaption></figure>
+  <figure class="gfig"><img src="assets/images/transaksi-btb-bkb-supplier/gudang-layak-pet-sukabumi.webp" alt="Pilihan Gudang Layak PET: 284-W13 Gudang Layak PET Sukabumi, produk tetap JUG AQUA 19L PC 55 MM" loading="lazy"><figcaption><b>Gudang Layak PET</b>: dipilih untuk galon PET. Contoh: 284-W13 Gudang Layak PET Sukabumi.</figcaption></figure>
+</div>
+<p>Karena itu, sebelum menekan Simpan Applied, selalu periksa kolom <strong>Gudang</strong>. Aturan dua pilihan gudang ini berlaku di depo. Di <strong>Pool Cicurug</strong> hanya ada satu pilihan gudang, karena Pool Cicurug memakai sistem DMS 5 NG. Salah memilih gudang berarti stok galon tercatat sebagai jenis yang salah, walaupun nama produknya benar. Pada contoh-contoh di materi ini, akhiran gudang <strong>-W01</strong> menandakan Gudang Layak dan <strong>-W13</strong> menandakan Gudang Layak PET. Depan nomor gudang adalah kode depo: 281 untuk Depo Parung, 284 untuk Sukabumi, dan 285 untuk Cianjur. Daftar kode pabrik (supplier) dan kode item, termasuk kode galon, jugrak, dan pallet, ada di menu <a href="https://web189.github.io/UangRitase/" target="_blank" rel="noopener noreferrer">Uang Ritase TUA</a>.</p>
 <div class="tx-note"><b>Berlaku untuk:</b>&nbsp;Seluruh penginputan BTB Supplier produk AQUA Gallon &amp; AQUA SPS, serta BTB/BKB Supplier yang mengalami pembatalan Surat Jalan, di DMS 3.</div>
 
 <h2>Format Baru: No. Ref. 3 &amp; Keterangan pada BTB Supplier</h2>
@@ -1089,7 +1101,7 @@
     <div class="tx-step-body">
       <span class="tx-step-tag">BTB Supplier &middot; AQUA Gallon</span>
       <h3 class="tx-step-title">No. Ref. 3 Diisi Berurutan, Keterangan Diisi No. GRFC</h3>
-      <p class="tx-step-desc">Kolom <strong>No. Ref. 3</strong> diisi berurutan sesuai formula <strong>HPPP / Qty Retur Air / Qty Total Botol / Qty Jugrack</strong>, dan pemisah antar-angka <strong>wajib menggunakan tanda "/"</strong> &mdash; contoh pada gambar: <code>90A0260923-005/24/960/20</code>.</p><table class="tx-mini"><tr><th>Bagian</th><th>Isi pada contoh</th><th>Artinya</th></tr><tr><td>1. HPPP</td><td>90A0260923-005</td><td>Nomor dokumen pabrik (awalan 90A)</td></tr><tr><td>2. Qty Retur Air</td><td>24</td><td>Galon isi air yang dikembalikan</td></tr><tr><td>3. Qty Total Botol</td><td>960</td><td>Jumlah botol galon (lihat baris Jug Aqua di Detil)</td></tr><tr><td>4. Qty Jugrack</td><td>20</td><td>Jumlah jugrack (lihat baris Jugrack di Detil)</td></tr></table><p class="tx-step-desc"> Kolom <strong>Keterangan</strong> diisi dengan <strong>No. GRFC</strong>; jika dokumen GRFC belum tersedia, tulis <strong>"TIDAK ADA GRFC"</strong> &mdash; jangan dibiarkan kosong.</p>
+      <p class="tx-step-desc">Kolom <strong>No. Ref. 3</strong> diisi berurutan sesuai formula <strong>HPPP / Qty Retur Air / Qty Total Botol / Qty Jugrack</strong>, dan pemisah antar-angka <strong>wajib menggunakan tanda "/"</strong> &mdash; contoh pada gambar: <code>90A0260923-005/24/960/20</code>.</p><table class="tx-mini"><tr><th>Bagian</th><th>Isi pada contoh</th><th>Artinya</th></tr><tr><td>1. HPPP</td><td>90A0260923-005</td><td>Nomor dokumen pabrik. Awalannya sama dengan kode pabrik di kolom Supplier (pada contoh 90A0, yaitu Caringin Plant TIV)</td></tr><tr><td>2. Qty Retur Air</td><td>24</td><td>Galon isi air yang dikembalikan</td></tr><tr><td>3. Qty Total Botol</td><td>960</td><td>Jumlah botol galon (lihat baris Jug Aqua di Detil)</td></tr><tr><td>4. Qty Jugrack</td><td>20</td><td>Jumlah jugrak (lihat baris Jugrack di Detil). Satu jugrak berisi 48 galon</td></tr></table><p class="tx-step-desc">Angka pada contoh ini saling cocok: 960 botol dibagi 48 galon per jugrak sama dengan 20 jugrak. Galon yang tidak memakai jugrak (lasah) tidak punya hitungan jugrak seperti ini.</p><p class="tx-step-desc"> Kolom <strong>Keterangan</strong> diisi dengan <strong>No. GRFC</strong>; jika dokumen GRFC belum tersedia, tulis <strong>"TIDAK ADA GRFC"</strong> &mdash; jangan dibiarkan kosong.</p>
     </div>
   </div>
 
@@ -1141,10 +1153,10 @@
       var now = new Date().toISOString();
       var defs = [
         { title: "Transaksi Flashout", desc: "Program penjualan lewat NG (Pool Cicurug) ke toko-toko Depo Parung: urutan dokumen BKB/BTB di DMS 3 dan DMS 5, termasuk balikan fisik dari toko, lengkap dengan gambar bertanda.", body: TX_DMS3_CONTENT },
-        { title: "Transaksi Produk SGM", desc: "Prosedur penerimaan produk SGM dari supplier (dua kasus: truk membawa SGM saja, atau satu truk membawa produk air dan SGM) dan cara mengubah stok dari BOX ke PCS/Renceng (morphing) memakai BKB/BTB Depot, lengkap dengan contoh transaksi Depo Parung.", body: TX_SGM_CONTENT },
+        { title: "Transaksi Produk SGM", desc: "Prosedur penerimaan produk SGM dari supplier (dua kasus: truk membawa SGM saja, atau satu truk membawa produk SPS Mizone dan SGM) dan cara mengubah stok dari BOX ke PCS/Renceng (morphing) memakai BKB/BTB Depot, lengkap dengan contoh transaksi Depo Parung.", body: TX_SGM_CONTENT },
         { title: "Transaksi BTB BKB Supplier", desc: "Prosedur pencatatan Bukti Terima Barang (BTB) dan Bukti Keluar Barang (BKB) untuk transaksi dengan supplier/pemasok eksternal.", body: TX_BTB_BKB_SUPPLIER_CONTENT },
         { title: "Input Opening & Closing Gudang", desc: "Cara menginput stok fisik Opening dan Closing di website resmi perusahaan, lengkap dengan aturan sistem dan cara berlatih agar tidak salah produk.", body: TX_OC_CONTENT },
-        { title: "Laporan Manual Excel", desc: "Cara menyamakan saldo stok di Excel dengan hasil hitung fisik tim checker di akhir shift 2, untuk produk air (AQ, VIT, Mizone, SGM) dan galon, lengkap dengan gambar bertanda.", body: TX_LAPORAN_EXCEL_CONTENT }
+        { title: "Laporan Manual Excel", desc: "Cara menyamakan saldo stok di Excel dengan hasil hitung fisik tim checker di akhir shift 2, untuk produk SPS (AQUA dan VIT) dan galon (AQUA dan VIT). Intinya menyamakan data fisik: Layak, BS, dan Reject, lengkap dengan gambar bertanda.", body: TX_LAPORAN_EXCEL_CONTENT }
       ];
       materials = defs.map(function (d, i) {
         return {

@@ -235,3 +235,12 @@ html[data-theme="dark"] .warn{background:#2A2010; border-color:#5A4116; color:#F
 /* menu samping tertutup tidak boleh memakan ruang di bawah header */
 @media (max-width:860px){ .mobile-drawer:not(.open){height:0; max-height:0;} .mobile-drawer:not(.open) .mobile-drawer-inner{padding-top:0; padding-bottom:0;} }
 .annot-cap{margin-top:18px !important;}
+
+/* ---------- pasangan gambar gudang (galon PC / PET) ---------- */
+.gfig-pair{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:6px 0 20px;}
+.gfig{margin:0; background:var(--bg-secondary); border:1px solid var(--border); border-radius:var(--radius-md); overflow:hidden;}
+.gfig img{display:block; width:100%; height:auto; cursor:zoom-in; background:#fff;}
+.gfig figcaption{padding:10px 14px 12px; font-size:.86rem; line-height:1.5; color:var(--text-secondary);}
+.gfig figcaption b{color:var(--text-primary);}
+@media (max-width:700px){.gfig-pair{grid-template-columns:1fr;}}
+.gfig-pair{align-items:start;}
