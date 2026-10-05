@@ -26,7 +26,7 @@
   // Bump this whenever the built-in seed content changes, so browsers that
   // already have older data in LocalStorage get refreshed automatically
   // instead of keeping stale materials forever.
-  var DATA_VERSION = "2026.10.04-flashout-v4";
+  var DATA_VERSION = "2026.10.05-materi-v7";
   var DATA_VERSION_KEY = "gdngprg_data_version";
 
   /* ------------------------------------------------------------------ */
@@ -277,8 +277,9 @@
   var TX_DMS3_CONTENT = `
 <div class="tx-intro">
   <p>Bayangkan sebuah mobil pengantar galon yang berangkat pagi-pagi menuju deretan toko pelanggan Depo Parung. Penjualan seperti inilah yang disebut <strong>Flashout</strong>. Barangnya dijual lewat jalur <strong>NG (Non Gudang)</strong>, yaitu <strong>Pool Cicurug</strong>, dan tujuannya adalah toko-toko penjualan Depo Parung. Nama toko bisa Anda lihat di kolom <strong>Keterangan</strong> pada dokumen <strong>BKB Distribusi DMS 5</strong>, ditandai dengan awalan <strong>FO</strong>, singkatan dari Flashout (contoh: FO TK DK TIRTA).</p>
-  <p>Dalam cerita ini, NG berperan sebagai <strong>perantara</strong> yang membantu menambah kontribusi penjualan. Ada satu hal yang paling penting untuk diingat: <strong>semua BKB Distribusi hanya dibuat di sistem DMS 5 atas nama NG (Pool Cicurug)</strong>. Karena itu, ketika Anda membuka sistem, akan terlihat seolah-olah Pool Cicurug yang mengeluarkan barang ke toko. Padahal barang itu sebenarnya berasal dari gudang <strong>Parung, Sentul, atau Cianjur</strong>.</p>
-  <p>Itulah sebabnya cerita Flashout selalu melibatkan lebih dari satu depo. Fisik barang diambil dari gudang Sentul atau Cianjur, tetapi yang tercatat menjual ke toko adalah NG. Dokumen BKB dan BTB lain yang menyertainya adalah jalan yang harus dilewati supaya barang tercatat sampai ke NG, dan supaya barang yang tidak jadi terjual bisa pulang ke depo asalnya.</p>
+  <p>Dalam cerita ini, NG berperan sebagai <strong>perantara</strong> yang membantu menambah kontribusi penjualan. Ada satu aturan yang paling penting: <strong>semua BKB Distribusi hanya dibuat di sistem DMS 5 atas nama NG (Pool Cicurug)</strong>.</p>
+  <p>Kenapa harus di sana? Karena mobil yang mengantar barang ke toko adalah <strong>kendaraan dan driver milik NG (Pool Cicurug)</strong>, bukan milik Parung, Sentul, atau Cianjur. Kendaraan dan driver itu terdaftar di DMS 5 atas nama NG, dan BKB Distribusi memang mewajibkan keduanya diisi. Jadi dokumen pengirimannya harus dibuat di tempat kendaraan dan driver itu berada. Anda bisa melihat buktinya pada gambar: kode driver di DMS 5 berawalan <strong>002</strong> (kode NG), sedangkan di DMS 3 berawalan <strong>281</strong> (kode Parung).</p>
+  <p>Akibatnya, ketika Anda membuka sistem, terlihat seolah-olah Pool Cicurug yang mengeluarkan barang ke toko. Padahal barang itu sebenarnya berasal dari gudang <strong>Parung, Sentul, atau Cianjur</strong>. Itulah juga sebabnya cerita Flashout selalu melibatkan lebih dari satu depo: fisik barang diambil dari gudang asalnya, tetapi yang tercatat menjual ke toko adalah NG. Dokumen BKB dan BTB lain yang menyertainya adalah jalan yang harus dilewati supaya barang tercatat sampai ke NG, dan supaya barang yang tidak jadi terjual bisa pulang ke depo asalnya.</p>
   <p>Ada tiga cerita di bawah ini: galon dari Parung, galon dari Sentul, dan Aqua kemasan dus (SPS) dari Cianjur. Pilih satu pada tab, lalu ikuti dari gambar pertama. Kotak merah bernomor pada gambar dijelaskan tepat di bawahnya, dan gambar bisa diketuk untuk memperbesar.</p>
 </div>
 
@@ -336,7 +337,7 @@
       <div class="tx-step-body">
         <span class="tx-step-tag tag-out">BKB Distribusi &middot; ke Toko</span>
         <h3 class="tx-step-title">Inti ceritanya: BKB Distribusi berangkat ke toko</h3>
-        <div class="tx-step-desc"><p>Sampai di sini barang sudah berada di NG, dan inilah saat penjualannya dicatat. Admin membuat <strong>BKB Distribusi</strong> di DMS 5. Ingat aturan pentingnya: BKB Distribusi hanya dibuat di DMS 5 atas nama NG (Pool Cicurug). Di layar terlihat seolah-olah Pool Cicurug yang mengeluarkan barang ke toko, padahal fisiknya berasal dari gudang Parung.</p><p>Lengkapi kolom bertanda bintang (*) seperti Dok. Permintaan Barang, Salesman/Driver, Gudang, Tipe Stok, dan Kendaraan. Lalu tulis <strong>nama toko tujuan</strong> di kolom <strong>Keterangan</strong>. Pada gambar tertulis <em>FO TK DK TIRTA</em>: FO adalah singkatan dari Flashout, diikuti nama toko. Setelah dokumen tersimpan, mobil berangkat menuju toko-toko Parung.</p></div>
+        <div class="tx-step-desc"><p>Sampai di sini barang sudah berada di NG, dan inilah saat penjualannya dicatat. Admin membuat <strong>BKB Distribusi</strong> di DMS 5. Mengapa di sini, bukan di DMS 3? Karena yang mengantar barang ke toko adalah <strong>kendaraan dan driver NG (Pool Cicurug)</strong>. Lihat pada gambar: Salesman/Driver tertulis <em>002-APJ-R0235</em> (Jejen Jaenudin), berawalan 002 yang menandakan driver milik NG, dan kendaraannya F 9073 SB. Di layar terlihat seolah-olah Pool Cicurug yang mengeluarkan barang, padahal fisiknya berasal dari gudang Parung.</p><p>Lengkapi kolom bertanda bintang (*) seperti Dok. Permintaan Barang, Salesman/Driver, Gudang, Tipe Stok, dan Kendaraan. Lalu tulis <strong>nama toko tujuan</strong> di kolom <strong>Keterangan</strong>. Pada gambar tertulis <em>FO TK DK TIRTA</em>: FO adalah singkatan dari Flashout, diikuti nama toko. Setelah dokumen tersimpan, mobil berangkat menuju toko-toko Parung.</p></div>
       </div>
     </div>
 
@@ -414,7 +415,7 @@
       <div class="tx-step-body">
         <span class="tx-step-tag tag-out">BKB Distribusi &middot; ke Toko</span>
         <h3 class="tx-step-title">Di sistem terlihat Pool Cicurug yang berjualan</h3>
-        <div class="tx-step-desc"><p>Inilah dokumen penjualannya: <strong>BKB Distribusi</strong> di DMS 5 atas nama NG. Layar akan menampilkan seolah-olah Pool Cicurug yang mengeluarkan barang ke toko, padahal fisiknya berasal dari Depo Sentul.</p><p>Seperti biasa, <strong>nama toko tujuan</strong> ditulis di Keterangan. Pada gambar tertulis <em>FO BJS 3</em>, dengan FO sebagai singkatan Flashout. Setelah itu mobil berangkat ke toko Parung.</p></div>
+        <div class="tx-step-desc"><p>Inilah dokumen penjualannya: <strong>BKB Distribusi</strong> di DMS 5 atas nama NG. Alasannya sama seperti cerita pertama: barang diantar dengan <strong>kendaraan dan driver NG</strong> (di gambar, driver 002-APJ-R0210 dan kendaraan D 9363 YA), jadi dokumennya harus dibuat di DMS 5 NG. Layar akan menampilkan seolah-olah Pool Cicurug yang mengeluarkan barang ke toko, padahal fisiknya berasal dari Depo Sentul.</p><p>Seperti biasa, <strong>nama toko tujuan</strong> ditulis di Keterangan. Pada gambar tertulis <em>FO BJS 3</em>, dengan FO sebagai singkatan Flashout. Setelah itu mobil berangkat ke toko Parung.</p></div>
       </div>
     </div>
 
@@ -501,7 +502,7 @@
       <div class="tx-step-body">
         <span class="tx-step-tag tag-out">BKB Distribusi &middot; ke Toko</span>
         <h3 class="tx-step-title">Penjualan dicatat, dan ceritanya berhenti di sini</h3>
-        <div class="tx-step-desc"><p>Terakhir, admin membuat <strong>BKB Distribusi</strong> di DMS 5 atas nama NG. Seperti biasa, di sistem terlihat Pool Cicurug yang mengeluarkan barang, padahal fisiknya dari Cianjur. Nama toko tujuan ditulis di Keterangan; pada gambar tertulis <em>FO MEBBY</em>, dengan FO sebagai singkatan Flashout.</p><p>Perhatikan bedanya dengan galon. Galon dijual ke toko, dan toko harus menyiapkan galon kosong untuk ditukar. SPS tidak begitu: seluruh produknya menjadi milik toko, dijual putus. Tidak ada wadah yang kembali dan tidak ada barang balikan, sehingga ceritanya berhenti di dokumen ini.</p></div>
+        <div class="tx-step-desc"><p>Terakhir, admin membuat <strong>BKB Distribusi</strong> di DMS 5 atas nama NG, karena barang diantar dengan <strong>kendaraan dan driver NG</strong> (di gambar, driver 002-APJ-R0255 dan kendaraan F 9012 SJ). Seperti biasa, di sistem terlihat Pool Cicurug yang mengeluarkan barang, padahal fisiknya dari Cianjur. Nama toko tujuan ditulis di Keterangan; pada gambar tertulis <em>FO MEBBY</em>, dengan FO sebagai singkatan Flashout.</p><p>Perhatikan bedanya dengan galon. Galon dijual ke toko, dan toko harus menyiapkan galon kosong untuk ditukar. SPS tidak begitu: seluruh produknya menjadi milik toko, dijual putus. Tidak ada wadah yang kembali dan tidak ada barang balikan, sehingga ceritanya berhenti di dokumen ini.</p></div>
       </div>
     </div>
 
@@ -518,10 +519,12 @@
 
   var TX_SGM_CONTENT = `
 <div class="tx-intro">
-  <p><strong>Transaksi Produk SGM</strong> adalah cara mencatat susu SGM yang datang dari supplier, lalu mengubah satuannya dari <strong>BOX</strong> menjadi <strong>PCS/POUCH</strong> atau <strong>RENCENG</strong> supaya bisa dijual eceran. Materi ini punya <strong>tiga menu</strong>.</p>
-  <p><strong>Cara memakai:</strong> pilih menu <strong>1</strong> bila truk hanya membawa SGM, atau menu <strong>2</strong> bila satu truk membawa SGM dan Mizone. Setelah BTB Supplier tersimpan, <strong>selalu lanjutkan ke menu 3 (morphing)</strong>. Ketuk gambar untuk memperbesar.</p>
+  <p>Modul ini dibuat untuk transaksi di <strong>Depo Parung</strong>. Depo Parung adalah <strong>gudang sementara</strong>, dan <strong>Parung</strong> adalah nama tempat gudang itu berada. Susu SGM dan produk-produk lain berasal dari <strong>pabrik</strong>. Dari pabrik, barang diantar ke Depo Parung, lalu dari Depo Parung barang disebar ke <strong>warung-warung</strong> oleh <strong>sales dan driver Depo Parung</strong>. Begitulah jalur datangnya barang yang akan Anda catat di sistem.</p>
+  <p>Dari pabrik, susu SGM datang dalam satuan <strong>BOX</strong>, yaitu satu dus besar berisi banyak pouch atau renceng. Padahal warung membeli secara eceran, jadi stok BOX di Depo Parung harus diubah dulu menjadi <strong>PCS (pouch)</strong> atau <strong>RENCENG</strong> sebelum disebar. Karena itu, perjalanan satu truk SGM di sistem dibagi menjadi dua babak: mencatat barang yang datang dari pabrik, lalu mengubah satuannya.</p>
+  <p>Babak pertama dikerjakan lewat <strong>BTB Supplier</strong>, yaitu dokumen penerimaan barang dari pabrik ke Depo Parung. Di sinilah Anda membaca surat jalan, mencatat <strong>batch</strong> (yang sekaligus menjadi tanggal expired), dan menulis <strong>Customer PO</strong> di kolom Keterangan. Ada dua keadaan: truk yang hanya membawa SGM (cerita 1), atau truk yang membawa SGM bersama Mizone (cerita 2), sehingga hasilnya dua BTB terpisah.</p>
+  <p>Babak kedua adalah <strong>morphing</strong> (cerita 3). Barangnya tidak pindah ke mana-mana. Stok BOX dikeluarkan lewat BKB Depot, lalu dimasukkan lagi sebagai stok eceran lewat BTB Depot ke depo sendiri. Apa pun ceritanya, morphing selalu menjadi langkah penutup setelah BTB Supplier SGM tersimpan, sehingga stok siap disebar ke warung. Pilih satu cerita pada tab di bawah, dan ketuk gambar untuk memperbesar.</p>
 </div>
-<div class="pipe"><p class="pipe-title">Urutan kerja SGM</p><div class="pipe-row"><div class="pipe-node in"><b>1. Baca surat jalan</b>Catat PO, Doc. Number, batch</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node in"><b>2. BTB Supplier</b>Isi Ref, Keterangan, Lot/Batch, lalu Simpan Applied</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node mid"><b>3. Morphing</b>BKB Depot lalu BTB Depot ke depo sendiri</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node in"><b>4. Cek laporan</b>Saldo TBG dan Saldo DMS harus cocok</div></div></div><details class="gloss"><summary>Istilah penting di materi ini</summary><dl><dt>Morphing</dt><dd>Mengubah satuan stok (BOX jadi PCS/RENCENG). Barang tidak berpindah tempat.</dd><dt>Batch / Lot</dt><dd>Kode produksi 8 angka di surat jalan. Hasilnya sekaligus tanggal expired.</dd><dt>Customer PO</dt><dd>Nomor PO dari pelanggan di Delivery Note. Diinput 3 angka setelah SGM/.</dd><dt>Doc. Number</dt><dd>Nomor di lembar Point Agreement. Diisi di No. Ref. 2.</dd><dt>COUNTER</dt><dd>Isian Driver dan Kendaraan khusus untuk morphing.</dd><dt>BOX / PCS / RENCENG</dt><dd>BOX = satu dus. PCS = pouch satuan. RENCENG = rangkaian sachet.</dd></dl></details>
+
 <div class="tx-tabs" role="tablist" aria-label="Pilih bagian materi SGM">
   <button type="button" class="tx-tab active" role="tab" aria-selected="true" aria-controls="txCase1" data-case-target="1">
     <span class="tx-tab-num">01</span>
@@ -631,15 +634,7 @@
       <p>Supplier mengirim produk air dan SGM dalam <strong>satu armada</strong>, dengan <strong>dua kelompok surat</strong> (Delivery Note dan Point Agreement untuk masing-masing produk) dan <strong>satu Nomor PO yang sama</strong>. Hasilnya <strong>dua BTB terpisah</strong>. Contoh nyata: Depo Parung, 01/10/2026, Nomor PO <code>31242671</code>.</p>
     </div>
   </div>
-<div class="tx-rules">
-  <b>Empat aturan Kasus 2</b>
-  <ol class="tx-note-list">
-    <li><strong>Produk air (Mizone)</strong> diinput seperti biasa, memakai format BTB Supplier yang sedang berjalan.</li>
-    <li><strong>SGM diinput di BTB terpisah.</strong> Nomor dokumen BTB-nya tidak boleh disatukan dengan produk air, karena No. Surat Jalan/DN SGM juga berbeda.</li>
-    <li><strong>Nomor PO tetap sama.</strong> Kedua BTB memakai No. Ref. 1 yang sama, sedangkan No. Surat Jalan dan No. Ref. 2 <em>berbeda</em> untuk tiap produk.</li>
-    <li><strong>No. Ref. 2 SGM</strong> diambil dari lembar <strong>Point Agreement</strong> SGM. Jangan lupa isi <strong>Lot/Batch</strong> sebelum Simpan Applied.</li>
-  </ol>
-</div>
+<p class="story-end">Ada empat hal yang perlu Anda pegang dalam cerita ini. Produk air (Mizone) diinput seperti biasa memakai format BTB Supplier yang berjalan. SGM diinput di <strong>BTB terpisah</strong>, karena No. Surat Jalan dan DN SGM memang berbeda dan tidak boleh disatukan dengan produk air. Nomor PO tetap sama, jadi kedua BTB memakai No. Ref. 1 yang sama, sedangkan No. Surat Jalan dan No. Ref. 2 berbeda untuk tiap produk. Terakhir, No. Ref. 2 SGM diambil dari lembar Point Agreement SGM, dan Lot/Batch harus terisi sebelum Simpan Applied.</p>
 
   <div class="tx-steps">
 <h3 class="tx-part">Bagian A &middot; Dokumen &amp; Input Produk Air (Mizone)</h3>
@@ -825,11 +820,12 @@
 
   var TX_LAPORAN_EXCEL_CONTENT = `
 <div class="tx-intro">
-  <p><strong>Laporan Manual Excel</strong> adalah lembar Excel yang dipakai admin untuk menyamakan <strong>saldo di Excel</strong> (yang berasal dari sistem DMS) dengan <strong>hasil hitung fisik</strong> dari tim checker. Pekerjaan ini dilakukan di <strong>akhir shift 2</strong>.</p>
-  <p><strong>Alurnya:</strong> (1) saldo sistem DMS diinput ulang ke Excel; (2) di akhir shift 2, admin menerima catatan hitungan fisik dari checker; (3) admin menyamakan saldo Excel dengan catatan tersebut. Pilih menu <strong>1</strong> untuk produk air (AQ, VIT, Mizone, SGM) atau menu <strong>2</strong> untuk galon. Setiap gambar bisa diklik untuk diperbesar, dan kotak bernomor pada gambar dijelaskan tepat di bawahnya.</p>
+  <p>Di akhir shift 2, gudang sudah sepi dan tim checker selesai menghitung barang dengan tangan. Hasil hitungannya ditulis di kertas. Tugas admin pada saat itu adalah memastikan angka di <strong>Laporan Manual Excel</strong>, yang berasal dari sistem DMS, sama dengan <strong>hitungan fisik</strong> checker.</p>
+  <p>Pekerjaannya berurutan. Pertama, saldo sistem DMS diinput ulang ke Excel. Kedua, di akhir shift 2 admin menerima catatan hitungan fisik dari checker. Ketiga, admin menyamakan saldo Excel dengan catatan itu: <strong>Layak</strong> (barang bagus), <strong>BS</strong> (rusak ringan), dan <strong>Reject</strong> (ditolak) harus sama dengan hitungan fisik. Satu hal kecil yang sering membingungkan: catatan checker memakai titik (5.594) sedangkan Excel memakai koma (5,594), padahal nilainya sama.</p>
+  <p>Pilih cerita 1 untuk produk air (AQ, VIT, Mizone, SGM) atau cerita 2 untuk galon. Setiap gambar bisa diketuk untuk memperbesar, dan kotak bernomor pada gambar dijelaskan tepat di bawahnya.</p>
 </div>
 
-<div class="pipe"><p class="pipe-title">Alur di akhir shift 2</p><div class="pipe-row"><div class="pipe-node in"><b>1. Input saldo DMS</b>Ketik saldo sistem ke Excel</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node mid"><b>2. Terima catatan checker</b>Hasil hitung fisik tulis tangan</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node out"><b>3. Samakan</b>Layak, BS, Reject sama dengan fisik</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node in"><b>4. Periksa</b>Layak + BS + Reject = angka akhir</div></div></div><details class="gloss"><summary>Istilah penting di materi ini</summary><dl><dt>Layak</dt><dd>Barang bagus yang boleh dijual.</dd><dt>BS</dt><dd>Barang rusak ringan (bad stock).</dd><dt>Reject</dt><dd>Barang rusak/ditolak.</dd><dt>Saldo TBG</dt><dd>Saldo menurut pencatatan sistem untuk dicocokkan dengan fisik.</dd><dt>Selisih</dt><dd>Total Fisik dikurangi Saldo TBG. Idealnya nol.</dd><dt>BTL</dt><dd>Botol/galon kosong.</dd></dl></details><p class="warn"><b>Rumus yang dipakai:</b> Layak = Angka akhir &minus; BS &minus; Reject. Catatan checker memakai titik (5.594), Excel memakai koma (5,594). Nilainya sama.</p>
+
 <div class="tx-tabs" role="tablist" aria-label="Pilih bagian materi Laporan Manual Excel">
   <button type="button" class="tx-tab active" role="tab" aria-selected="true" aria-controls="txCase1" data-case-target="1">
     <span class="tx-tab-num">01</span>
@@ -984,11 +980,12 @@
 
   var TX_OC_CONTENT = `
 <div class="tx-intro">
-  <p><strong>Input Opening &amp; Closing Gudang</strong> adalah pencatatan stok fisik gudang dua kali dalam sehari: <strong>Opening</strong> untuk stok di awal hari dan <strong>Closing</strong> untuk stok di akhir hari. Penginputan yang sebenarnya dilakukan di <strong>website resmi perusahaan</strong> (aplikasi AQUA &amp; VIT), bukan di website modul ini.</p>
-  <p>Di website resmi, sistem sangat ketat: <strong>setelah data disimpan (Save), isinya tidak bisa diubah lagi</strong>. Karena itu, salah memasukkan angka ke produk yang keliru bisa merepotkan. Untuk mencegahnya, website modul ini menyediakan menu <strong><a href="#/opening-closing">Website Opening &amp; Closing</a></strong> sebagai tempat <strong>latihan</strong> dan tempat <strong>menyamakan data</strong> sebelum Anda menginput di website perusahaan.</p>
+  <p>Setiap hari gudang punya dua momen penting: saat pintu dibuka di pagi hari dan saat pekerjaan ditutup di akhir hari. Stok fisik pada kedua momen itulah yang dicatat sebagai <strong>Opening</strong> (stok awal) dan <strong>Closing</strong> (stok akhir). Pencatatannya dilakukan di <strong>website resmi perusahaan</strong> (aplikasi AQUA &amp; VIT), bukan di website modul ini.</p>
+  <p>Website resmi itu sangat ketat: <strong>setelah Anda menekan Save, isinya tidak bisa diubah lagi</strong>. Satu angka yang salah atau satu produk yang tertukar bisa merepotkan sampai ke laporan. Karena itu website modul ini menyediakan menu <strong><a href="#/opening-closing">Website Opening &amp; Closing</a></strong> sebagai tempat <strong>latihan</strong> sekaligus tempat menyamakan data sebelum Anda menginput di website perusahaan.</p>
+  <p>Ikuti lima gambar di bawah dari atas ke bawah, mulai dari halaman aplikasi sampai mengisi qty di empat gudang. Kotak merah bernomor menunjukkan bagian yang harus Anda klik atau isi, dan penjelasannya ada tepat di bawah gambar.</p>
 </div>
 
-<div class="pipe"><p class="pipe-title">Alur menu di website perusahaan</p><div class="pipe-row"><div class="pipe-node mid"><b>Applications</b>Klik kotak Aqua Vit</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node in"><b>Login</b>Username dan password sendiri</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node mid"><b>Opening Closing</b>Lalu Opening Closing Gudang</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node out"><b>OPENING / CLOSING</b>Pilih tombol sesuai waktu</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node in"><b>Isi QTY Fisik</b>4 gudang, lalu Save changes</div></div></div><details class="gloss"><summary>Istilah penting di materi ini</summary><dl><dt>Opening</dt><dd>Stok awal hari. Hanya 1 kali per tanggal.</dd><dt>Closing</dt><dd>Stok akhir hari. Bisa dibuat setelah Opening tersimpan.</dd><dt>Layak / BS / Reject / Layak PET</dt><dd>Empat gudang yang harus diisi sesuai kondisi barang.</dd><dt>QTY Fisik</dt><dd>Jumlah hasil hitung langsung di gudang, bukan angka sistem.</dd></dl></details><p class="warn"><b>Penting:</b> setelah Save, data tidak bisa diubah. Periksa nama produk dan angka sebelum menekan Save.</p>
+
 <div class="tx-case-head">
   <div class="tx-case-badge">OC</div>
   <div>
@@ -1074,21 +1071,12 @@
 </ol>
 <p>Data latihan hanya tersimpan di perangkat Anda dan <strong>tidak terkirim</strong> ke sistem perusahaan, jadi aman dicoba berulang kali.</p>
 
-<div class="tx-note"><b>Ringkasan Cepat</b>
-<ul class="tx-recap" style="margin:12px 0 0; padding:0;">
-  <li><b>Alur menu</b>Applications &rarr; Aqua Vit &rarr; Login &rarr; Opening Closing &rarr; Opening Closing Gudang</li>
-  <li><b>Opening</b>Data awal hari, hanya 1 kali per tanggal</li>
-  <li><b>Closing</b>Data akhir hari, hanya bisa jika Opening sudah tersimpan</li>
-  <li><b>Setelah Save</b>Tidak bisa diubah, periksa dulu sebelum menyimpan</li>
-  <li><b>Latihan</b>Gunakan menu Website Opening &amp; Closing di website modul ini</li>
-</ul>
-</div>
+<p class="story-end">Dengan begitu perjalanan Anda lengkap: dari halaman Applications, masuk ke Aqua Vit, login, membuka menu Opening Closing lalu Opening Closing Gudang, dan mengisi qty fisik. Sebelum menekan Save, berlatihlah dulu di menu Website Opening &amp; Closing pada website modul ini.</p>
 `;
 
     var TX_BTB_BKB_SUPPLIER_CONTENT = `
 <p><strong>Transaksi BTB BKB Supplier</strong> adalah prosedur pencatatan Bukti Terima Barang (BTB) dan Bukti Keluar Barang (BKB) untuk transaksi yang melibatkan supplier/pemasok eksternal. Materi ini memuat <strong>pembaruan resmi dari Kantor Pusat</strong> mengenai cara penginputan BTB Supplier untuk produk <strong>AQUA Gallon &amp; AQUA SPS</strong> di DMS 3, sekaligus aturan wajib saat sebuah Surat Jalan/PO dibatalkan. Pelajari dengan saksama agar setiap dokumen yang disimpan sudah sesuai format terbaru.</p>
 
-<div class="pipe"><p class="pipe-title">Isian yang berubah (ringkas)</p><div class="pipe-row"><div class="pipe-node in"><b>AQUA Gallon</b>No. Ref. 3 = HPPP/Retur/Botol/Jugrack. Keterangan = No. GRFC</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node mid"><b>AQUA SPS</b>No. Ref. 3 kosong. Keterangan = GRFC/Qty GRFC</div><span class="pipe-arrow" aria-hidden="true">&rarr;</span><div class="pipe-node out"><b>PO dibatalkan</b>No. Surat Jalan = BATAL di BTB dan BKB</div></div></div><details class="gloss"><summary>Istilah penting di materi ini</summary><dl><dt>HPPP</dt><dd>Nomor dokumen dari pabrik yang diawali 90A.</dd><dt>GRFC</dt><dd>Dokumen penerimaan barang dari pabrik. Bila tidak ada, tulis TIDAK ADA GRFC.</dd><dt>Jugrack</dt><dd>Rak/penyangga galon.</dd><dt>SPS</dt><dd>Produk air kemasan (bukan galon).</dd></dl></details>
 <div class="tx-note"><b>Berlaku untuk:</b>&nbsp;Seluruh penginputan BTB Supplier produk AQUA Gallon &amp; AQUA SPS, serta BTB/BKB Supplier yang mengalami pembatalan Surat Jalan, di DMS 3.</div>
 
 <h2>Format Baru: No. Ref. 3 &amp; Keterangan pada BTB Supplier</h2>
@@ -1141,16 +1129,7 @@
 
 </div>
 
-<div class="tx-note"><b>Ringkasan Cepat</b>
-<ul class="tx-recap" style="margin:12px 0 0; padding:0;">
-  <li><b>AQUA Gallon &middot; No. Ref. 3</b>HPPP/Qty Retur Air/Qty Botol/Qty Jugrack</li>
-  <li><b>AQUA Gallon &middot; Keterangan</b>No. GRFC (atau "TIDAK ADA GRFC")</li>
-  <li><b>AQUA SPS &middot; No. Ref. 3</b>Dikosongkan</li>
-  <li><b>AQUA SPS &middot; Keterangan</b>No. GRFC/Qty GRFC</li>
-  <li><b>Pembatalan &middot; BTB Supplier</b>No. Surat Jalan diisi "BATAL"</li>
-  <li><b>Pembatalan &middot; BKB Supplier</b>Update No. Surat Jalan jadi "BATAL"</li>
-</ul>
-</div>
+<p class="story-end">Singkatnya: pada AQUA Gallon, No. Ref. 3 berisi HPPP, Qty Retur Air, Qty Botol, dan Qty Jugrack, sedangkan Keterangan berisi No. GRFC (atau &quot;TIDAK ADA GRFC&quot;). Pada AQUA SPS, No. Ref. 3 dikosongkan dan Keterangan berisi No. GRFC/Qty GRFC. Bila PO dibatalkan, kolom No. Surat Jalan diisi &quot;BATAL&quot; pada BTB Supplier, dan diperbarui menjadi &quot;BATAL&quot; pada BKB Supplier.</p>
 `;
 
   /* ------------------------------------------------------------------ */

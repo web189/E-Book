@@ -234,3 +234,4 @@ html[data-theme="dark"] .warn{background:#2A2010; border-color:#5A4116; color:#F
 @media (max-width:360px){.hero-title{font-size:1.75rem;} .hero-actions{grid-template-columns:1fr;}}
 /* menu samping tertutup tidak boleh memakan ruang di bawah header */
 @media (max-width:860px){ .mobile-drawer:not(.open){height:0; max-height:0;} .mobile-drawer:not(.open) .mobile-drawer-inner{padding-top:0; padding-bottom:0;} }
+.annot-cap{margin-top:18px !important;}
