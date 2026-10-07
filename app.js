@@ -1279,7 +1279,7 @@
             '</div>' +
           '</div>' +
           '<div class="hero-visual">' +
-            '<img class="hero-photo" src="assets/images/hero/depo-parung-warkop.webp" alt="Warkop PRG — area Depo Parung" loading="lazy">' +
+            '<img class="hero-photo" src="assets/images/hero/depo-parung-kantin.webp" alt="Kantin Depo PRG, area Depo Parung" loading="lazy">' +
             '<span class="hero-photo-scrim" aria-hidden="true"></span>' +
             '<div class="hero-card card-a">' +
               '<div class="hero-mini-row"><div class="hero-mini-dot">01</div><div><strong>Progres Modul</strong></div></div>' +
@@ -1452,11 +1452,13 @@
       .filter(function (c) { return c.active; })
       .sort(function (a, b) { return a.order - b.order; });
 
+    var tocNo = 0;
     var tocHtml = contents.map(function (c, idx) {
       var isHome = !c.materialId;
+      if (!isHome) tocNo++;
       var target = isHome ? "#/" : "#/materi/" + (materials.filter(function (m) { return m.id === c.materialId; })[0] || {}).slug;
       var active = c.materialId === material.id;
-      return '<a class="toc-item' + (active ? " active" : "") + '" href="' + target + '"><span class="toc-num">' + String(idx + 1).padStart(2, "0") + '</span>' + Utils.escapeHtml(c.title) + '</a>';
+      return '<a class="toc-item' + (active ? " active" : "") + '" href="' + target + '"><span class="toc-num">' + (isHome ? "&#8962;" : String(tocNo).padStart(2, "0")) + '</span>' + Utils.escapeHtml(c.title) + '</a>';
     }).join("");
 
     appEl.innerHTML =

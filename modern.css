@@ -250,3 +250,25 @@ html[data-theme="dark"] .status-published{color:#4ADE9F;}
   .hero::before{display:none;}
   .hero-title{text-shadow:none;}
 }
+
+/* ==========================================================================
+   v6 — foto hero baru (Kantin Depo PRG), penomoran, header
+   ========================================================================== */
+.hero-photo{object-fit:cover; object-position:68% 50%;}
+.hero-photo-scrim{background:linear-gradient(180deg,rgba(5,15,36,0) 55%,rgba(5,15,36,.55) 100%) !important;}
+.toc-num{min-width:22px; text-align:center;}
+@media (min-width:961px){
+  /* kartu bawah-kanan turun ke trotoar agar tulisan "Kantin Depo PRG" tetap terbaca */
+  .hero-card.card-c{bottom:-6%; right:3%; width:38%;}
+  .hero-card.card-a{bottom:6%;}
+}
+@media (min-width:961px) and (max-width:1280px){
+  .header-brand{max-width:236px;}
+  .dev-credit{font-size:.62rem;}
+  .main-nav .nav-link{padding:8px 8px; font-size:.76rem;}
+  .hero-card.card-c{bottom:-6%; right:2%; width:38%;}
+}
+
+/* Pengaman loading screen: tertutup sendiri maksimal 6 detik walau JS gagal */
+.loading-screen{animation:splashFailsafe .01s linear 6s forwards;}
+@keyframes splashFailsafe{to{opacity:0; visibility:hidden; pointer-events:none;}}
