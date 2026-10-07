@@ -199,3 +199,54 @@ html[data-theme="dark"] .status-published{color:#4ADE9F;}
   .hero-title{font-size:4.2rem;}
   .hero-sub{font-size:1.15rem; max-width:560px;}
 }
+
+/* ==========================================================================
+   v5 — perbaikan dari screenshot HP & PC
+   ========================================================================== */
+/* garis scan: tipis & bercahaya (bukan pita tebal yang menimpa teks) */
+.hero::before{
+  height:2px !important; background:linear-gradient(90deg,transparent,rgba(34,211,238,.7),transparent) !important;
+  border:0 !important; box-shadow:0 0 16px 3px rgba(34,211,238,.22); opacity:.7;
+  transform:translateY(0); animation:hudLine 10s linear infinite !important;
+}
+@keyframes hudLine{0%{transform:translateY(0);opacity:0;}8%{opacity:.7;}92%{opacity:.7;}100%{transform:translateY(760px);opacity:0;}}
+
+/* kartu materi: banner atas bermotif grid + cahaya cyan (tidak polos lagi) */
+.materi-card::before{
+  background-image:
+    radial-gradient(160px 90px at 88% 20%,rgba(34,211,238,.35),transparent 70%),
+    linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px),
+    linear-gradient(135deg,var(--hero-a,#0A1F4D) 0%,var(--hero-b,#0F3A8F) 55%,var(--hero-c,#1B5FE0) 100%) !important;
+  background-size:100% 100%,24px 24px,24px 24px,100% 100% !important;
+}
+
+/* halaman Opening & Closing: selaras dengan tema biru-cyan */
+.oc-page:not(.is-close){--oc:#2F6BFF; --oc-dark:#1F4FD1;}
+.oc-title{font-weight:800;}
+.oc-title::after{content:""; display:block; width:64px; height:4px; margin-top:10px; border-radius:4px; background:linear-gradient(90deg,var(--hud-2),var(--hud));}
+.oc-card{border-radius:20px; border-color:var(--card-edge); box-shadow:var(--shadow-card);}
+.oc-card-bar{background:linear-gradient(135deg,var(--oc-dark),var(--oc)); letter-spacing:.04em;}
+.oc-seg{border-color:var(--card-edge);}
+.oc-seg button.on{background:linear-gradient(135deg,var(--oc-dark),var(--oc)); box-shadow:0 8px 16px -8px var(--oc);}
+.oc-acc{border-radius:12px; overflow:hidden;}
+.oc-in:focus,.oc-fld input:focus{border-color:var(--hud); box-shadow:0 0 0 3px rgba(34,211,238,.22); outline:0;}
+.oc-btn{border-radius:12px; font-weight:700;}
+
+/* PC sempit (961-1280px): header satu baris, hero tidak bertabrakan */
+@media (min-width:961px) and (max-width:1280px){
+  .logo-text em{display:none;}
+  .dev-credit{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;}
+  .nav-icon-link{display:none;}
+  .header-brand{max-width:190px;}
+  .hero-title{font-size:2.45rem;}
+  .hero-card.card-a{left:-3%; width:48%;}
+  .hero-card.card-b{left:-3%; width:38%;}
+  .hero-card.card-c{right:-2%; width:40%;}
+}
+/* HP: bar bawah solid (tidak tembus pandang) & hero tanpa garis */
+@media (max-width:960px){
+  .mbar{background:var(--bg-raised) !important; padding-top:6px; padding-bottom:6px;}
+  .hero::before{display:none;}
+  .hero-title{text-shadow:none;}
+}
