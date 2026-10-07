@@ -270,5 +270,67 @@ html[data-theme="dark"] .status-published{color:#4ADE9F;}
 }
 
 /* Pengaman loading screen: tertutup sendiri maksimal 6 detik walau JS gagal */
-.loading-screen{animation:splashFailsafe .01s linear 6s forwards;}
+.loading-screen{animation:splashFailsafe .01s linear 7s forwards;}
 @keyframes splashFailsafe{to{opacity:0; visibility:hidden; pointer-events:none;}}
+
+/* ==========================================================================
+   v8 — LOADING SCREEN profesional (ringan: tanpa filter bertumpuk / mask)
+   ========================================================================== */
+.loading-screen{
+  background:
+    radial-gradient(60% 50% at 50% 34%,rgba(30,107,255,.38),transparent 70%),
+    linear-gradient(180deg,#071A44 0%,#040E26 55%,#020714 100%);
+}
+.loading-grid{animation:none; opacity:.14;}              /* grid statis, tidak digeser */
+.loading-glow{width:480px; height:480px; background:radial-gradient(circle,rgba(34,211,238,.35) 0%,transparent 66%); animation:ldGlow 3s ease-in-out infinite;}
+@keyframes ldGlow{0%,100%{opacity:.45;}50%{opacity:.9;}}
+/* sudut HUD */
+.loading-screen::before,.loading-screen::after{content:""; position:absolute; width:46px; height:46px; pointer-events:none; opacity:.8;}
+.loading-screen::before{left:18px; top:18px; border-left:2px solid #22D3EE; border-top:2px solid #22D3EE; border-top-left-radius:12px;}
+.loading-screen::after{right:18px; bottom:18px; border-right:2px solid #22D3EE; border-bottom:2px solid #22D3EE; border-bottom-right-radius:12px;}
+/* logo: satu bayangan saja, cincin berputar via border (murah) */
+.loading-logo-ring{width:220px; height:220px; margin-bottom:28px; background:radial-gradient(circle,rgba(255,255,255,.55) 0%,rgba(255,255,255,.18) 46%,transparent 70%);}
+.loading-logo-ring::before{
+  -webkit-mask:none; mask:none; padding:0; background:none;
+  border:2px solid rgba(99,199,255,.14); border-top-color:#63C7FF; border-right-color:#1E6BFF;
+  animation:loadingSpin 1.4s linear infinite;
+}
+.loading-logo-ring::after{inset:16px; border:1px dashed rgba(150,205,255,.4); animation:loadingSpin 12s linear infinite reverse;}
+.loading-logo-ping{display:none;}
+.loading-logo{width:168px; height:168px; filter:drop-shadow(0 0 14px rgba(99,199,255,.6)); animation:none;}
+.loading-brand{font-size:1.55rem; letter-spacing:.22em; text-shadow:0 0 18px rgba(34,211,238,.45); margin-bottom:8px;}
+.loading-tagline{color:#9FC4F2; font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; max-width:320px; margin-bottom:22px;}
+.loading-status{font-size:.76rem; color:#22D3EE; margin-bottom:16px;}
+/* meter: bar + persen */
+.loading-meter{display:flex; align-items:center; gap:12px;}
+.loading-bar{width:230px; height:6px; background:rgba(255,255,255,.12); border:1px solid rgba(99,199,255,.25);}
+.loading-bar span{width:100%; transform:scaleX(0); transform-origin:0 50%; animation:ldFill 5s linear forwards; background:linear-gradient(90deg,#1E6BFF,#22D3EE); box-shadow:0 0 12px rgba(34,211,238,.7);}
+@keyframes ldFill{to{transform:scaleX(1);}}
+.loading-pct{min-width:44px; text-align:left; color:#fff; font:700 .82rem/1 'SFMono-Regular',Menlo,Consolas,'Courier New',monospace; letter-spacing:.04em;}
+.loading-foot{position:absolute; left:0; right:0; bottom:26px; text-align:center; margin:0; color:rgba(190,220,255,.65); font-size:.7rem; letter-spacing:.16em; text-transform:uppercase;}
+.loading-foot b{color:#7FE3FF; font-weight:700;}
+.loading-screen{transition:opacity .7s,visibility .7s,transform .7s;}
+.loading-screen.loading-hide{transform:scale(1.03);}
+@media (max-width:420px){
+  .loading-logo-ring{width:196px; height:196px;}
+  .loading-logo{width:148px; height:148px;}
+  .loading-brand{font-size:1.3rem; letter-spacing:.16em;}
+  .loading-bar{width:190px;}
+}
+@media (prefers-reduced-motion:reduce){ .loading-bar span{animation:none; transform:scaleX(1);} }
+
+/* ==========================================================================
+   v8 — poles situs: progres scroll, ke atas, muncul halus, foto hero
+   ========================================================================== */
+#mdProg{position:fixed; left:0; top:0; right:0; height:3px; z-index:70; transform:scaleX(0); transform-origin:0 50%; background:linear-gradient(90deg,var(--hud-2),var(--hud),var(--mark)); box-shadow:0 0 10px rgba(34,211,238,.6); pointer-events:none;}
+#mdTop{
+  position:fixed; right:16px; bottom:calc(98px + env(safe-area-inset-bottom,0px)); z-index:60; width:44px; height:44px; border-radius:14px;
+  border:1px solid var(--card-edge); background:var(--bg-raised); color:var(--accent); font-size:1.2rem; font-weight:800; cursor:pointer;
+  box-shadow:0 12px 26px -12px rgba(5,20,60,.7); opacity:0; transform:translateY(12px); pointer-events:none; transition:opacity .2s,transform .2s;
+}
+#mdTop.show{opacity:1; transform:none; pointer-events:auto;}
+#mdTop:hover{border-color:var(--hud); box-shadow:0 0 0 3px rgba(34,211,238,.2),0 12px 26px -12px rgba(5,20,60,.7);}
+@media (min-width:961px){ #mdTop{bottom:26px; right:26px;} }
+.rv{opacity:0; transform:translateY(16px); transition:opacity .5s ease,transform .5s ease;}
+.rv.rv-in{opacity:1; transform:none;}
+.hero-photo{object-position:92% 50%;}              /* tulisan "Kantin Depo PRG" tidak terpotong */

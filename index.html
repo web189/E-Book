@@ -53,8 +53,9 @@
     <p class="loading-brand">DEPO PARUNG</p>
     <p class="loading-tagline">Modul Sistem Database Centralized Real-Time</p>
     <p class="loading-status" id="loadingStatus" aria-live="polite"></p>
-    <div class="loading-bar"><span></span></div>
+    <div class="loading-meter"><div class="loading-bar"><span></span></div><b class="loading-pct" id="loadingPct">0%</b></div>
   </div>
+  <p class="loading-foot">Sistem Developer <b>benyoriki.com</b></p>
 </div>
 
 <!-- ============ TOAST CONTAINER ============ -->
@@ -280,6 +281,7 @@
 <script src="app.js"></script>
 <script src="annot.js"></script>
 <script src="mobilebar.js"></script>
-<script>setTimeout(function(){var e=document.getElementById("loadingScreen");if(e){e.classList.add("loading-hide");document.documentElement.classList.remove("is-loading");setTimeout(function(){if(e.parentNode)e.parentNode.removeChild(e);},700);}},6500);</script>
+<script src="modern.js"></script>
+<script>setTimeout(function(){var e=document.getElementById("loadingScreen");if(e){e.classList.add("loading-hide");document.documentElement.classList.remove("is-loading");setTimeout(function(){if(e.parentNode)e.parentNode.removeChild(e);},700);}},7500);</script>
 </body>
 </html>

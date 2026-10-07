@@ -2495,7 +2495,14 @@
   function initLoadingScreen() {
     var screen = document.getElementById("loadingScreen");
     if (!screen) return;
-    var MIN_DISPLAY_MS = 1200;
+    var MIN_DISPLAY_MS = 5000;
+    var pctEl = document.getElementById("loadingPct");
+    var t0 = Date.now();
+    var pctTimer = setInterval(function () {
+      var p = Math.min(100, Math.floor((Date.now() - t0) / MIN_DISPLAY_MS * 100));
+      if (pctEl) pctEl.textContent = p + "%";
+      if (p >= 100) clearInterval(pctTimer);
+    }, 60);
     startLoadingStatusTyper();
     setTimeout(function () {
       screen.classList.add("loading-hide");
