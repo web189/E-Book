@@ -2,7 +2,7 @@
    ES5 murni (aman Chrome 109 / Windows 7). Cetak lewat teks monospasi 80 kolom @10 cpi, 6 lpi. */
 (function () {
   "use strict";
-  var KEY = "lp_dms_manual", W = 118, LEGEND = "Keterangan : Putih Sales, Merah Ada Gudang, Kuning Checker, Hijau Security";
+  var KEY = "lp_dms_manual", W = 120, AGENT = "http://localhost:9101", LEGEND = "Keterangan : Putih Sales, Merah Ada Gudang, Kuning Checker, Hijau Security";
   var GUDANG = ["GUDANG LAYAK PARUNG", "GUDANG BS PARUNG", "GUDANG REJECT PARUNG", "GUDANG LAYAK PET PARUNG"];
   var FORMS = { "3": { name: "1/3 lembar (9,5 × 3,67 in)", h: 11 / 3, lines: 22 }, "2": { name: "1/2 lembar (9,5 × 5,5 in)", h: 5.5, lines: 33 }, "1": { name: "Penuh (9,5 × 11 in)", h: 11, lines: 66 } };
   var UNITS = ["BOX", "PACK", "PCS"];
@@ -12,7 +12,7 @@
     var d = {}; try { d = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
     st = { gudang: d.gudang || GUDANG[0], kendaraan: d.kendaraan || "", ket: d.ket || "",
       rows: (d.rows && d.rows.length) ? d.rows : [{ k: "", n: "", s: "BOX", q: "" }],
-      form: d.form || "3", printer: d.printer || "epson", tw: d.tw || "80", left: d.left == null ? 8 : d.left, pengemudi: d.pengemudi || "", slot: d.slot || "1", tebal: d.tebal == null ? true : d.tebal, top: d.top == null ? 0 : d.top };
+      form: d.form || "3", printer: d.printer || "epson", tw: d.tw || "80", left: d.left == null ? 11 : d.left, pname: d.pname == null ? "EPSON LX-310 ESC/P" : d.pname, solid: d.solid == null ? true : d.solid, pengemudi: d.pengemudi || "", slot: d.slot || "1", tebal: d.tebal == null ? true : d.tebal, top: d.top == null ? 0 : d.top };
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
   function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
@@ -40,15 +40,15 @@
   }
   function perPage() { return FORMS[st.form].lines - 13; }
   function items() { if (TEST) return SAMPLE; return st.rows.filter(function (r) { return (r.k || r.n) && String(r.q).trim() !== ""; }); }
-  function dash() { return new Array(W + 1).join("-"); }
+  function dash() { return new Array(W + 1).join(st.solid ? "\u2500" : "-"); }
 
   /* ---------- susun teks form ---------- */
   function pages() { return st.printer === "termal" ? thermal() : epsonPages(); }
   function epsonPages() {
     var it = items(), n = perPage(), total = Math.max(1, Math.ceil(it.length / n)), nw = now(), out = [];
     for (var p = 0; p < total; p++) {
-      var L = [], part = it.slice(p * n, p * n + n), HW = 62;
-      var title = TEST ? "BUKTI KELUAR BARANG (TES CETAK)" : "BUKTI KELUAR BARANG (MANUAL)";
+      var L = [], part = it.slice(p * n, p * n + n), HW = 66;
+      var title = TEST ? "BUKTI KELUAR BARANG (TES CETAK)" : "BUKTI KELUAR BARANG (DISTRIBUSI)";
       L.push(rep(Math.floor((W - title.length) / 2)) + title);
       L.push(pad("NAMA DEPO   : LP PARUNG", HW) + "HALAMAN    : " + (p + 1) + "/" + total);
       L.push(pad("NAMA GUDANG : " + st.gudang, HW) + "DOKUMEN ID :");
@@ -56,15 +56,15 @@
       L.push(pad("KENDARAAN   : " + st.kendaraan.toUpperCase(), HW) + "NO. FB     :");
       L.push(pad("KETERANGAN  : " + st.ket.toUpperCase(), W));
       L.push(dash());
-      L.push(pad("NO", 4) + pad("KODE", 10) + pad("NAMA PRODUK", 66) + pad("SATUAN", 10) + lpad("JUMLAH", 8) + "  BATCH ID");
+      L.push(pad("NO", 7) + pad("KODE", 10) + pad("NAMA PRODUK", 45) + pad("SATUAN", 12) + lpad("JUMLAH", 7) + "        BATCH ID");
       L.push(dash());
       for (var i = 0; i < n; i++) {
         var r = part[i];
-        L.push(!r && TEST && i === part.length ? new Array(Math.ceil(W / 10) + 1).join("1234567890").substr(0, W) : r ? pad(p * n + i + 1, 4) + pad(r.k.toUpperCase(), 10) + pad(r.n.toUpperCase(), 66) + pad(r.s.toUpperCase(), 10) + lpad(r.q, 8) : "");
+        L.push(!r && TEST && i === part.length ? new Array(Math.ceil(W / 10) + 1).join("1234567890").substr(0, W) : r ? pad(p * n + i + 1, 7) + pad(r.k.toUpperCase(), 10) + pad(r.n.toUpperCase(), 45) + pad(r.s.toUpperCase(), 12) + lpad(r.q, 7) : "");
       }
       L.push(dash());
       L.push(LEGEND);
-      L.push(pad("DIBUAT OLEH,", 30) + pad("DISERAHKAN OLEH,", 30) + pad("DITERIMA OLEH,", 30) + "DIPERIKSA OLEH,");
+      L.push(pad(rep(8) + "DIBUAT OLEH,", 34) + pad("DISERAHKAN OLEH,", 30) + pad("DITERIMA OLEH,", 34) + "DIPERIKSA OLEH,");
       out.push(L.join("\n"));
     }
     return out;
@@ -97,14 +97,14 @@
       '<details class="dm-set"' + (st.set ? " open" : "") + '><summary>Pengaturan ' + (st.printer === "epson" ? "Epson LX-310" : "printer termal") + '</summary>' +
       (st.printer === "epson" ?
       '<label>Ukuran form<select id="dmF">' + Object.keys(FORMS).map(function (k) { return '<option value="' + k + '"' + (k === st.form ? " selected" : "") + ">" + FORMS[k].name + "</option>"; }).join("") + '</select></label>' +
-      '<div class="dm-two"><label>Posisi form di lembar<select id="dmS">' + ["1", "2", "3"].map(function (k) { return '<option value="' + k + '"' + (k === st.slot ? " selected" : "") + ">Form ke-" + k + "</option>"; }).join("") + '</select></label><label>Tebal huruf<select id="dmB"><option value="1"' + (st.tebal ? " selected" : "") + '>Tebal (double-strike)</option><option value="0"' + (st.tebal ? "" : " selected") + '>Normal</option></select></label></div>' +
+      '<div class="dm-two"><label>Posisi form di lembar<select id="dmS">' + ["1", "2", "3"].map(function (k) { return '<option value="' + k + '"' + (k === st.slot ? " selected" : "") + ">Form ke-" + k + "</option>"; }).join("") + '</select></label><label>Garis tabel<select id="dmR"><option value="1"' + (st.solid ? " selected" : "") + '>Solid (PC437)</option><option value="0"' + (st.solid ? "" : " selected") + '>Putus-putus (-)</option></select></label><label>Nama printer Windows<input id="dmN" value="' + esc(st.pname) + '" placeholder="kosong = printer default"></label><label>Tebal huruf<select id="dmB"><option value="1"' + (st.tebal ? " selected" : "") + '>Tebal (double-strike)</option><option value="0"' + (st.tebal ? "" : " selected") + '>Normal</option></select></label></div>' +
       '<div class="dm-two"><label>Geser kanan (mm)<input id="dmL" type="number" step="0.5" value="' + st.left + '"></label><label>Geser bawah (mm)<input id="dmT" type="number" step="0.5" value="' + st.top + '"></label></div>' +
       '<p class="dm-hint">Kertas di driver Windows: <b>9,5 × 11 in</b> (Portrait). Form 1/3 dicetak di bagian atas lembar; pilih "Form ke-2/3" bila form ke-1 sudah terpakai.</p>' :
       '<label>Lebar kertas<select id="dmW"><option value="80"' + (st.tw === "80" ? " selected" : "") + '>80 mm</option><option value="58"' + (st.tw === "58" ? " selected" : "") + '>58 mm</option></select></label>' +
       '<p class="dm-hint">Pilih printer termal Anda di dialog cetak, atau jadikan printer default bila memakai pintasan cetak langsung.</p>') +
       '</details>' +
-      '<button type="button" class="dm-btn dm-primary" id="dmPrint">' + (st.printer === "epson" ? "Cetak ke Epson LX-310" : "Cetak ke printer termal " + st.tw + " mm") + '</button><button type="button" class="dm-btn dm-test" id="dmTest">Cetak tes (data contoh)</button>' +
-      (st.printer === "epson" ? '<button type="button" class="dm-btn dm-test" data-raw="1">Unduh teks ESC/P (.prn) — huruf asli printer</button><button type="button" class="dm-btn dm-test" data-raw="t">Unduh tes ESC/P (.prn)</button>' : "") +
+      '<button type="button" class="dm-btn dm-primary" id="dmPrint">' + (st.printer === "epson" ? "Cetak ke Epson LX-310 (huruf asli printer)" : "Cetak ke printer termal " + st.tw + " mm") + '</button><button type="button" class="dm-btn dm-test" id="dmTest">' + (st.printer === "epson" ? "Cetak tes langsung (data contoh)" : "Cetak tes (data contoh)") + '</button>' +
+      (st.printer === "epson" ? '<p id="dmAgent" class="dm-hint dm-pnote">Memeriksa agen cetak…</p><button type="button" class="dm-btn dm-test" id="dmDlg">Cetak lewat dialog Chrome (gambar, kurang mirip)</button><button type="button" class="dm-btn dm-test" data-raw="1">Unduh berkas ESC/P (.prn)</button>' : "") +
       '<p class="dm-hint dm-pnote">Di dialog cetak pilih printer <b>' + (st.printer === "epson" ? "EPSON LX-310" : "termal") + '</b>, <b>Margins: None</b>, <b>Scale: 100</b>. Cetak tanpa dialog: pakai pintasan dari <b>pasang-epson-win7.bat</b>.</p></div>' +
       '<div class="dm-card"><h2>Pratinjau <small id="dmInfo"></small></h2><div id="dmPrev" class="dm-prev"></div></div></div></section>';
     function $(s) { return el.querySelector(s); }
@@ -114,7 +114,7 @@
       if (p) { row.querySelector(".dm-n").value = p[1]; var s = row.querySelector(".dm-s"); if (UNITS.indexOf(p[2]) >= 0) s.value = p[2]; }
     }
     function read() {
-      st.gudang = $("#dmG").value; st.kendaraan = $("#dmV").value; st.pengemudi = $("#dmD").value; st.ket = $("#dmK").value; if ($("#dmS")) { st.slot = $("#dmS").value; st.tebal = $("#dmB").value === "1"; }
+      st.gudang = $("#dmG").value; st.kendaraan = $("#dmV").value; st.pengemudi = $("#dmD").value; st.ket = $("#dmK").value; if ($("#dmS")) { st.solid = $("#dmR").value === "1"; st.pname = $("#dmN").value.trim(); st.slot = $("#dmS").value; st.tebal = $("#dmB").value === "1"; }
       if ($("#dmF")) { st.form = $("#dmF").value; st.left = parseFloat($("#dmL").value) || 0; st.top = parseFloat($("#dmT").value) || 0; }
       if ($("#dmW")) st.tw = $("#dmW").value;
       st.set = !!(el.querySelector(".dm-set") && el.querySelector(".dm-set").open);
@@ -148,15 +148,16 @@
     el.addEventListener("click", function (e) {
       var t = e.target, pb = t.closest && t.closest("[data-pr]");
       if (pb) { read(); st.printer = pb.getAttribute("data-pr"); save(); render(el); return; }
-      if (t.id === "dmPrint") { read(); doPrint(false); return; }
-      if (t.hasAttribute && t.hasAttribute("data-raw")) { read(); rawDownload(t.getAttribute("data-raw") === "t"); return; }
-      if (t.id === "dmTest") { read(); doPrint(true); return; }
+      if (t.id === "dmPrint") { read(); if (st.printer === "epson") rawSend(false); else doPrint(false); return; }
+      if (t.id === "dmDlg") { read(); doPrint(false); return; }
+      if (t.hasAttribute && t.hasAttribute("data-raw")) { read(); rawDownload(false); return; }
+      if (t.id === "dmTest") { read(); if (st.printer === "epson") rawSend(true); else doPrint(true); return; }
       if (t.id === "dmAdd") { read(); st.rows.push({ k: "", n: "", s: "BOX", q: "" }); rebuild(); var k = el.querySelectorAll(".dm-k"); k[k.length - 1].focus(); }
       else if (t.id === "dmClear") { if (window.confirm("Kosongkan semua isian barang?")) { st.rows = [{ k: "", n: "", s: "BOX", q: "" }]; st.kendaraan = ""; st.ket = ""; render(el); save(); } }
       else if (t.hasAttribute("data-del")) { read(); st.rows.splice(+t.parentNode.getAttribute("data-i"), 1); if (!st.rows.length) st.rows.push({ k: "", n: "", s: "BOX", q: "" }); rebuild(); }
       else if (t.id === "dmPrint") { read(); doPrint(); }
     });
-    preview(); tick = setInterval(function () { if (!document.getElementById("dmPrev")) { clearInterval(tick); return; } preview(); }, 30000);
+    ping(); preview(); tick = setInterval(function () { if (!document.getElementById("dmPrev")) { clearInterval(tick); return; } preview(); }, 30000);
   }
   function preview() {
     var pv = document.getElementById("dmPrev"); if (!pv) return;
@@ -181,24 +182,45 @@
     setTimeout(function () { go(true); }, 400);
   }
   /* ---------- ESC/P mentah: huruf draft bawaan printer (condensed 17 cpi, 6 lpi) ---------- */
-  function rawDownload(test) {
+  function buildRaw(test) {
     TEST = !!test;
-    if (!TEST && !items().length) { alert("Isi minimal satu barang dengan jumlah."); return; }
     var pg = epsonPages(), f = FORMS[st.form], o = [27, 64, 27, 120, 0, 15, 27, 50, 27, 67, f.lines], k, i;
     TEST = false;
+    if (st.solid) o.push(27, 116, 1);
     if (st.tebal) o.push(27, 71);
     o.push(27, 108, Math.min(60, Math.round(st.left / 25.4 * 17)));
     var per = Math.max(1, Math.round(11 / f.h)), sl = per === 1 ? 0 : (parseInt(st.slot, 10) || 1) - 1;
     for (k = 0; k < sl; k++) o.push(12);
     pg.forEach(function (t) {
       for (k = 0; k < Math.round(st.top / 4.233); k++) o.push(13, 10);
-      t.split("\n").forEach(function (ln) { for (i = 0; i < ln.length; i++) { var c = ln.charCodeAt(i); o.push(c < 32 || c > 126 ? 63 : c); } o.push(13, 10); });
+      t.split("\n").forEach(function (ln) { for (i = 0; i < ln.length; i++) { var c = ln.charCodeAt(i); o.push(c === 9472 ? 196 : (c < 32 || c > 126 ? 63 : c)); } o.push(13, 10); });
       o.push(12);
     });
-    var n = now(), name = "DMS-Epson-" + n.t.split("-").reverse().join("") + "-" + n.j.replace(":", "") + ".prn", blob = new Blob([new Uint8Array(o)], { type: "application/octet-stream" });
+    return o;
+  }
+  function rawDownload(test) {
+    if (!test && !items().length) { alert("Isi minimal satu barang dengan jumlah."); return; }
+    var n = now(), name = "DMS-Epson-" + n.t.split("-").reverse().join("") + "-" + n.j.replace(":", "") + ".prn", blob = new Blob([new Uint8Array(buildRaw(test))], { type: "application/octet-stream" });
     if (window.navigator.msSaveBlob) { window.navigator.msSaveBlob(blob, name); return; }
     var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click();
     setTimeout(function () { document.body.removeChild(a); }, 500);
+  }
+  function agentMsg(h) { var e = document.getElementById("dmAgent"); if (e) e.innerHTML = h; }
+  function ping() {
+    if (!document.getElementById("dmAgent") || !window.fetch) return;
+    fetch(AGENT + "/ping").then(function (r) { return r.text(); }).then(function () { agentMsg("Agen cetak: <b>tersambung</b> ✓ — tombol di atas langsung mencetak."); })
+      .catch(function () { agentMsg("Agen cetak: <b>belum aktif</b>. Jalankan <b>pasang-agen-epson.bat</b> sekali di PC ini."); });
+  }
+  function rawSend(test) {
+    if (!test && !items().length) { alert("Isi minimal satu barang dengan jumlah sebelum mencetak."); return; }
+    var bytes = new Uint8Array(buildRaw(test));
+    agentMsg("Mengirim ke printer…");
+    fetch(AGENT + "/print?printer=" + encodeURIComponent(st.pname || ""), { method: "POST", headers: { "Content-Type": "application/octet-stream" }, body: bytes })
+      .then(function (r) { return r.text().then(function (t) { if (!r.ok) throw new Error(t); agentMsg("Terkirim ke printer ✓"); }); })
+      .catch(function (e) {
+        agentMsg("Gagal: " + esc(e && e.message ? e.message : "agen tidak aktif"));
+        if (window.confirm("Tidak bisa mengirim langsung (" + (e && e.message ? e.message : "agen cetak belum aktif") + ").\nUnduh berkas .prn saja?")) rawDownload(test);
+      });
   }
   function doPrint(test) {
     TEST = !!test;
