@@ -43,3 +43,4 @@ a.nav-dropdown-item,a.drawer-acc-item{display:block;text-decoration:none;color:i
 .dm-pnote{margin-top:10px}
 .dm-row{grid-template-columns:96px 1fr 76px 78px 36px}
 @media (max-width:900px){.dm-row{grid-template-columns:90px 1fr 76px 36px}}
+.dm-test{width:100%;margin-top:8px}

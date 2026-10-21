@@ -6,7 +6,7 @@
   var GUDANG = ["GUDANG LAYAK PARUNG", "GUDANG BS PARUNG", "GUDANG REJECT PARUNG", "GUDANG LAYAK PET PARUNG"];
   var FORMS = { "3": { name: "1/3 lembar (9,5 × 3,67 in)", h: 11 / 3, lines: 22 }, "2": { name: "1/2 lembar (9,5 × 5,5 in)", h: 5.5, lines: 33 }, "1": { name: "Penuh (9,5 × 11 in)", h: 11, lines: 66 } };
   var UNITS = ["BOX", "PACK", "PCS"];
-  var st, root, tick;
+  var st, root, tick, TEST = false, SAMPLE = [{ k: "124172", n: "AQ.600ML MP 1X6", s: "PACK", q: "2" }, { k: "134578", n: "AQ.220ML 1X48", s: "BOX", q: "10" }, { k: "142009", n: "AQ.1100ML LOCAL 1X12", s: "BOX", q: "25" }];
 
   function load() {
     var d = {}; try { d = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
@@ -25,7 +25,7 @@
   function ctr(t, n) { return rep(Math.max(0, Math.floor((n - t.length) / 2))) + t; }
   function thermal() {
     var C = st.tw === "58" ? 32 : 42, nw = now(), it = items(), L = [], tot = 0, rule = new Array(C + 1).join("-");
-    L.push(ctr("BUKTI KELUAR BARANG", C)); L.push(ctr("(MANUAL)", C)); L.push(ctr("LP PARUNG", C)); L.push(rule);
+    if (TEST) L.push(("1234567890").repeat ? new Array(Math.ceil(C / 10) + 1).join("1234567890").substr(0, C) : ""); L.push(ctr("BUKTI KELUAR BARANG", C)); L.push(ctr(TEST ? "(TES CETAK)" : "(MANUAL)", C)); L.push(ctr("LP PARUNG", C)); L.push(rule);
     wrap("Gudang: " + st.gudang, C).forEach(function (x) { L.push(x); });
     L.push("Tanggal: " + nw.t + " " + nw.j);
     if (st.kendaraan) L.push("Kendaraan: " + st.kendaraan.toUpperCase());
@@ -39,7 +39,7 @@
     return [L.join("\n")];
   }
   function perPage() { return FORMS[st.form].lines - 12; }
-  function items() { return st.rows.filter(function (r) { return (r.k || r.n) && String(r.q).trim() !== ""; }); }
+  function items() { if (TEST) return SAMPLE; return st.rows.filter(function (r) { return (r.k || r.n) && String(r.q).trim() !== ""; }); }
   function dash() { return new Array(W + 1).join("-"); }
 
   /* ---------- susun teks form ---------- */
@@ -48,7 +48,7 @@
     var it = items(), n = perPage(), total = Math.max(1, Math.ceil(it.length / n)), nw = now(), out = [];
     for (var p = 0; p < total; p++) {
       var L = [], part = it.slice(p * n, p * n + n);
-      var title = "BUKTI KELUAR BARANG (MANUAL)";
+      var title = TEST ? "BUKTI KELUAR BARANG (TES CETAK)" : "BUKTI KELUAR BARANG (MANUAL)";
       L.push(rep(Math.floor((W - title.length) / 2)) + title);
       L.push(pad("NAMA DEPO   : LP PARUNG", 44) + "HALAMAN : " + (p + 1) + "/" + total);
       L.push(pad("NAMA GUDANG : " + st.gudang, 44) + "TANGGAL : " + nw.t);
@@ -59,7 +59,7 @@
       L.push(dash());
       for (var i = 0; i < n; i++) {
         var r = part[i];
-        L.push(r ? pad(p * n + i + 1, 3) + pad(r.k.toUpperCase(), 9) + pad(r.n.toUpperCase(), 38) + pad(r.s.toUpperCase(), 8) + lpad(r.q, 7) : "");
+        L.push(!r && TEST && i === part.length ? "1234567890123456789012345678901234567890123456789012345678901234567890 1234567" .substr(0, 0) + new Array(9).join("1234567890") : r ? pad(p * n + i + 1, 3) + pad(r.k.toUpperCase(), 9) + pad(r.n.toUpperCase(), 38) + pad(r.s.toUpperCase(), 8) + lpad(r.q, 7) : "");
       }
       L.push(dash());
       L.push(LEGEND);
@@ -99,8 +99,8 @@
       '<label>Lebar kertas<select id="dmW"><option value="80"' + (st.tw === "80" ? " selected" : "") + '>80 mm</option><option value="58"' + (st.tw === "58" ? " selected" : "") + '>58 mm</option></select></label>' +
       '<p class="dm-hint">Pilih printer termal Anda di dialog cetak, atau jadikan printer default bila memakai pintasan cetak langsung.</p>') +
       '</details>' +
-      '<button type="button" class="dm-btn dm-primary" id="dmPrint">' + (st.printer === "epson" ? "Cetak ke Epson LX-310" : "Cetak ke printer termal " + st.tw + " mm") + '</button>' +
-      '<p class="dm-hint dm-pnote">Tombol ini mencetak ke printer <b>' + (st.printer === "epson" ? "Epson" : "termal") + '</b>. Dialog Windows akan muncul; pastikan printer yang dipilih sesuai. Cetak tanpa dialog: pakai pintasan dari <b>pasang-epson-win7.bat</b>.</p></div>' +
+      '<button type="button" class="dm-btn dm-primary" id="dmPrint">' + (st.printer === "epson" ? "Cetak ke Epson LX-310" : "Cetak ke printer termal " + st.tw + " mm") + '</button><button type="button" class="dm-btn dm-test" id="dmTest">Cetak tes (data contoh)</button>' +
+      '<p class="dm-hint dm-pnote">Di dialog cetak pilih printer <b>' + (st.printer === "epson" ? "EPSON LX-310" : "termal") + '</b>, <b>Margins: None</b>, <b>Scale: 100</b>. Cetak tanpa dialog: pakai pintasan dari <b>pasang-epson-win7.bat</b>.</p></div>' +
       '<div class="dm-card"><h2>Pratinjau <small id="dmInfo"></small></h2><div id="dmPrev" class="dm-prev"></div></div></div></section>';
     function $(s) { return el.querySelector(s); }
     function fillCode(row) {
@@ -142,7 +142,8 @@
     el.addEventListener("click", function (e) {
       var t = e.target, pb = t.closest && t.closest("[data-pr]");
       if (pb) { read(); st.printer = pb.getAttribute("data-pr"); save(); render(el); return; }
-      if (t.id === "dmPrint") { read(); doPrint(); return; }
+      if (t.id === "dmPrint") { read(); doPrint(false); return; }
+      if (t.id === "dmTest") { read(); doPrint(true); return; }
       if (t.id === "dmAdd") { read(); st.rows.push({ k: "", n: "", s: "BOX", q: "" }); rebuild(); var k = el.querySelectorAll(".dm-k"); k[k.length - 1].focus(); }
       else if (t.id === "dmClear") { if (window.confirm("Kosongkan semua isian barang?")) { st.rows = [{ k: "", n: "", s: "BOX", q: "" }]; st.kendaraan = ""; st.ket = ""; render(el); save(); } }
       else if (t.hasAttribute("data-del")) { read(); st.rows.splice(+t.parentNode.getAttribute("data-i"), 1); if (!st.rows.length) st.rows.push({ k: "", n: "", s: "BOX", q: "" }); rebuild(); }
@@ -161,20 +162,30 @@
     });
   }
 
-  /* ---------- cetak ---------- */
-  function doPrint() {
-    if (!items().length) { alert("Isi minimal satu barang dengan jumlah sebelum mencetak."); return; }
-    var f = FORMS[st.form], pg = pages(), box = document.getElementById("dmPrint"), css = document.getElementById("dmPageCss");
-    if (!box) { box = document.createElement("div"); box.id = "dmPrint"; document.body.appendChild(box); }
-    if (!css) { css = document.createElement("style"); css.id = "dmPageCss"; document.head.appendChild(css); }
-    var th = st.printer === "termal", fp = st.tw === "58" ? 7 : 8;
-    css.textContent = th ? "@page{margin:0}@media print{.dm-sheet{width:" + st.tw + "mm;padding:2mm}.dm-sheet pre{font-size:" + fp + "pt!important;line-height:1.25!important}}"
-      : "@page{size:9.5in " + f.h.toFixed(3) + "in;margin:0}@media print{.dm-sheet{height:" + f.h.toFixed(3) + "in;padding:" + st.top + "mm 0 0 " + st.left + "mm}}";
-    box.innerHTML = pg.map(function (t) { return '<div class="dm-sheet"><pre>' + esc(t) + "</pre></div>"; }).join("");
-    document.body.classList.add("dms-printing");
-    var done = function () { document.body.classList.remove("dms-printing"); window.removeEventListener("afterprint", done); };
-    window.addEventListener("afterprint", done);
-    setTimeout(function () { window.print(); setTimeout(done, 1500); }, 50);
+  /* ---------- cetak: lewat bingkai tersembunyi berisi form saja ---------- */
+  function printFrame(html, css) {
+    var old = document.getElementById("dmFrame"); if (old && old.parentNode) old.parentNode.removeChild(old);
+    var f = document.createElement("iframe"); f.id = "dmFrame"; f.setAttribute("aria-hidden", "true");
+    f.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden";
+    document.body.appendChild(f);
+    var d = f.contentWindow.document; d.open();
+    d.write('<!doctype html><html><head><meta charset="utf-8"><title>DMS Manual</title><style>' + css + "</style></head><body>" + html + "</body></html>"); d.close();
+    setTimeout(function () { try { f.contentWindow.focus(); f.contentWindow.print(); } catch (e) { alert("Gagal membuka dialog cetak."); } }, 300);
+  }
+  function doPrint(test) {
+    TEST = !!test;
+    if (!TEST && !items().length) { alert("Isi minimal satu barang dengan jumlah sebelum mencetak."); return; }
+    var pg = pages(), html, css, th = st.printer === "termal";
+    TEST = false;
+    if (th) {
+      var fp = st.tw === "58" ? 7 : 8, lines = pg[0].split("\n").length, hmm = Math.ceil(lines * fp * 1.25 * 0.3528 + 6);
+      css = "@page{size:" + st.tw + "mm " + hmm + "mm;margin:0}html,body{margin:0;padding:0}.s{box-sizing:border-box;width:" + st.tw + "mm;padding:2mm 3mm}pre{margin:0;font:" + fp + 'pt/1.25 "Courier New",monospace;color:#000;white-space:pre}';
+    } else {
+      var f = FORMS[st.form], H = f.h.toFixed(3);
+      css = "@page{size:9.5in " + H + "in;margin:0}html,body{margin:0;padding:0}.s{box-sizing:border-box;width:9.5in;height:calc(" + H + "in - .03in);overflow:hidden;padding:" + st.top + "mm 0 0 " + st.left + 'mm;page-break-after:always}.s:last-child{page-break-after:auto}pre{margin:0;font:12pt/12pt "Courier New",monospace;color:#000;white-space:pre}';
+    }
+    html = pg.map(function (t) { return '<div class="s"><pre>' + esc(t) + "</pre></div>"; }).join("");
+    printFrame(html, css);
   }
 
   /* tutup menu mobile saat DMS Manual dipilih */
