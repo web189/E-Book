@@ -12,7 +12,7 @@
     var d = {}; try { d = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
     st = { gudang: d.gudang || GUDANG[0], kendaraan: d.kendaraan || "", ket: d.ket || "",
       rows: (d.rows && d.rows.length) ? d.rows : [{ k: "", n: "", s: "BOX", q: "" }],
-      form: d.form || "3", printer: d.printer || "epson", tw: d.tw || "80", left: d.left == null ? 11 : d.left, pname: d.pname == null ? "EPSON LX-310 ESC/P" : d.pname, solid: d.solid == null ? true : d.solid, pengemudi: d.pengemudi || "", slot: d.slot || "1", tebal: d.tebal == null ? true : d.tebal, top: d.top == null ? 0 : d.top };
+      form: d.form || "3", printer: d.printer || (/Android|iPhone/i.test(navigator.userAgent) ? "termal" : "epson"), tw: d.tw || "58", tmethod: d.tmethod || "ble", dens: d.dens || "3", logo: d.logo == null ? true : d.logo, left: d.left == null ? 11 : d.left, pname: d.pname == null ? "EPSON LX-310 ESC/P" : d.pname, solid: d.solid == null ? true : d.solid, pengemudi: d.pengemudi || "", slot: d.slot || "1", tebal: d.tebal == null ? true : d.tebal, top: d.top == null ? 0 : d.top };
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
   function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
@@ -100,12 +100,14 @@
       '<div class="dm-two"><label>Posisi form di lembar<select id="dmS">' + ["1", "2", "3"].map(function (k) { return '<option value="' + k + '"' + (k === st.slot ? " selected" : "") + ">Form ke-" + k + "</option>"; }).join("") + '</select></label><label>Garis tabel<select id="dmR"><option value="1"' + (st.solid ? " selected" : "") + '>Solid (PC437)</option><option value="0"' + (st.solid ? "" : " selected") + '>Putus-putus (-)</option></select></label><label>Nama printer Windows<input id="dmN" value="' + esc(st.pname) + '" placeholder="kosong = printer default"></label><label>Tebal huruf<select id="dmB"><option value="1"' + (st.tebal ? " selected" : "") + '>Tebal (double-strike)</option><option value="0"' + (st.tebal ? "" : " selected") + '>Normal</option></select></label></div>' +
       '<div class="dm-two"><label>Geser kanan (mm)<input id="dmL" type="number" step="0.5" value="' + st.left + '"></label><label>Geser bawah (mm)<input id="dmT" type="number" step="0.5" value="' + st.top + '"></label></div>' +
       '<p class="dm-hint">Kertas di driver Windows: <b>9,5 × 11 in</b> (Portrait). Form 1/3 dicetak di bagian atas lembar; pilih "Form ke-2/3" bila form ke-1 sudah terpakai.</p>' :
-      '<label>Lebar kertas<select id="dmW"><option value="80"' + (st.tw === "80" ? " selected" : "") + '>80 mm</option><option value="58"' + (st.tw === "58" ? " selected" : "") + '>58 mm</option></select></label>' +
-      '<p class="dm-hint">Pilih printer termal Anda di dialog cetak, atau jadikan printer default bila memakai pintasan cetak langsung.</p>') +
+      '<label>Lebar kertas<select id="dmW"><option value="58"' + (st.tw === "58" ? " selected" : "") + '>58 mm (IWARE MP-58SB)</option><option value="80"' + (st.tw === "80" ? " selected" : "") + '>80 mm</option></select></label>' +
+      '<div class="dm-two"><label>Cara kirim<select id="dmM">' + [["ble", "Bluetooth langsung"], ["rawbt", "Aplikasi RawBT"], ["dialog", "Dialog cetak browser"]].map(function (m) { return '<option value="' + m[0] + '"' + (m[0] === st.tmethod ? " selected" : "") + ">" + m[1] + "</option>"; }).join("") + '</select></label><label>Kegelapan cetak<select id="dmDn">' + [["1", "Terang"], ["2", "Normal"], ["3", "Gelap"], ["4", "Sangat gelap"]].map(function (m) { return '<option value="' + m[0] + '"' + (m[0] === st.dens ? " selected" : "") + ">" + m[1] + "</option>"; }).join("") + '</select></label></div>' +
+      '<label>Logo di struk<select id="dmLg"><option value="1"' + (st.logo ? " selected" : "") + '>Tampilkan logo</option><option value="0"' + (st.logo ? "" : " selected") + '>Tanpa logo</option></select></label>' +
+      '<p class="dm-hint">Pasangkan printer dulu di Pengaturan Bluetooth HP (PIN 0000 atau 1234). Bila "Bluetooth langsung" tidak menemukan printer, pilih <b>Aplikasi RawBT</b>. Cetak buram? Naikkan kegelapan.</p>') +
       '</details>' +
       '<button type="button" class="dm-btn dm-primary" id="dmPrint">' + (st.printer === "epson" ? "Cetak ke Epson LX-310 (huruf asli printer)" : "Cetak ke printer termal " + st.tw + " mm") + '</button><button type="button" class="dm-btn dm-test" id="dmTest">' + (st.printer === "epson" ? "Cetak tes langsung (data contoh)" : "Cetak tes (data contoh)") + '</button>' +
-      (st.printer === "epson" ? '<p id="dmAgent" class="dm-hint dm-pnote">Memeriksa agen cetak…</p><button type="button" class="dm-btn dm-test" id="dmDlg">Cetak lewat dialog Chrome (gambar, kurang mirip)</button><button type="button" class="dm-btn dm-test" data-raw="1">Unduh berkas ESC/P (.prn)</button>' : "") +
-      '<p class="dm-hint dm-pnote">Di dialog cetak pilih printer <b>' + (st.printer === "epson" ? "EPSON LX-310" : "termal") + '</b>, <b>Margins: None</b>, <b>Scale: 100</b>. Cetak tanpa dialog: pakai pintasan dari <b>pasang-epson-win7.bat</b>.</p></div>' +
+      (st.printer !== "epson" ? '<p id="dmAgent" class="dm-hint dm-pnote">Siap mencetak.</p>' : '') + (st.printer === "epson" ? '<p id="dmAgent" class="dm-hint dm-pnote">Memeriksa agen cetak…</p><button type="button" class="dm-btn dm-test" id="dmDlg">Cetak lewat dialog Chrome (gambar, kurang mirip)</button><button type="button" class="dm-btn dm-test" data-raw="1">Unduh berkas ESC/P (.prn)</button>' : "") +
+      (st.printer === "epson" ? '<p class="dm-hint dm-pnote">Di dialog cetak pilih printer <b>EPSON LX-310</b>, <b>Margins: None</b>, <b>Scale: 100</b>. Cetak tanpa dialog: pakai pintasan dari <b>pasang-epson-win7.bat</b>.</p>' : '') + '</div>' +
       '<div class="dm-card"><h2>Pratinjau <small id="dmInfo"></small></h2><div id="dmPrev" class="dm-prev"></div></div></div></section>';
     function $(s) { return el.querySelector(s); }
     function fillCode(row) {
@@ -116,7 +118,7 @@
     function read() {
       st.gudang = $("#dmG").value; st.kendaraan = $("#dmV").value; st.pengemudi = $("#dmD").value; st.ket = $("#dmK").value; if ($("#dmS")) { st.solid = $("#dmR").value === "1"; st.pname = $("#dmN").value.trim(); st.slot = $("#dmS").value; st.tebal = $("#dmB").value === "1"; }
       if ($("#dmF")) { st.form = $("#dmF").value; st.left = parseFloat($("#dmL").value) || 0; st.top = parseFloat($("#dmT").value) || 0; }
-      if ($("#dmW")) st.tw = $("#dmW").value;
+      if ($("#dmW")) { st.tw = $("#dmW").value; st.tmethod = $("#dmM").value; st.dens = $("#dmDn").value; st.logo = $("#dmLg").value === "1"; }
       st.set = !!(el.querySelector(".dm-set") && el.querySelector(".dm-set").open);
       st.rows = [].map.call(el.querySelectorAll(".dm-row"), function (r) {
         return { k: r.querySelector(".dm-k").value.trim(), n: r.querySelector(".dm-n").value, s: r.querySelector(".dm-s").value, q: r.querySelector(".dm-q").value };
@@ -148,10 +150,10 @@
     el.addEventListener("click", function (e) {
       var t = e.target, pb = t.closest && t.closest("[data-pr]");
       if (pb) { read(); st.printer = pb.getAttribute("data-pr"); save(); render(el); return; }
-      if (t.id === "dmPrint") { read(); if (st.printer === "epson") rawSend(false); else doPrint(false); return; }
+      if (t.id === "dmPrint") { read(); if (st.printer === "epson") rawSend(false); else tPrint(false); return; }
       if (t.id === "dmDlg") { read(); doPrint(false); return; }
       if (t.hasAttribute && t.hasAttribute("data-raw")) { read(); rawDownload(false); return; }
-      if (t.id === "dmTest") { read(); if (st.printer === "epson") rawSend(true); else doPrint(true); return; }
+      if (t.id === "dmTest") { read(); if (st.printer === "epson") rawSend(true); else tPrint(true); return; }
       if (t.id === "dmAdd") { read(); st.rows.push({ k: "", n: "", s: "BOX", q: "" }); rebuild(); var k = el.querySelectorAll(".dm-k"); k[k.length - 1].focus(); }
       else if (t.id === "dmClear") { if (window.confirm("Kosongkan semua isian barang?")) { st.rows = [{ k: "", n: "", s: "BOX", q: "" }]; st.kendaraan = ""; st.ket = ""; render(el); save(); } }
       else if (t.hasAttribute("data-del")) { read(); st.rows.splice(+t.parentNode.getAttribute("data-i"), 1); if (!st.rows.length) st.rows.push({ k: "", n: "", s: "BOX", q: "" }); rebuild(); }
@@ -161,6 +163,7 @@
   }
   function preview() {
     var pv = document.getElementById("dmPrev"); if (!pv) return;
+    if (st.printer === "termal" && window.ThermalPrint) { tPreview(pv); return; }
     var pg = pages(), none = !items().length;
     pv.innerHTML = pg.map(function (t, i) { return '<pre class="dm-paper' + (none ? " is-empty" : "") + '">' + esc(t) + "</pre>"; }).join("");
     document.getElementById("dmInfo").textContent = pg.length + (st.printer === "epson" ? " lembar" : " struk") + " · " + items().length + " barang";
@@ -205,9 +208,36 @@
     var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click();
     setTimeout(function () { document.body.removeChild(a); }, 500);
   }
+  /* ---------- printer termal: gambar struk (logo + huruf tajam) -> ESC/POS ---------- */
+  var pseq = 0;
+  function tdata(test) { return { gudang: st.gudang, kendaraan: st.kendaraan, pengemudi: st.pengemudi, ket: st.ket, items: test ? SAMPLE : items(), test: !!test, now: now() }; }
+  function tPreview(pv) {
+    var seq = ++pseq;
+    window.ThermalPrint.render(tdata(false), { tw: st.tw, logo: st.logo }).then(function (cv) {
+      if (seq !== pseq || !document.getElementById("dmPrev")) return;
+      cv.className = "dm-tcanvas"; cv.style.maxWidth = st.tw === "58" ? "384px" : "576px";
+      pv.innerHTML = ""; var w = document.createElement("div"); w.className = "dm-thermal"; w.appendChild(cv); pv.appendChild(w);
+      document.getElementById("dmInfo").textContent = "1 struk · " + items().length + " barang";
+    });
+  }
+  function tPrint(test) {
+    if (!test && !items().length) { alert("Isi minimal satu barang dengan jumlah sebelum mencetak."); return; }
+    var TP = window.ThermalPrint, o = { tw: st.tw, method: st.tmethod, dens: st.dens, logo: st.logo };
+    agentMsg("Menyiapkan struk…");
+    TP.render(tdata(test), o).then(function (cv) {
+      return TP.send(cv, o, agentMsg).then(function (m) { agentMsg(esc(m || "Terkirim ✓")); }, function (e) {
+        var msg = e && e.message ? e.message : "gagal mengirim";
+        agentMsg("Gagal: " + esc(msg));
+        if (e && e.name === "NotFoundError") return;
+        if (o.method === "ble" && window.confirm("Bluetooth langsung gagal (" + msg + ").\nCoba kirim lewat aplikasi RawBT?")) {
+          o.method = "rawbt"; return TP.send(cv, o, agentMsg).then(function (m) { agentMsg(esc(m)); });
+        }
+      });
+    });
+  }
   function agentMsg(h) { var e = document.getElementById("dmAgent"); if (e) e.innerHTML = h; }
   function ping() {
-    if (!document.getElementById("dmAgent") || !window.fetch) return;
+    if (st.printer !== "epson" || !document.getElementById("dmAgent") || !window.fetch) return;
     fetch(AGENT + "/ping").then(function (r) { return r.text(); }).then(function () { agentMsg("Agen cetak: <b>tersambung</b> ✓ — tombol di atas langsung mencetak."); })
       .catch(function () { agentMsg("Agen cetak: <b>belum aktif</b>. Jalankan <b>pasang-agen-epson.bat</b> sekali di PC ini."); });
   }
