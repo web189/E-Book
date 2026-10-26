@@ -22,7 +22,7 @@
 
   /* ---------- susun & gambar struk ---------- */
   function layout(c, d, W, img, dry) {
-    var M = 10, IW = W - 2 * M, y = 6, logoY = -1;
+    var M = 8, IW = W - 2 * M, y = 4, logoY = -1;
     function f(sz, b) { c.font = (b ? "bold " : "") + sz + "px " + FONT; }
     function put(t, x, yy, al) { if (dry) return; c.textAlign = al || "left"; c.fillText(t, x, yy); }
     function wrap(t, maxW) {
@@ -41,52 +41,77 @@
       return out.length ? out : [""];
     }
     function center(t, sz, b) { f(sz, b); put(t, W / 2, y, "center"); y += Math.round(sz * 1.3); }
-    function rule() {
-      y += 4;
-      if (!dry) { c.save(); c.lineWidth = 2; c.setLineDash([7, 4]); c.beginPath(); c.moveTo(M, y); c.lineTo(W - M, y); c.stroke(); c.restore(); }
-      y += 9;
+    function line(dash, th) {
+      if (!dry) { c.save(); c.lineWidth = th; c.setLineDash(dash); c.beginPath(); c.moveTo(M, y); c.lineTo(W - M, y); c.stroke(); c.restore(); }
+      y += th + 6;
+    }
+    function bar(left, right, sz, al) {
+      var h = Math.round(sz * 1.75);
+      if (!dry) {
+        c.fillStyle = "#000"; c.fillRect(M, y, IW, h); c.fillStyle = "#fff"; f(sz, true);
+        if (al === "center") put(left, W / 2, y + Math.round((h - sz) / 2), "center");
+        else { put(left, M + 10, y + Math.round((h - sz) / 2)); put(right, W - M - 10, y + Math.round((h - sz) / 2), "right"); }
+        c.fillStyle = "#000";
+      }
+      y += h + 8;
     }
     function kv(k, v) {
       if (!v) return;
-      var lw = 112, lines; f(21, true); lines = wrap(v, IW - lw - 14);
+      var lw = 108, lines; f(21, true); lines = wrap(v, IW - lw - 14);
       f(21, false); put(k, M, y);
       f(21, true); lines.forEach(function (ln, i) { if (!i) put(":", M + lw, y); put(ln, M + lw + 14, y); y += 27; });
     }
 
-    if (img) { logoY = y; y += img.height + 6; }
-    center("DEPO PARUNG", 25, true);
-    rule();
-    center("BUKTI KELUAR BARANG", 25, true);
-    center(d.test ? "( TES CETAK )" : "( MANUAL )", 20, false);
-    rule();
+    if (img) { logoY = y; y += img.height + 4; }
+    center("DEPO PARUNG", 25, true); y += 4;
+    bar("BUKTI KELUAR BARANG", "", 22, "center");
+    center(d.test ? "( TES CETAK )" : "( MANUAL )", 17, false); y += 2;
+    line([7, 4], 2);
     kv("Gudang", d.gudang);
     kv("Tanggal", d.now.t + "  " + d.now.j);
     kv("Kendaraan", (d.kendaraan || "").toUpperCase());
     kv("Pengemudi", (d.pengemudi || "").toUpperCase());
     kv("Ket", (d.ket || "").toUpperCase());
-    rule();
-    var tot = 0;
+    y += 4;
+    f(17, true); put("NO", M, y); put("NAMA BARANG", M + 34, y); put("JUMLAH", W - M, y, "right"); y += 22;
+    line([], 2);
+    var tot = 0, tx = M + 34, qw = 104, nameW = W - M - qw - tx - 4;
     d.items.forEach(function (r, i) {
-      f(22, true);
-      wrap((i + 1) + ". " + String(r.k || "").toUpperCase() + "  " + String(r.n || "").toUpperCase(), IW).forEach(function (ln) { put(ln, M, y); y += 28; });
-      f(27, true); put(r.q + " " + String(r.s || "").toUpperCase(), W - M, y, "right"); y += 36;
+      var st0 = y, lines;
+      f(21, true); lines = wrap(String(r.n || "").toUpperCase(), nameW);
+      put(String(i + 1), M, y);
+      lines.forEach(function (ln) { put(ln, tx, y); y += 26; });
+      f(17, false); put("Kode " + String(r.k || "").toUpperCase(), tx, y); y += 22;
+      f(31, true); put(String(r.q), W - M, st0, "right");
+      f(18, true); put(String(r.s || "").toUpperCase(), W - M, st0 + 36, "right");
+      if (y < st0 + 60) y = st0 + 60;
+      y += 4; line([2, 4], 1);
       tot += parseFloat(r.q) || 0;
     });
     if (!d.items.length) { f(20, false); put("(belum ada barang)", W / 2, y, "center"); y += 30; }
-    rule();
-    f(23, true); put("Item: " + d.items.length, M, y); put("Total: " + tot, W - M, y, "right"); y += 34;
+    y += 4;
+    bar("TOTAL " + d.items.length + " ITEM", String(tot), 23, "lr");
     if (d.test) {
       y += 4; if (!dry) c.fillRect(0, y, W, 14); y += 22;
       f(16, false); put("Teks kecil 16px: ABCDEFGHIJ 012345", M, y); y += 22;
       f(20, true); put("Tebal 20px: ABCDEFGH 01234", M, y); y += 28;
       if (!dry) { c.fillRect(0, y, 3, 24); c.fillRect(W - 3, y, 3, 24); } y += 32;
     }
-    y += 12;
-    f(20, false); put("Dibuat", W * 0.25, y, "center"); put("Diterima", W * 0.75, y, "center"); y += 74;
-    if (!dry) { c.fillRect(M + 10, y, W / 2 - M - 40, 2); c.fillRect(W / 2 + 30, y, W / 2 - M - 40, 2); }
-    y += 18;
-    f(15, false); put("Dicetak dari LP-MODUL / DMS Manual", W / 2, y, "center"); y += 40;
-    return { h: y, logoY: logoY };
+    y += 10;
+    f(19, false); put("Dibuat", W * 0.25, y, "center"); put("Diterima", W * 0.75, y, "center"); y += 66;
+    if (!dry) { c.fillRect(M + 8, y, W / 2 - M - 34, 2); c.fillRect(W / 2 + 26, y, W / 2 - M - 34, 2); }
+    y += 22;
+    line([7, 4], 2); y += 4;
+    if ("letterSpacing" in c) c.letterSpacing = "1px";
+    center("Sistem & Website Developer", 17, false); y += 2;
+    if ("letterSpacing" in c) c.letterSpacing = "2px";
+    f(25, true);
+    var bw = Math.min(IW, Math.ceil(c.measureText("benyoriki.com").width) + 40);
+    if (!dry) { c.save(); c.lineWidth = 3; c.strokeRect((W - bw) / 2, y, bw, 42); c.restore(); }
+    put("benyoriki.com", W / 2 + 1, y + 8, "center");
+    if ("letterSpacing" in c) c.letterSpacing = "0px";
+    y += 60;
+    return { h: y + 24, logoY: logoY };
   }
 
   function draw(d, o, img) {
@@ -98,6 +123,7 @@
     c.fillStyle = "#fff"; c.fillRect(0, 0, W * S, H * S);
     c.setTransform(S, 0, 0, S, 0, 0); c.textBaseline = "top"; c.fillStyle = "#000"; c.strokeStyle = "#000";
     layout(c, d, W, img, false);
+    if (o.hi) { if (img && L.logoY >= 0) { c.imageSmoothingEnabled = false; c.drawImage(img, Math.round((W - img.width) / 2), L.logoY); } return big; }
     /* turunkan 2x -> 1x lalu hitam-putihkan: tepi huruf mulus tapi tidak abu-abu */
     sm = document.createElement("canvas"); sm.width = W; sm.height = H; sc = sm.getContext("2d");
     sc.fillStyle = "#fff"; sc.fillRect(0, 0, W, H);
@@ -128,7 +154,7 @@
         out.push(b);
       }
     }
-    out.push(27, 100, 4);
+    out.push(10, 10, 10, 10);
     return new Uint8Array(out);
   }
 
