@@ -38,7 +38,7 @@ public class RawPrn {
   }
 }
 '@
-$allowed = @("https://web189.github.io", "http://localhost", "http://127.0.0.1")
+$allowed = @("https://web189.github.io", "http://localhost", "http://127.0.0.1", "null")
 function Reply($rs, $code, $text) {
   $b = [System.Text.Encoding]::UTF8.GetBytes($text)
   $rs.StatusCode = $code; $rs.ContentType = "text/plain; charset=utf-8"

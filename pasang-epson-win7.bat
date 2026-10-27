@@ -7,6 +7,10 @@ REM Ubah nama printer di bawah sesuai nama di Control Panel > Devices and Printe
 set "EPSON=EPSON LX-310 ESC/P"
 set "TERMAL=POS-80"
 set "URL=https://web189.github.io/E-Book/#/dms-manual"
+REM Mode OFFLINE: bila index.html ada di folder yang sama dengan berkas ini, pakai salinan lokal (tanpa internet).
+if exist "%~dp0index.html" set "LOC=%~dp0index.html"
+if defined LOC set "LOC=%LOC:\=/%"
+if defined LOC set "URL=file:///%LOC%#/dms-manual"
 set "CH=%ProgramFiles(x86)%\Google\Chrome\Application\chrome.exe"
 if not exist "%CH%" set "CH=%ProgramFiles%\Google\Chrome\Application\chrome.exe"
 if not exist "%CH%" (echo Chrome tidak ditemukan. & pause & exit /b 1)

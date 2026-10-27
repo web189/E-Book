@@ -4,15 +4,15 @@
   "use strict";
   var KEY = "lp_dms_manual", W = 120, AGENT = "http://localhost:9101", LEGEND = "Keterangan : Putih Sales, Merah Ada Gudang, Kuning Checker, Hijau Security";
   var GUDANG = ["GUDANG LAYAK PARUNG", "GUDANG BS PARUNG", "GUDANG REJECT PARUNG", "GUDANG LAYAK PET PARUNG"];
-  var FORMS = { "3": { name: "1/3 lembar (9,5 × 3,67 in)", h: 11 / 3, lines: 22 }, "2": { name: "1/2 lembar (9,5 × 5,5 in)", h: 5.5, lines: 33 }, "1": { name: "Penuh (9,5 × 11 in)", h: 11, lines: 66 } };
+  var FORMS = { "3": { name: "1/3 lembar (9,5 × 3,75 in ≈ 95 mm, hasil ukur)", h: 3.75 }, "2": { name: "1/2 lembar (9,5 × 5,5 in)", h: 5.5 }, "1": { name: "Penuh (9,5 × 11 in)", h: 11 } };
   var UNITS = ["BOX", "PACK", "PCS"];
-  var st, root, tick, TEST = false, SAMPLE = [{ k: "124172", n: "AQ.600ML MP 1X6", s: "PACK", q: "2" }, { k: "134578", n: "AQ.220ML 1X48", s: "BOX", q: "10" }, { k: "142009", n: "AQ.1100ML LOCAL 1X12", s: "BOX", q: "25" }];
+  var st, root, tick, PK = null, PC = false, TEST = false, SAMPLE = [{ k: "124172", n: "AQ.600ML MP 1X6", s: "PACK", q: "2" }, { k: "134578", n: "AQ.220ML 1X48", s: "BOX", q: "10" }, { k: "142009", n: "AQ.1100ML LOCAL 1X12", s: "BOX", q: "25" }];
 
   function load() {
     var d = {}; try { d = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
     st = { gudang: d.gudang || GUDANG[0], kendaraan: d.kendaraan || "", ket: d.ket || "",
       rows: (d.rows && d.rows.length) ? d.rows : [{ k: "", n: "", s: "BOX", q: "" }],
-      form: d.form || "3", printer: d.printer || (/Android|iPhone/i.test(navigator.userAgent) ? "termal" : "epson"), twv: 2, tw: d.twv === 2 ? (d.tw || "58") : "58", tmethod: d.tmethod || "ble", dens: d.dens || "3", logo: d.logo == null ? true : d.logo, left: d.left == null ? 11 : d.left, pname: d.pname == null ? "EPSON LX-310 ESC/P" : d.pname, solid: d.solid == null ? true : d.solid, pengemudi: d.pengemudi || "", slot: d.slot || "1", tebal: d.tebal == null ? true : d.tebal, top: d.top == null ? 0 : d.top };
+      form: d.form || "3", printer: d.printer || (/Android|iPhone/i.test(navigator.userAgent) ? "termal" : "epson"), twv: 2, tw: d.twv === 2 ? (d.tw || "58") : "58", tmethod: d.tmethod || "ble", dens: d.dens || "3", logo: d.logo == null ? true : d.logo, left: d.left == null ? 11 : d.left, pname: d.pname == null ? "EPSON LX-310 ESC/P" : d.pname, solid: d.solid == null ? true : d.solid, pengemudi: d.pengemudi || "", slot: d.slot || "1", tebal: d.tebal == null ? true : d.tebal, top: d.top == null ? 0 : d.top, nodok: d.nodok || "", dokreq: d.dokreq || "", tipe: d.tipe || "JUAL", status: d.status || "Draft", fh: d.fh || "" };
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
   function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
@@ -38,12 +38,15 @@
     L.push(rule); L.push("Item: " + it.length + "   Total qty: " + tot); L.push(""); L.push(""); L.push(".");
     return [L.join("\n")];
   }
-  function perPage() { return FORMS[st.form].lines - 13; }
+  function fhIn() { var m = parseFloat(st.fh); return m > 20 ? m / 25.4 : FORMS[st.form].h; }
+  /* jumlah baris (6 lpi) yang muat di satu form; sisa tinggi dipakai sebagai jarak aman bawah */
+  function nLines() { return Math.max(14, Math.floor(fhIn() * 6 + 1e-6)); }
+  function perPage() { return nLines() - 13; }
   function items() { if (TEST) return SAMPLE; return st.rows.filter(function (r) { return (r.k || r.n) && String(r.q).trim() !== ""; }); }
   function dash() { return new Array(W + 1).join(st.solid ? "\u2500" : "-"); }
 
   /* ---------- susun teks form ---------- */
-  function pages() { return st.printer === "termal" ? thermal() : epsonPages(); }
+  function pages(kind) { return (kind || st.printer) === "termal" ? thermal() : epsonPages(); }
   function epsonPages() {
     var it = items(), n = perPage(), total = Math.max(1, Math.ceil(it.length / n)), nw = now(), out = [];
     for (var p = 0; p < total; p++) {
@@ -51,22 +54,23 @@
       var title = TEST ? "BUKTI KELUAR BARANG (TES CETAK)" : "BUKTI KELUAR BARANG (DISTRIBUSI)";
       L.push(rep(Math.floor((W - title.length) / 2)) + title);
       L.push(pad("NAMA DEPO   : LP PARUNG", HW) + "HALAMAN    : " + (p + 1) + "/" + total);
-      L.push(pad("NAMA GUDANG : " + st.gudang, HW) + "DOKUMEN ID :");
+      L.push(pad("NAMA GUDANG : " + st.gudang, HW) + "DOKUMEN ID : " + String(st.nodok || "").toUpperCase());
       L.push(pad("PENGEMUDI   : " + st.pengemudi.toUpperCase(), HW) + "TANGGAL    : " + nw.t + " " + nw.j);
-      L.push(pad("KENDARAAN   : " + st.kendaraan.toUpperCase(), HW) + "NO. FB     :");
-      L.push(pad("KETERANGAN  : " + st.ket.toUpperCase(), W));
+      L.push(pad("KENDARAAN   : " + st.kendaraan.toUpperCase(), HW) + "NO. FB     : " + String(st.dokreq || "").toUpperCase());
+      L.push(pad("KETERANGAN  : " + String(st.ket).replace(/\s*[\r\n]+\s*/g, " ").toUpperCase(), W));
       L.push(dash());
       L.push(pad("NO", 7) + pad("KODE", 10) + pad("NAMA PRODUK", 45) + pad("SATUAN", 12) + lpad("JUMLAH", 7) + "        BATCH ID");
       L.push(dash());
       for (var i = 0; i < n; i++) {
         var r = part[i];
-        L.push(!r && TEST && i === part.length ? new Array(Math.ceil(W / 10) + 1).join("1234567890").substr(0, W) : r ? pad(p * n + i + 1, 7) + pad(r.k.toUpperCase(), 10) + pad(r.n.toUpperCase(), 45) + pad(r.s.toUpperCase(), 12) + lpad(r.q, 7) : "");
+        L.push(!r && TEST && i === part.length ? new Array(Math.ceil(W / 10) + 1).join("1234567890").substr(0, W) : r ? pad(p * n + i + 1, 7) + pad(r.k.toUpperCase(), 10) + pad(r.n.toUpperCase(), 45) + pad(r.s.toUpperCase(), 12) + lpad(r.q, 7) + "        " + String(r.l || "").toUpperCase().substr(0, 28) : "");
       }
       L.push(dash());
       L.push(LEGEND);
       L.push(pad(rep(8) + "DIBUAT OLEH,", 34) + pad("DISERAHKAN OLEH,", 30) + pad("DITERIMA OLEH,", 34) + "DIPERIKSA OLEH,");
       out.push(L.join("\n"));
     }
+    if (TEST && out.length === 1) out.push(out[0]);
     return out;
   }
 
@@ -79,8 +83,8 @@
       '<input class="dm-q" type="number" min="0" inputmode="numeric" placeholder="Jumlah" value="' + esc(r.q) + '" aria-label="Jumlah">' +
       '<button type="button" class="dm-del" data-del aria-label="Hapus baris">×</button></div>';
   }
-  function render(el) {
-    load(); root = el; clearInterval(tick);
+  function renderMobile(el) {
+    PK = null; PC = false; load(); root = el; clearInterval(tick);
     var P = (window.OpeningClosing && window.OpeningClosing.api && window.OpeningClosing.api.products) || [];
     P.forEach(function (p) { if (UNITS.indexOf(p[2]) < 0) UNITS.push(p[2]); });
     st.rows.forEach(function (r) { if (r.s && UNITS.indexOf(r.s) < 0) UNITS.push(r.s); });
@@ -121,7 +125,7 @@
       if ($("#dmW")) { st.tw = $("#dmW").value; st.tmethod = $("#dmM").value; st.dens = $("#dmDn").value; st.logo = $("#dmLg").value === "1"; }
       st.set = !!(el.querySelector(".dm-set") && el.querySelector(".dm-set").open);
       st.rows = [].map.call(el.querySelectorAll(".dm-row"), function (r) {
-        return { k: r.querySelector(".dm-k").value.trim(), n: r.querySelector(".dm-n").value, s: r.querySelector(".dm-s").value, q: r.querySelector(".dm-q").value };
+        return { k: r.querySelector(".dm-k").value.trim(), n: r.querySelector(".dm-n").value, s: r.querySelector(".dm-s").value, q: r.querySelector(".dm-q").value, l: (st.rows[+r.getAttribute("data-i")] || {}).l || "" };
       });
       save(); preview();
     }
@@ -164,12 +168,13 @@
   }
   function preview() {
     var pv = document.getElementById("dmPrev"); if (!pv) return;
-    if (st.printer === "termal" && window.ThermalPrint) { tPreview(pv); return; }
-    var pg = pages(), none = !items().length;
+    var kind = PK || st.printer;
+    if (kind === "termal" && window.ThermalPrint) { tPreview(pv); return; }
+    var pg = pages(kind), none = !items().length;
     pv.innerHTML = pg.map(function (t, i) { return '<pre class="dm-paper' + (none ? " is-empty" : "") + '">' + esc(t) + "</pre>"; }).join("");
-    document.getElementById("dmInfo").textContent = pg.length + (st.printer === "epson" ? " lembar" : " struk") + " · " + items().length + " barang";
+    document.getElementById("dmInfo").textContent = pg.length + (kind === "epson" ? " form" : " struk") + " · " + items().length + " barang";
     [].forEach.call(pv.querySelectorAll("pre"), function (pre) {
-      var fs = st.printer === "epson" ? 12 : 13; pre.style.fontSize = fs + "px";
+      var fs = kind === "epson" ? 12 : 13; pre.style.fontSize = fs + "px";
       while (pre.scrollWidth > pre.clientWidth + 1 && fs > 6) { fs -= 0.5; pre.style.fontSize = fs + "px"; }
     });
   }
@@ -186,19 +191,24 @@
     setTimeout(function () { go(true); }, 400);
   }
   /* ---------- ESC/P mentah: huruf draft bawaan printer (condensed 17 cpi, 6 lpi) ---------- */
+  function adv(o, u) { while (u > 0) { var c = Math.min(255, u); o.push(27, 74, c); u -= c; } }
   function buildRaw(test) {
     TEST = !!test;
-    var pg = epsonPages(), f = FORMS[st.form], o = [27, 64, 27, 120, 0, 15, 27, 50, 27, 67, f.lines], k, i;
+    var pg = epsonPages(), H = Math.round(fhIn() * 216), o = [27, 64, 27, 120, 0, 15, 27, 51, 36, 27, 67, 0, 22], k, i;
     TEST = false;
+    /* ESC 3 36 = 6 lpi (36/216 in). ESC C 0 22 = halaman 22 in, jadi printer TIDAK pernah loncat form sendiri.
+       Tiap form dimajukan tepat setinggi form (ESC J n/216 in) — tidak ada FF, tidak ada selisih yang menumpuk. */
     if (st.solid) o.push(27, 116, 1);
     if (st.tebal) o.push(27, 71);
     o.push(27, 108, Math.min(60, Math.round(st.left / 25.4 * 17)));
-    var per = Math.max(1, Math.round(11 / f.h)), sl = per === 1 ? 0 : (parseInt(st.slot, 10) || 1) - 1;
-    for (k = 0; k < sl; k++) o.push(12);
+    var per = Math.max(1, Math.floor(11 / fhIn() + 0.01)), sl = per === 1 ? 0 : (parseInt(st.slot, 10) || 1) - 1;
+    for (k = 0; k < sl; k++) adv(o, H);
+    var topU = Math.max(0, Math.round(st.top / 25.4 * 216));
     pg.forEach(function (t) {
-      for (k = 0; k < Math.round(st.top / 4.233); k++) o.push(13, 10);
-      t.split("\n").forEach(function (ln) { for (i = 0; i < ln.length; i++) { var c = ln.charCodeAt(i); o.push(c === 9472 ? 196 : (c < 32 || c > 126 ? 63 : c)); } o.push(13, 10); });
-      o.push(12);
+      var lines = t.split("\n"), used = topU + lines.length * 36;
+      adv(o, topU);
+      lines.forEach(function (ln) { for (i = 0; i < ln.length; i++) { var c = ln.charCodeAt(i); o.push(c === 9472 ? 196 : (c < 32 || c > 126 ? 63 : c)); } o.push(13, 10); });
+      adv(o, Math.max(0, H - used));
     });
     return o;
   }
@@ -250,7 +260,7 @@
   }
   function agentMsg(h) { var e = document.getElementById("dmAgent"); if (e) e.innerHTML = h; }
   function ping() {
-    if (st.printer !== "epson" || !document.getElementById("dmAgent") || !window.fetch) return;
+    if ((st.printer !== "epson" && !PC) || !document.getElementById("dmAgent") || !window.fetch) return;
     fetch(AGENT + "/ping").then(function (r) { return r.text(); }).then(function () { agentMsg("Agen cetak: <b>tersambung</b> ✓ — tombol di atas langsung mencetak."); })
       .catch(function () { agentMsg("Agen cetak: <b>belum aktif</b>. Jalankan <b>pasang-agen-epson.bat</b> sekali di PC ini."); });
   }
@@ -275,12 +285,11 @@
       css = "@page{size:" + st.tw + "mm " + hmm + "mm;margin:0}html,body{margin:0;padding:0}.s{box-sizing:border-box;width:" + st.tw + "mm;padding:2mm 3mm}pre{margin:0;font:" + fp + 'pt/1.25 "Courier New",monospace;color:#000;white-space:pre}';
       html = pg.map(function (t) { return '<div class="s"><pre>' + esc(t) + "</pre></div>"; }).join("");
     } else {
-      var f = FORMS[st.form], H = f.h.toFixed(3), per = Math.max(1, Math.round(11 / f.h)), sl = per === 1 ? 0 : (parseInt(st.slot, 10) || 1) - 1, arr = [], sheets = [];
+      var H = fhIn().toFixed(3), sl = st.form === "3" ? (parseInt(st.slot, 10) || 1) - 1 : 0, arr = [];
       for (var z = 0; z < sl; z++) arr.push(null);
       pg.forEach(function (t) { arr.push(t); });
-      for (var y = 0; y < arr.length; y += per) sheets.push(arr.slice(y, y + per));
-      css = "@page{size:9.5in 11in;margin:0}html,body{margin:0;padding:0}.s{box-sizing:border-box;width:9.5in;height:calc(11in - .04in);overflow:hidden;page-break-after:always}.s:last-child{page-break-after:auto}.f{box-sizing:border-box;height:" + H + "in;overflow:hidden;padding:" + st.top + "mm 0 0 " + st.left + "mm}pre{margin:0;font:" + (st.tebal ? "bold " : "") + '7.06pt/12pt "Courier New",monospace;color:#000;white-space:pre}';
-      html = sheets.map(function (sh) { return '<div class="s">' + sh.map(function (t) { return '<div class="f">' + (t ? "<pre>" + esc(t) + "</pre>" : "") + "</div>"; }).join("") + "</div>"; }).join("");
+      css = "@page{size:9.5in " + H + "in;margin:0}html,body{margin:0;padding:0}.s{box-sizing:border-box;width:9.5in;height:" + (H - 0.03).toFixed(3) + "in;overflow:hidden;page-break-after:always;padding:" + st.top + "mm 0 0 " + st.left + "mm}.s:last-child{page-break-after:auto}pre{margin:0;font:" + (st.tebal ? "bold " : "") + '7.06pt/12pt "Courier New",monospace;color:#000;white-space:pre}';
+      html = arr.map(function (t) { return '<div class="s">' + (t ? "<pre>" + esc(t) + "</pre>" : "") + "</div>"; }).join("");
     }
     printFrame(html, css);
   }
@@ -292,5 +301,223 @@
     var h = document.getElementById("hamburgerBtn"); if (h) h.setAttribute("aria-expanded", "false");
     [].forEach.call(document.querySelectorAll(".nav-dropdown.open"), function (o) { o.classList.remove("open"); });
   });
+
+  /* =====================================================================
+     TAMPILAN PC — meniru layar "BKB Distribusi" di DMS (form + grid detail).
+     Tombol Cetak membuka pilihan: Epson LX-310 / Printer IWARE Thermal / Simpan gambar.
+     ===================================================================== */
+  var curMode = "", rzT = 0;
+  function isPC() { return window.innerWidth >= 961 && !/Android|iPhone|iPad|Mobile/i.test(navigator.userAgent); }
+  function render(el) {
+    root = el; curMode = isPC() ? "pc" : "m";
+    if (curMode === "pc") renderPC(el); else renderMobile(el);
+    if (!window.__dmRz) {
+      window.__dmRz = 1;
+      window.addEventListener("resize", function () {
+        clearTimeout(rzT);
+        rzT = setTimeout(function () {
+          if (!root || !document.body.contains(root) || !(document.getElementById("dxRoot") || document.getElementById("dmPrev"))) return;
+          if ((isPC() ? "pc" : "m") !== curMode) render(root);
+        }, 250);
+      });
+    }
+  }
+  function dl(blob, name) {
+    var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click();
+    setTimeout(function () { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 800);
+  }
+  /* gambar form Epson (untuk dicetak lewat gambar) */
+  function epsonImage() {
+    if (!items().length) { alert("Isi minimal satu barang dengan jumlah sebelum menyimpan gambar."); return; }
+    var pg = epsonPages(), n = now(), base = "Form-DMS-" + n.t.split("-").reverse().join("") + "-" + n.j.replace(":", "");
+    pg.forEach(function (t, i) {
+      setTimeout(function () {
+        var L = t.split("\n"), fs = 14, lh = fs * 1.3, cw = fs * 0.6, M = 24, S = 2, cv = document.createElement("canvas");
+        cv.width = Math.ceil((W * cw + 2 * M) * S); cv.height = Math.ceil((L.length * lh + 2 * M) * S);
+        var c = cv.getContext("2d"); c.scale(S, S); c.fillStyle = "#fff"; c.fillRect(0, 0, cv.width, cv.height);
+        c.fillStyle = "#000"; c.textBaseline = "top"; c.font = (st.tebal ? "bold " : "") + fs + 'px "Courier New",Consolas,monospace';
+        L.forEach(function (ln, j) {
+          if (/^[\u2500\-]{20,}$/.test(ln)) c.fillRect(M, M + j * lh + fs * 0.55, W * cw, 1); else c.fillText(ln, M, M + j * lh);
+        });
+        cv.toBlob(function (b) { dl(b, base + (pg.length > 1 ? "-" + (i + 1) : "") + ".png"); agentMsg("Gambar form disimpan: " + esc(base) + ".png"); }, "image/png");
+      }, i * 600);
+    });
+  }
+
+  var ICO = {
+    ref: '<svg viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="#2f7d32" stroke-width="2" d="M13 8a5 5 0 1 1-1.6-3.7"/><path fill="#2f7d32" d="M14 1v5h-5z"/></svg>',
+    prn: '<svg viewBox="0 0 16 16" width="16" height="16"><rect x="4" y="1.5" width="8" height="4" fill="#fff" stroke="#556"/><rect x="1.5" y="5.5" width="13" height="6" rx="1" fill="#6b7a90" stroke="#334"/><rect x="4" y="9.5" width="8" height="5" fill="#fff" stroke="#556"/></svg>',
+    sav: '<svg viewBox="0 0 16 16" width="16" height="16"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5" fill="#43a047" stroke="#1b5e20"/><path d="M4 8l3 3 5-6" fill="none" stroke="#fff" stroke-width="2"/></svg>',
+    nw: '<svg viewBox="0 0 16 16" width="16" height="16"><path d="M3 1.5h7l3 3v10H3z" fill="#fff" stroke="#556"/><path d="M8 6v5M5.5 8.5h5" stroke="#1e6fd9" stroke-width="1.6"/></svg>',
+    set: '<svg viewBox="0 0 16 16" width="16" height="16"><circle cx="8" cy="8" r="2.4" fill="none" stroke="#445" stroke-width="1.6"/><path d="M8 1.5v2.2M8 12.3v2.2M1.5 8h2.2M12.3 8h2.2M3.4 3.4l1.5 1.5M11.1 11.1l1.5 1.5M12.6 3.4l-1.5 1.5M4.9 11.1l-1.5 1.5" stroke="#445" stroke-width="1.6"/></svg>',
+    find: '<svg viewBox="0 0 16 16" width="14" height="14"><circle cx="6.5" cy="6.5" r="4.2" fill="#fff4cf" stroke="#d98a00" stroke-width="1.8"/><path d="M9.6 9.6L14 14" stroke="#d98a00" stroke-width="2.2"/></svg>'
+  };
+  var GCODE = { "GUDANG LAYAK PARUNG": "281-W01", "GUDANG LAYAK PET PARUNG": "281-W13" };
+
+  function renderPC(el) {
+    load(); PC = true; PK = PK === "termal" ? "termal" : "epson"; clearInterval(tick);
+    var P = (window.OpeningClosing && window.OpeningClosing.api && window.OpeningClosing.api.products) || [], act = 0, tab = "detail";
+    P.forEach(function (p) { if (UNITS.indexOf(p[2]) < 0) UNITS.push(p[2]); });
+    st.rows.forEach(function (r) { if (r.s && UNITS.indexOf(r.s) < 0) UNITS.push(r.s); });
+    function dstr() { return now().t.replace(/-/g, "/"); }
+    function rowsHtml() {
+      return st.rows.map(function (r, i) {
+        return '<div class="dx-r' + (i === act ? " act" : "") + '" data-i="' + i + '"><span class="dx-no">' + (i + 1) + '</span>' +
+          '<button type="button" class="dx-lk" data-lk title="Cari produk">' + ICO.find + '</button>' +
+          '<input class="dx-k" list="dxPL" autocomplete="off" value="' + esc(r.k) + '" aria-label="Kode produk">' +
+          '<input class="dx-n" autocomplete="off" value="' + esc(r.n) + '" aria-label="Nama produk">' +
+          '<input class="dx-q" type="number" min="0" value="' + esc(r.q) + '" aria-label="Qty">' +
+          '<select class="dx-s" aria-label="Satuan">' + UNITS.map(function (u) { return "<option" + (u === r.s ? " selected" : "") + ">" + u + "</option>"; }).join("") + '</select>' +
+          '<button type="button" class="dx-lot" data-lot title="Lot/SN (Batch ID)">' + (r.l ? "<i>" + esc(r.l) + "</i>" : "") + ICO.find + '</button></div>';
+      }).join("");
+    }
+    function fld(label, inner, mg) { return '<div class="dx-f"><label>' + label + '</label><div class="dx-fv">' + inner + (mg ? '<button type="button" class="dx-mg" data-mg title="Cari">' + ICO.find + '</button>' : "") + '</div></div>'; }
+    function sel(id, arr, cur) { return '<select id="' + id + '">' + arr.map(function (a) { return '<option value="' + a[0] + '"' + (a[0] === cur ? " selected" : "") + ">" + a[1] + "</option>"; }).join("") + "</select>"; }
+    var set = '<div class="dx-set" id="dxSet" hidden><div class="dx-sg"><h4>Epson LX-310</h4>' +
+      '<label>Ukuran form' + sel("dmF", Object.keys(FORMS).map(function (k) { return [k, FORMS[k].name]; }), st.form) + '</label>' +
+      '<label>Tinggi form (mm) <small>kosong = standar</small><input id="dxFH" type="number" step="0.5" min="40" placeholder="' + Math.round(FORMS[st.form].h * 25.4) + '" value="' + esc(st.fh) + '"></label>' +
+      '<label>Posisi form di lembar' + sel("dmS", [["1", "Form ke-1"], ["2", "Form ke-2"], ["3", "Form ke-3"]], st.slot) + '</label>' +
+      '<label>Garis tabel' + sel("dmR", [["1", "Solid (PC437)"], ["0", "Putus-putus (-)"]], st.solid ? "1" : "0") + '</label>' +
+      '<label>Nama printer Windows<input id="dmN" value="' + esc(st.pname) + '" placeholder="kosong = printer default"></label>' +
+      '<label>Tebal huruf' + sel("dmB", [["1", "Tebal (double-strike)"], ["0", "Normal"]], st.tebal ? "1" : "0") + '</label>' +
+      '<div class="dx-2"><label>Geser kanan (mm)<input id="dmL" type="number" step="0.5" value="' + st.left + '"></label><label>Geser bawah (mm)<input id="dmT" type="number" step="0.5" value="' + st.top + '"></label></div>' +
+      '<div class="dx-2"><button type="button" class="dx-b" id="dxTest">Cetak tes 2 form</button><button type="button" class="dx-b" id="dxPrn2">Unduh .prn</button></div>' +
+      '<p class="dx-hint">Kertas form menerus <b>9,5 × 3,75 in</b> (hasil ukur ± 24 × 9,5 cm). Sejajarkan perforasi atas form dengan kepala cetak, lalu nyalakan printer. Cetak <b>tes 2 form</b>: bila form ke-2 mulai pas di perforasi, tinggi sudah benar; bila bergeser, ubah <b>Tinggi form (mm)</b>.</p></div>' +
+      '<div class="dx-sg"><h4>Printer IWARE Thermal</h4>' +
+      '<label>Lebar kertas' + sel("dmW", [["58", "58 mm (IWARE MP-58SB)"], ["80", "80 mm"]], st.tw) + '</label>' +
+      '<label>Cara kirim' + sel("dmM", [["ble", "Bluetooth langsung"], ["rawbt", "Aplikasi RawBT"], ["dialog", "Dialog cetak browser"]], st.tmethod) + '</label>' +
+      '<label>Kegelapan cetak' + sel("dmDn", [["1", "Terang"], ["2", "Normal"], ["3", "Gelap"], ["4", "Sangat gelap"]], st.dens) + '</label>' +
+      '<label>Logo di struk' + sel("dmLg", [["1", "Tampilkan logo"], ["0", "Tanpa logo"]], st.logo ? "1" : "0") + '</label></div></div>';
+    el.innerHTML = '<section class="dm-page"><div class="dx" id="dxRoot">' +
+      '<div class="dx-tabs"><span class="dx-tab on">BKB Distribusi <i>✕</i></span><span class="dx-ch">▾</span></div>' +
+      '<div class="dx-tool"><button type="button" id="dxRef">' + ICO.ref + 'Refresh</button><button type="button" id="dxPrn">' + ICO.prn + 'Cetak</button><button type="button" id="dxSav">' + ICO.sav + 'Simpan Applied</button><button type="button" id="dxNew">' + ICO.nw + 'Baru</button><button type="button" id="dxSetB">' + ICO.set + 'Pengaturan</button>' +
+      '<span class="dx-status">Status : <b id="dxSt"></b> ⓘ</span></div>' + set +
+      '<div class="dx-grp"><div class="dx-gh">Dokumen Bukti Keluar Barang Distribusi<span>📌</span></div><div class="dx-gb"><div class="dx-col">' +
+      fld("No. Dokumen", '<input id="dxNo" autocomplete="off" placeholder="mis. 281-0083795" value="' + esc(st.nodok) + '">', 1) +
+      fld("Tanggal", '<input id="dxTgl" readonly value="' + dstr() + '"><span class="dx-dd">▾</span>') +
+      fld("Dok. Permintaan Barang", '<input id="dxReq" autocomplete="off" value="' + esc(st.dokreq) + '">', 1) +
+      fld("Salesman/Driver", '<input id="dxDrv" autocomplete="off" placeholder="mis. 281-R061 - ARDI" value="' + esc(st.pengemudi) + '">', 1) +
+      fld("Gudang", '<select id="dxG">' + GUDANG.map(function (g) { return "<option value=\"" + g + "\"" + (g === st.gudang ? " selected" : "") + ">" + (GCODE[g] ? GCODE[g] + " - " : "") + g + "</option>"; }).join("") + '</select>') +
+      fld("Tipe Stok", '<select id="dxTs"><option value="JUAL"' + (st.tipe === "JUAL" ? " selected" : "") + '>JUAL - Stok untuk penjualan</option></select>') +
+      fld("Kendaraan", '<input id="dxV" autocomplete="off" placeholder="mis. D 9193 AE" value="' + esc(st.kendaraan) + '">', 1) +
+      '</div><div class="dx-col2"><div class="dx-kl">Keterangan</div><textarea id="dxK" rows="3" placeholder="mis. RIT 1 / REVINA">' + esc(st.ket) + '</textarea>' +
+      '<fieldset class="dx-cap"><legend>Capacity Info</legend><div>Volume : 0%</div><div>Weight : 0%</div></fieldset></div></div></div>' +
+      '<div class="dx-dtabs"><button type="button" class="on" data-tab="detail">Detail Bukti Keluar Barang Distribusi</button><button type="button" data-tab="prev">Pratinjau Cetak</button>' +
+      '<span class="dx-sp"></span><button type="button" class="dx-mini" id="dxAdd">+ Baris</button><button type="button" class="dx-mini" id="dxDel">− Hapus baris</button></div>' +
+      '<div class="dx-pane" id="dxDetail"><div class="dx-gp">Drag a column here to group by this column.</div>' +
+      '<div class="dx-hd"><span>No.</span><span>...</span><span>Kode Produk</span><span>Nama Produk</span><span>Qty</span><span>Satuan</span><span>Lot/SN</span></div>' +
+      '<div class="dx-rows" id="dxRows">' + rowsHtml() + '</div></div>' +
+      '<div class="dx-pane" id="dxPrevPane" hidden><div class="dx-pk"><button type="button" data-pk="epson" class="' + (PK === "epson" ? "on" : "") + '">Form Epson LX-310</button><button type="button" data-pk="termal" class="' + (PK === "termal" ? "on" : "") + '">Struk Thermal</button><small id="dmInfo"></small></div><div id="dmPrev" class="dm-prev"></div></div>' +
+      '<div class="dx-foot"><span id="dmAgent" class="dx-msg">Siap.</span></div>' +
+      '<datalist id="dxPL">' + P.map(function (p) { return '<option value="' + esc(p[0]) + '">' + esc(p[1]) + "</option>"; }).join("") + '</datalist></div></section>';
+    var R = el.querySelector("#dxRoot");
+    function $(s) { return R.querySelector(s); }
+    function stat() { var b = $("#dxSt"); b.textContent = st.status; b.className = st.status === "Applied" ? "ok" : "dr"; }
+    function rebuild() { $("#dxRows").innerHTML = rowsHtml(); save(); }
+    function read() {
+      st.nodok = $("#dxNo").value.trim(); st.dokreq = $("#dxReq").value.trim(); st.pengemudi = $("#dxDrv").value; st.gudang = $("#dxG").value; st.tipe = $("#dxTs").value;
+      st.kendaraan = $("#dxV").value; st.ket = $("#dxK").value.replace(/\s*[\r\n]+\s*/g, " ");
+      st.form = $("#dmF").value; st.fh = $("#dxFH").value.trim(); st.slot = $("#dmS").value; st.solid = $("#dmR").value === "1"; st.pname = $("#dmN").value.trim();
+      st.tebal = $("#dmB").value === "1"; st.left = parseFloat($("#dmL").value) || 0; st.top = parseFloat($("#dmT").value) || 0;
+      st.tw = $("#dmW").value; st.tmethod = $("#dmM").value; st.dens = $("#dmDn").value; st.logo = $("#dmLg").value === "1";
+      st.rows = [].map.call(R.querySelectorAll(".dx-r"), function (r) {
+        var i = +r.getAttribute("data-i");
+        return { k: r.querySelector(".dx-k").value.trim(), n: r.querySelector(".dx-n").value, s: r.querySelector(".dx-s").value, q: r.querySelector(".dx-q").value, l: (st.rows[i] || {}).l || "" };
+      });
+      if (st.status === "Applied") { st.status = "Draft"; stat(); }
+      save(); if (tab === "prev") preview();
+    }
+    function setAct(i) { act = i; [].forEach.call(R.querySelectorAll(".dx-r"), function (r) { r.classList.toggle("act", +r.getAttribute("data-i") === i); }); }
+    function modal(title, body) {
+      var o = document.createElement("div"); o.className = "dx-ov";
+      o.innerHTML = '<div class="dx-md" role="dialog" aria-label="' + esc(title) + '"><div class="dx-mh">' + esc(title) + '<button type="button" data-x aria-label="Tutup">✕</button></div><div class="dx-mb">' + body + "</div></div>";
+      o.addEventListener("click", function (e) { if (e.target === o || (e.target.hasAttribute && e.target.hasAttribute("data-x"))) o.parentNode && o.parentNode.removeChild(o); });
+      o.close = function () { if (o.parentNode) o.parentNode.removeChild(o); };
+      R.appendChild(o); return o;
+    }
+    function fillCode(row) {
+      var k = row.querySelector(".dx-k").value.trim().toUpperCase();
+      for (var i = 0; i < P.length; i++) if (P[i][0].toUpperCase() === k) {
+        row.querySelector(".dx-n").value = P[i][1]; if (UNITS.indexOf(P[i][2]) >= 0) row.querySelector(".dx-s").value = P[i][2]; break;
+      }
+    }
+    function lookup(i) {
+      var m = modal("Cari Produk", '<input id="dxLq" class="dx-lq" placeholder="Ketik kode atau nama produk" autocomplete="off"><div id="dxLl" class="dx-ll"></div>');
+      var q = m.querySelector("#dxLq"), ll = m.querySelector("#dxLl");
+      function draw() {
+        var s = q.value.trim().toUpperCase(), h = P.filter(function (p) { return !s || p[0].toUpperCase().indexOf(s) >= 0 || p[1].toUpperCase().indexOf(s) >= 0; }).slice(0, 200)
+          .map(function (p) { return '<button type="button" data-c="' + esc(p[0]) + '"><b>' + esc(p[0]) + "</b><span>" + esc(p[1]) + "</span><i>" + esc(p[2]) + "</i></button>"; }).join("");
+        ll.innerHTML = h || '<p class="dx-em">' + (P.length ? "Produk tidak ditemukan." : "Daftar produk belum tersedia. Ketik kode dan nama langsung di baris.") + "</p>";
+      }
+      q.addEventListener("input", draw); draw(); q.focus();
+      ll.addEventListener("click", function (e) {
+        var b = e.target.closest("button"); if (!b) return; read();
+        for (var j = 0; j < P.length; j++) if (P[j][0] === b.getAttribute("data-c")) { st.rows[i].k = P[j][0]; st.rows[i].n = P[j][1]; st.rows[i].s = P[j][2]; }
+        m.close(); rebuild(); setAct(i); var qs = R.querySelectorAll(".dx-q"); if (qs[i]) qs[i].focus();
+      });
+    }
+    function printDialog() {
+      var m = modal("Cetak Bukti Keluar Barang",
+        '<div class="dx-opt"><button type="button" data-do="epson"><b>Epson LX-310</b><span>Form kertas menerus 3–4 ply, huruf asli printer</span></button>' +
+        '<button type="button" data-do="termal"><b>Printer IWARE Thermal</b><span>Struk ' + st.tw + ' mm lewat ' + (st.tmethod === "ble" ? "Bluetooth" : st.tmethod === "rawbt" ? "RawBT" : "dialog cetak") + '</span></button>' +
+        '<div class="dx-o3"><b>Simpan gambar</b><span>Untuk dicetak lewat gambar</span><div><button type="button" data-do="img-termal">Gambar struk thermal</button><button type="button" data-do="img-epson">Gambar form Epson</button></div></div></div>');
+      m.addEventListener("click", function (e) {
+        var b = e.target.closest && e.target.closest("[data-do]"); if (!b) return;
+        var a = b.getAttribute("data-do"); read(); m.close();
+        if (a === "epson") { st.printer = "epson"; save(); rawSend(false); }
+        else if (a === "termal") { st.printer = "termal"; save(); if (!window.ThermalPrint) { alert("Modul printer thermal belum termuat."); return; } tPrint(false); }
+        else if (a === "img-termal") { if (!window.ThermalPrint) { alert("Modul printer thermal belum termuat."); return; } tSave(); }
+        else epsonImage();
+      });
+    }
+    R.addEventListener("input", function (e) { if (e.target.classList.contains("dx-k")) fillCode(e.target.parentNode); if (e.target.id !== "dxLq") read(); });
+    R.addEventListener("change", function (e) { if (e.target.id !== "dxLq") read(); });
+    R.addEventListener("focusin", function (e) { var r = e.target.closest && e.target.closest(".dx-r"); if (r) setAct(+r.getAttribute("data-i")); });
+    R.addEventListener("keydown", function (e) {
+      if (e.keyCode === 27) { var o = R.querySelector(".dx-ov"); if (o) o.close(); return; }
+      if (e.keyCode === 13 && e.target.classList.contains("dx-q")) {
+        e.preventDefault(); var i = +e.target.parentNode.getAttribute("data-i"); read();
+        if (i >= st.rows.length - 1 && (st.rows[i].k || st.rows[i].n)) st.rows.push({ k: "", n: "", s: "BOX", q: "", l: "" });
+        if (i + 1 < st.rows.length) { rebuild(); setAct(i + 1); R.querySelectorAll(".dx-k")[i + 1].focus(); }
+      }
+    });
+    R.addEventListener("click", function (e) {
+      var t = e.target, b;
+      if ((b = t.closest("[data-tab]"))) {
+        tab = b.getAttribute("data-tab"); [].forEach.call(R.querySelectorAll("[data-tab]"), function (x) { x.classList.toggle("on", x === b); });
+        $("#dxDetail").hidden = tab !== "detail"; $("#dxPrevPane").hidden = tab !== "prev"; if (tab === "prev") preview(); return;
+      }
+      if ((b = t.closest("[data-pk]"))) { PK = b.getAttribute("data-pk"); [].forEach.call(R.querySelectorAll("[data-pk]"), function (x) { x.classList.toggle("on", x === b); }); preview(); return; }
+      if ((b = t.closest("[data-lk]"))) { read(); lookup(+b.parentNode.getAttribute("data-i")); return; }
+      if ((b = t.closest("[data-lot]"))) {
+        read(); var i = +b.parentNode.getAttribute("data-i"), v = window.prompt("Lot/SN (Batch ID) untuk baris " + (i + 1) + ":", st.rows[i].l || "");
+        if (v !== null) { st.rows[i].l = v.trim(); rebuild(); setAct(i); if (tab === "prev") preview(); }
+        return;
+      }
+      if ((b = t.closest("[data-mg]"))) { var inp = b.parentNode.querySelector("input"); if (inp) inp.focus(); return; }
+      b = t.closest("button"); if (!b) return;
+      if (b.id === "dxPrn") { read(); printDialog(); }
+      else if (b.id === "dxRef") { agentMsg("Memeriksa agen cetak…"); ping(true); $("#dxTgl").value = dstr(); if (tab === "prev") preview(); }
+      else if (b.id === "dxSav") {
+        read(); if (!items().length) { alert("Isi minimal satu barang dengan jumlah sebelum menyimpan."); return; }
+        st.status = "Applied"; save(); stat(); agentMsg("Tersimpan di komputer ini ✓");
+      }
+      else if (b.id === "dxNew") {
+        if (!window.confirm("Mulai dokumen baru? Isian saat ini dikosongkan.")) return;
+        st.rows = [{ k: "", n: "", s: "BOX", q: "", l: "" }]; st.kendaraan = ""; st.ket = ""; st.nodok = ""; st.dokreq = ""; st.pengemudi = ""; st.status = "Draft"; save(); renderPC(el);
+      }
+      else if (b.id === "dxSetB") { var s = $("#dxSet"); s.hidden = !s.hidden; }
+      else if (b.id === "dxAdd") { read(); st.rows.push({ k: "", n: "", s: "BOX", q: "", l: "" }); act = st.rows.length - 1; rebuild(); var ks = R.querySelectorAll(".dx-k"); ks[ks.length - 1].focus(); }
+      else if (b.id === "dxDel") { read(); st.rows.splice(act, 1); if (!st.rows.length) st.rows.push({ k: "", n: "", s: "BOX", q: "", l: "" }); act = Math.min(act, st.rows.length - 1); rebuild(); setAct(act); }
+      else if (b.id === "dxTest") { read(); rawSend(true); }
+      else if (b.id === "dxPrn2") { read(); rawDownload(false); }
+    });
+    stat(); ping(true);
+    tick = setInterval(function () {
+      if (!document.getElementById("dxRoot")) { clearInterval(tick); return; }
+      var d = document.getElementById("dxTgl"); if (d) d.value = dstr(); if (tab === "prev") preview();
+    }, 30000);
+  }
+
   window.DMSManual = { render: render };
 })();

@@ -117,8 +117,8 @@
   }
   function doOcr(file, status) {
     status("Memuat mesin OCR…");
-    return (window.Tesseract ? Promise.resolve() : loadScript("https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js")).then(function () { return prep(file); }).then(function (cv) {
-      return window.Tesseract.recognize(cv, "eng", { logger: function (m) { if (m.status === "recognizing text") status("Membaca gambar… " + Math.round(m.progress * 100) + "%"); } });
+    return (window.Tesseract ? Promise.resolve() : loadScript("vendor/tesseract/tesseract.min.js")).then(function () { return prep(file); }).then(function (cv) {
+      return window.Tesseract.recognize(cv, "eng", { workerPath: new URL("vendor/tesseract/worker.min.js", location.href).href, corePath: new URL("vendor/tesseract", location.href).href, langPath: new URL("vendor/tesseract", location.href).href, gzip: true, logger: function (m) { if (m.status === "recognizing text") status("Membaca gambar… " + Math.round(m.progress * 100) + "%"); } });
     }).then(function (r) { return r.data.text; });
   }
 
