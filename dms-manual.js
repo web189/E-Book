@@ -2,7 +2,7 @@
    ES5 murni (aman Chrome 109 / Windows 7). Cetak lewat teks monospasi 80 kolom @10 cpi, 6 lpi. */
 (function () {
   "use strict";
-  var KEY = "lp_dms_manual", W = 120, AGENT = "http://localhost:9101", LEGEND = "Keterangan : Putih Sales, Merah Ada Gudang, Kuning Checker, Hijau Security";
+  var KEY = "lp_dms_manual", W = 120, AGENT = "http://localhost:9101", LEGEND = "Keterangan : Putih Sales, Merah Adm Gudang, Kuning Checker, Hijau Security";
   var GUDANG = ["GUDANG LAYAK PARUNG", "GUDANG BS PARUNG", "GUDANG REJECT PARUNG", "GUDANG LAYAK PET PARUNG"];
   var FORMS = { "3": { name: "1/3 lembar (9,5 × 3,75 in ≈ 95 mm, hasil ukur)", h: 3.75 }, "2": { name: "1/2 lembar (9,5 × 5,5 in)", h: 5.5 }, "1": { name: "Penuh (9,5 × 11 in)", h: 11 } };
   var UNITS = ["BOX", "PACK", "PCS"];
@@ -41,35 +41,49 @@
   function fhIn() { var m = parseFloat(st.fh); return m > 20 ? m / 25.4 : FORMS[st.form].h; }
   /* jumlah baris (6 lpi) yang muat di satu form; sisa tinggi dipakai sebagai jarak aman bawah */
   function nLines() { return Math.max(14, Math.floor(fhIn() * 6 + 1e-6)); }
-  function perPage() { return nLines() - 13; }
-  function items() { if (TEST) return SAMPLE; return st.rows.filter(function (r) { return (r.k || r.n) && String(r.q).trim() !== ""; }); }
+    function items() { if (TEST) return SAMPLE; return st.rows.filter(function (r) { return (r.k || r.n) && String(r.q).trim() !== ""; }); }
   function dash() { return new Array(W + 1).join(st.solid ? "\u2500" : "-"); }
 
   /* ---------- susun teks form ---------- */
   function pages(kind) { return (kind || st.printer) === "termal" ? thermal() : epsonPages(); }
+  /* Pola mengikuti cetakan asli DMS (22 baris/form):
+     B1 kosong, B2 judul, B3-B7 kepala, B8 garis, B9 judul kolom, B10 garis, lalu daftar barang.
+     Halaman BIASA  : garis + keterangan warna di 2 baris terakhir (10 barang/halaman).
+     Halaman TERAKHIR: garis, keterangan warna, DIINPUT/DISERAHKAN/DITERIMA/DIPERIKSA, 2 baris kosong
+                       untuk tanda tangan, lalu ( WAREHOUSE ADMIN ) ( CHECKER ) ( DRIVER ) ( SECURITY ) (6 barang/halaman).
+     Bila barang terakhir > 6, tanda tangan dicetak di halaman tambahan tanpa barang (seperti DMS). */
   function epsonPages() {
-    var it = items(), n = perPage(), total = Math.max(1, Math.ceil(it.length / n)), nw = now(), out = [];
-    for (var p = 0; p < total; p++) {
-      var L = [], part = it.slice(p * n, p * n + n), HW = 66;
-      var title = TEST ? "BUKTI KELUAR BARANG (TES CETAK)" : "BUKTI KELUAR BARANG (DISTRIBUSI)";
-      L.push(rep(Math.floor((W - title.length) / 2)) + title);
-      L.push(pad("NAMA DEPO   : LP PARUNG", HW) + "HALAMAN    : " + (p + 1) + "/" + total);
-      L.push(pad("NAMA GUDANG : " + st.gudang, HW) + "DOKUMEN ID : " + String(st.nodok || "").toUpperCase());
-      L.push(pad("PENGEMUDI   : " + st.pengemudi.toUpperCase(), HW) + "TANGGAL    : " + nw.t + " " + nw.j);
-      L.push(pad("KENDARAAN   : " + st.kendaraan.toUpperCase(), HW) + "NO. FB     : " + String(st.dokreq || "").toUpperCase());
-      L.push(pad("KETERANGAN  : " + String(st.ket).replace(/\s*[\r\n]+\s*/g, " ").toUpperCase(), W));
+    var it = items(), nL = nLines(), capMid = Math.max(1, nL - 12), capLast = Math.max(1, nL - 16), nw = now(), tgl = nw.t.replace(/-/g, "/"), out = [], chunks = [], i = 0, HW = 66;
+    while (it.length - i > capLast) { var take = Math.min(capMid, it.length - i); chunks.push({ r: it.slice(i, i + take), last: false, o: i }); i += take; }
+    chunks.push({ r: it.slice(i), last: true, o: i });
+    function LB(a, b) { return pad(a, 13) + ": " + b; }   /* titik dua kolom 13, isi kolom 15 */
+    function RB(a, b) { return pad(a, 14) + ": " + b; }   /* label kanan mulai kolom 66, titik dua kolom 80 */
+    chunks.forEach(function (c, p) {
+      var L = [], cap = c.last ? capLast : capMid, title = TEST ? "BUKTI KELUAR BARANG (TES CETAK)" : "BUKTI KELUAR BARANG (DISTRIBUSI)";
+      L.push("");
+      L.push(rep(45) + title);
+      L.push(pad(LB("NAMA DEPO", "LP PARUNG"), HW) + RB("HALAMAN", p + 1));
+      L.push(pad(LB("NAMA GUDANG", st.gudang), HW) + RB("DOKUMEN ID", String(st.nodok || "").toUpperCase()));
+      L.push(pad(LB("PENGEMUDI", st.pengemudi.toUpperCase()), HW) + RB("TANGGAL", tgl));
+      L.push(pad(LB("KENDARAAN", st.kendaraan.toUpperCase()), HW) + RB("NO. FB", String(st.dokreq || "").toUpperCase()));
+      L.push(pad(LB("KETERANGAN", String(st.ket).replace(/\s*[\r\n]+\s*/g, " ").toUpperCase()), W));
       L.push(dash());
-      L.push(pad("NO", 7) + pad("KODE", 10) + pad("NAMA PRODUK", 45) + pad("SATUAN", 12) + lpad("JUMLAH", 7) + "        BATCH ID");
+      L.push(pad("NO", 4) + pad("KODE", 12) + pad("NAMA PRODUK", 46) + pad("SATUAN", 14) + lpad("JUMLAH", 6) + rep(5) + "BATCH ID");
       L.push(dash());
-      for (var i = 0; i < n; i++) {
-        var r = part[i];
-        L.push(!r && TEST && i === part.length ? new Array(Math.ceil(W / 10) + 1).join("1234567890").substr(0, W) : r ? pad(p * n + i + 1, 7) + pad(r.k.toUpperCase(), 10) + pad(r.n.toUpperCase(), 45) + pad(r.s.toUpperCase(), 12) + lpad(r.q, 7) + "        " + String(r.l || "").toUpperCase().substr(0, 28) : "");
+      for (var k = 0; k < cap; k++) {
+        var r = c.r[k];
+        L.push(r ? pad(c.o + k + 1, 4) + pad(r.k.toUpperCase(), 12) + pad(r.n.toUpperCase(), 46) + pad(r.s.toUpperCase(), 14) + lpad(r.q, 6) + rep(5) + String(r.l || "").toUpperCase().substr(0, 28)
+          : (TEST && k === c.r.length ? new Array(Math.ceil(W / 10) + 1).join("1234567890").substr(0, W) : ""));
       }
       L.push(dash());
       L.push(LEGEND);
-      L.push(pad(rep(8) + "DIBUAT OLEH,", 34) + pad("DISERAHKAN OLEH,", 30) + pad("DITERIMA OLEH,", 34) + "DIPERIKSA OLEH,");
+      if (c.last) {
+        L.push(pad(rep(9) + "DIINPUT OLEH,", 38) + pad("DISERAHKAN OLEH,", 31) + pad("DITERIMA OLEH,", 28) + "DIPERIKSA OLEH,");
+        L.push(""); L.push("");
+        L.push(pad(rep(5) + "( WAREHOUSE ADMIN )", 36) + pad("(    CHECKER    )", 29) + pad("(      DRIVER     )", 30) + "(      SECURITY    )");
+      }
       out.push(L.join("\n"));
-    }
+    });
     if (TEST && out.length === 1) out.push(out[0]);
     return out;
   }
@@ -110,7 +124,7 @@
       '<p class="dm-hint">Pasangkan printer dulu di Pengaturan Bluetooth HP (PIN 0000 atau 1234). Bila "Bluetooth langsung" tidak menemukan printer, pilih <b>Aplikasi RawBT</b>. Cetak buram? Naikkan kegelapan.</p>') +
       '</details>' +
       '<button type="button" class="dm-btn dm-primary" id="dmPrint">' + (st.printer === "epson" ? "Cetak ke Epson LX-310 (huruf asli printer)" : "Cetak ke printer termal " + st.tw + " mm") + '</button><button type="button" class="dm-btn dm-test" id="' + (st.printer === "epson" ? "dmTest" : "dmSave") + '">' + (st.printer === "epson" ? "Cetak tes langsung (data contoh)" : "Simpan gambar struk") + '</button>' +
-      (st.printer !== "epson" ? '<p id="dmAgent" class="dm-hint dm-pnote">Siap mencetak.</p>' : '') + (st.printer === "epson" ? '<p id="dmAgent" class="dm-hint dm-pnote">Memeriksa agen cetak…</p><button type="button" class="dm-btn dm-test" id="dmDlg">Cetak lewat dialog Chrome (gambar, kurang mirip)</button><button type="button" class="dm-btn dm-test" data-raw="1">Unduh berkas ESC/P (.prn)</button>' : "") +
+      (st.printer !== "epson" ? '<p id="dmAgent" class="dm-hint dm-pnote">Siap mencetak.</p>' : '') + (st.printer === "epson" ? '<p id="dmAgent" class="dm-hint dm-pnote">Memeriksa agen cetak…</p><button type="button" class="dm-btn dm-test" id="dmDlg">Cetak lewat dialog Chrome (gambar, kurang mirip)</button><button type="button" class="dm-btn dm-test" data-raw="1">Simpan PDF form Epson</button>' : "") +
       (st.printer === "epson" ? '<p class="dm-hint dm-pnote">Di dialog cetak pilih printer <b>EPSON LX-310</b>, <b>Margins: None</b>, <b>Scale: 100</b>. Cetak tanpa dialog: pakai pintasan dari <b>pasang-epson-win7.bat</b>.</p>' : '') + '</div>' +
       '<div class="dm-card"><h2>Pratinjau <small id="dmInfo"></small></h2><div id="dmPrev" class="dm-prev"></div></div></div></section>';
     function $(s) { return el.querySelector(s); }
@@ -199,7 +213,7 @@
     /* ESC 3 36 = 6 lpi (36/216 in). ESC C 0 22 = halaman 22 in, jadi printer TIDAK pernah loncat form sendiri.
        Tiap form dimajukan tepat setinggi form (ESC J n/216 in) — tidak ada FF, tidak ada selisih yang menumpuk. */
     if (st.solid) o.push(27, 116, 1);
-    if (st.tebal) o.push(27, 71);
+    if (st.tebal) o.push(27, 71, 27, 69);
     o.push(27, 108, Math.min(60, Math.round(st.left / 25.4 * 17)));
     var per = Math.max(1, Math.floor(11 / fhIn() + 0.01)), sl = per === 1 ? 0 : (parseInt(st.slot, 10) || 1) - 1;
     for (k = 0; k < sl; k++) adv(o, H);
@@ -212,12 +226,44 @@
     });
     return o;
   }
+  /* PDF form Epson: 1 form = 1 halaman (9,5 in x tinggi form), Courier 17 cpi / 6 lpi seperti hasil printer asli.
+     Dibuat langsung di browser (tanpa library) supaya bisa dibuka & dicetak dari Windows 7 / HP. */
+  function pdfBuild(test) {
+    TEST = !!test; var pg = epsonPages(); TEST = false;
+    var Wp = 684, Hp = Math.round(fhIn() * 7200) / 100, fs = 7.0588, cw = 72 / 17, lh = 12;
+    var x0 = st.left / 25.4 * 72, y0 = st.top / 25.4 * 72, objs = [], pageIds = [], i;
+    function esc(t) { return t.replace(/[^\x20-\x7e]/g, "?").replace(/([\\()])/g, "\\$1"); }
+    function f(v) { return (Math.round(v * 100) / 100).toString(); }
+    objs[1] = "<< /Type /Catalog /Pages 2 0 R /ViewerPreferences << /PrintScaling /None >> >>";
+    objs[3] = "<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>";
+    objs[4] = "<< /Type /Font /Subtype /Type1 /BaseFont /Courier-Bold /Encoding /WinAnsiEncoding >>";
+    pg.forEach(function (t, k) {
+      var c = "0 g 0 G\n", fn = st.tebal ? "/F2" : "/F1";
+      t.split("\n").forEach(function (ln, j) {
+        var base = Hp - (y0 + 9 + j * lh);
+        if (/^[\u2500\-]{20,}$/.test(ln)) { c += (st.tebal ? "1 w " : "0.7 w ") + f(x0) + " " + f(base + 2.6) + " m " + f(x0 + ln.length * cw) + " " + f(base + 2.6) + " l S\n"; }
+        else if (ln.replace(/\s+$/, "")) c += (st.tebal ? "0.25 w " : "") + "BT " + fn + " " + fs + " Tf " + (st.tebal ? "2 Tr " : "") + f(x0) + " " + f(base) + " Td (" + esc(ln.replace(/\s+$/, "")) + ") Tj " + (st.tebal ? "0 Tr " : "") + "ET\n";
+      });
+      var pid = 5 + k * 2, cid = pid + 1; pageIds.push(pid);
+      objs[pid] = "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 " + Wp + " " + f(Hp) + "] /Contents " + cid + " 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> >>";
+      objs[cid] = "<< /Length " + c.length + " >>\nstream\n" + c + "endstream";
+    });
+    objs[2] = "<< /Type /Pages /Count " + pageIds.length + " /Kids [" + pageIds.map(function (x) { return x + " 0 R"; }).join(" ") + "] >>";
+    var out = "%PDF-1.4\n", offs = [];
+    for (i = 1; i < objs.length; i++) { offs[i] = out.length; out += i + " 0 obj\n" + objs[i] + "\nendobj\n"; }
+    var xr = out.length; out += "xref\n0 " + objs.length + "\n0000000000 65535 f \n";
+    for (i = 1; i < objs.length; i++) out += ("0000000000" + offs[i]).slice(-10) + " 00000 n \n";
+    out += "trailer\n<< /Size " + objs.length + " /Root 1 0 R >>\nstartxref\n" + xr + "\n%%EOF";
+    var u = new Uint8Array(out.length); for (i = 0; i < out.length; i++) u[i] = out.charCodeAt(i) & 255;
+    return new Blob([u], { type: "application/pdf" });
+  }
   function rawDownload(test) {
     if (!test && !items().length) { alert("Isi minimal satu barang dengan jumlah."); return; }
-    var n = now(), name = "DMS-Epson-" + n.t.split("-").reverse().join("") + "-" + n.j.replace(":", "") + ".prn", blob = new Blob([new Uint8Array(buildRaw(test))], { type: "application/octet-stream" });
+    var n = now(), name = "DMS-Epson-" + n.t.split("-").reverse().join("") + "-" + n.j.replace(":", "") + ".pdf", blob = pdfBuild(test);
     if (window.navigator.msSaveBlob) { window.navigator.msSaveBlob(blob, name); return; }
     var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click();
     setTimeout(function () { document.body.removeChild(a); }, 500);
+    agentMsg("PDF form disimpan: " + esc(name) + ". Buka lalu Print ke Epson LX-310 (kertas 9,5 × " + (fhIn()).toFixed(2) + " in, skala 100%).");
   }
   /* ---------- printer termal: gambar struk (logo + huruf tajam) -> ESC/POS ---------- */
   var pseq = 0;
@@ -270,9 +316,9 @@
     agentMsg("Mengirim ke printer…");
     fetch(AGENT + "/print?printer=" + encodeURIComponent(st.pname || ""), { method: "POST", headers: { "Content-Type": "application/octet-stream" }, body: bytes })
       .then(function (r) { return r.text().then(function (t) { if (!r.ok) throw new Error(t); agentMsg("Terkirim ke printer ✓"); }); })
-      .catch(function (e) {
-        agentMsg("Gagal: " + esc(e && e.message ? e.message : "agen tidak aktif"));
-        if (window.confirm("Tidak bisa mengirim langsung (" + (e && e.message ? e.message : "agen cetak belum aktif") + ").\nUnduh berkas .prn saja?")) rawDownload(test);
+      .catch(function () {
+        /* agen belum terpasang: langsung cetak lewat browser (otomatis tanpa dialog bila Chrome dibuka dengan --kiosk-printing) */
+        agentMsg("Mencetak langsung lewat browser…"); st.printer = "epson"; doPrint(test);
       });
   }
   function doPrint(test) {
@@ -285,11 +331,14 @@
       css = "@page{size:" + st.tw + "mm " + hmm + "mm;margin:0}html,body{margin:0;padding:0}.s{box-sizing:border-box;width:" + st.tw + "mm;padding:2mm 3mm}pre{margin:0;font:" + fp + 'pt/1.25 "Courier New",monospace;color:#000;white-space:pre}';
       html = pg.map(function (t) { return '<div class="s"><pre>' + esc(t) + "</pre></div>"; }).join("");
     } else {
-      var H = fhIn().toFixed(3), sl = st.form === "3" ? (parseInt(st.slot, 10) || 1) - 1 : 0, arr = [];
+      var H = fhIn().toFixed(3), sl = st.form === "3" ? (parseInt(st.slot, 10) || 1) - 1 : 0, arr = [], wpt = (W * 72 / 17).toFixed(1), bold = st.tebal;
       for (var z = 0; z < sl; z++) arr.push(null);
       pg.forEach(function (t) { arr.push(t); });
-      css = "@page{size:9.5in " + H + "in;margin:0}html,body{margin:0;padding:0}.s{box-sizing:border-box;width:9.5in;height:" + (H - 0.03).toFixed(3) + "in;overflow:hidden;page-break-after:always;padding:" + st.top + "mm 0 0 " + st.left + "mm}.s:last-child{page-break-after:auto}pre{margin:0;font:" + (st.tebal ? "bold " : "") + '7.06pt/12pt "Courier New",monospace;color:#000;white-space:pre}';
-      html = arr.map(function (t) { return '<div class="s">' + (t ? "<pre>" + esc(t) + "</pre>" : "") + "</div>"; }).join("");
+      css = "@page{size:9.5in " + H + "in;margin:0}html,body{margin:0;padding:0;background:#fff}.s{box-sizing:border-box;width:9.5in;height:" + (H - 0.03).toFixed(3) + "in;overflow:hidden;page-break-after:always;padding:" + st.top + "mm 0 0 " + st.left + "mm}.s:last-child{page-break-after:auto}" +
+        '.l{height:12pt;margin:0;font:' + (bold ? "bold " : "") + '7.0588pt/12pt "Courier New",Courier,monospace;color:#000;white-space:pre;letter-spacing:0;' + (bold ? "-webkit-text-stroke:.3pt #000;" : "") + '}.r{position:relative;height:12pt}.r i{position:absolute;left:0;top:5.5pt;width:' + wpt + "pt;border-top:" + (bold ? "1.3pt" : "0.8pt") + " solid #000}";
+      html = arr.map(function (t) {
+        return '<div class="s">' + (t ? t.split("\n").map(function (ln) { return /^[\u2500\-]{20,}$/.test(ln) ? '<div class="r"><i></i></div>' : '<div class="l">' + esc(ln) + "</div>"; }).join("") : "") + "</div>";
+      }).join("");
     }
     printFrame(html, css);
   }
@@ -337,7 +386,7 @@
         var c = cv.getContext("2d"); c.scale(S, S); c.fillStyle = "#fff"; c.fillRect(0, 0, cv.width, cv.height);
         c.fillStyle = "#000"; c.textBaseline = "top"; c.font = (st.tebal ? "bold " : "") + fs + 'px "Courier New",Consolas,monospace';
         L.forEach(function (ln, j) {
-          if (/^[\u2500\-]{20,}$/.test(ln)) c.fillRect(M, M + j * lh + fs * 0.55, W * cw, 1); else c.fillText(ln, M, M + j * lh);
+          if (/^[\u2500\-]{20,}$/.test(ln)) c.fillRect(M, M + j * lh + fs * 0.55, W * cw, 1); else { c.fillText(ln, M, M + j * lh); if (st.tebal) { c.lineWidth = 0.5; c.strokeStyle = "#000"; c.strokeText(ln, M, M + j * lh); } }
         });
         cv.toBlob(function (b) { dl(b, base + (pg.length > 1 ? "-" + (i + 1) : "") + ".png"); agentMsg("Gambar form disimpan: " + esc(base) + ".png"); }, "image/png");
       }, i * 600);
@@ -381,7 +430,7 @@
       '<label>Nama printer Windows<input id="dmN" value="' + esc(st.pname) + '" placeholder="kosong = printer default"></label>' +
       '<label>Tebal huruf' + sel("dmB", [["1", "Tebal (double-strike)"], ["0", "Normal"]], st.tebal ? "1" : "0") + '</label>' +
       '<div class="dx-2"><label>Geser kanan (mm)<input id="dmL" type="number" step="0.5" value="' + st.left + '"></label><label>Geser bawah (mm)<input id="dmT" type="number" step="0.5" value="' + st.top + '"></label></div>' +
-      '<div class="dx-2"><button type="button" class="dx-b" id="dxTest">Cetak tes 2 form</button><button type="button" class="dx-b" id="dxPrn2">Unduh .prn</button></div>' +
+      '<div class="dx-2"><button type="button" class="dx-b" id="dxTest">Cetak tes 2 form</button><button type="button" class="dx-b" id="dxPrn2">Simpan PDF</button></div>' +
       '<p class="dx-hint">Kertas form menerus <b>9,5 × 3,75 in</b> (hasil ukur ± 24 × 9,5 cm). Sejajarkan perforasi atas form dengan kepala cetak, lalu nyalakan printer. Cetak <b>tes 2 form</b>: bila form ke-2 mulai pas di perforasi, tinggi sudah benar; bila bergeser, ubah <b>Tinggi form (mm)</b>.</p></div>' +
       '<div class="dx-sg"><h4>Printer IWARE Thermal</h4>' +
       '<label>Lebar kertas' + sel("dmW", [["58", "58 mm (IWARE MP-58SB)"], ["80", "80 mm"]], st.tw) + '</label>' +
@@ -460,13 +509,14 @@
       var m = modal("Cetak Bukti Keluar Barang",
         '<div class="dx-opt"><button type="button" data-do="epson"><b>Epson LX-310</b><span>Form kertas menerus 3–4 ply, huruf asli printer</span></button>' +
         '<button type="button" data-do="termal"><b>Printer IWARE Thermal</b><span>Struk ' + st.tw + ' mm lewat ' + (st.tmethod === "ble" ? "Bluetooth" : st.tmethod === "rawbt" ? "RawBT" : "dialog cetak") + '</span></button>' +
-        '<div class="dx-o3"><b>Simpan gambar</b><span>Untuk dicetak lewat gambar</span><div><button type="button" data-do="img-termal">Gambar struk thermal</button><button type="button" data-do="img-epson">Gambar form Epson</button></div></div></div>');
+        '<div class="dx-o3"><b>Simpan gambar / PDF</b><span>Untuk dicetak lewat gambar atau PDF (Windows 7, HP)</span><div><button type="button" data-do="img-termal">Gambar struk thermal</button><button type="button" data-do="img-epson">Gambar form Epson</button><button type="button" data-do="pdf-epson">PDF form Epson</button></div></div></div>');
       m.addEventListener("click", function (e) {
         var b = e.target.closest && e.target.closest("[data-do]"); if (!b) return;
         var a = b.getAttribute("data-do"); read(); m.close();
         if (a === "epson") { st.printer = "epson"; save(); rawSend(false); }
         else if (a === "termal") { st.printer = "termal"; save(); if (!window.ThermalPrint) { alert("Modul printer thermal belum termuat."); return; } tPrint(false); }
         else if (a === "img-termal") { if (!window.ThermalPrint) { alert("Modul printer thermal belum termuat."); return; } tSave(); }
+        else if (a === "pdf-epson") rawDownload(false);
         else epsonImage();
       });
     }
