@@ -143,3 +143,119 @@ html[data-theme="dark"] .dx-r input,html[data-theme="dark"] .dx-r select{color-s
 .dx-gt{margin:0 0 8px}.dx-gtb{width:100%;border-collapse:collapse;background:#fff;border:1px solid #9bb6d8}.dx-gtb td{padding:5px 8px;border-bottom:1px solid #e1e8f2}.dx-gtb td:first-child{width:38%;opacity:.8}
 .dx-nz{display:block;margin:8px 0}.dx-go{font-weight:700;background:linear-gradient(#ffe9a8,#f2b52c)}
 .dx-st{margin:8px 0 12px;padding-left:20px}.dx-st li{margin-bottom:5px}.dx-dt{margin-top:12px}.dx-dt summary{cursor:pointer;opacity:.8}
+
+/* =====================================================================
+   v24 — TEMA TERANG meniru aplikasi DMS asli (Windows biru klasik)
+   ===================================================================== */
+html:not([data-theme="dark"]) .dx{--dxl:#8fb0dc;--dxd:#1c3a63;font-family:Tahoma,"Segoe UI",Arial,sans-serif;font-size:13px;color:var(--dxd)}
+html:not([data-theme="dark"]) .dx-ttl h1{color:#12305c}
+/* tab jenis dokumen = tab jendela DMS */
+html:not([data-theme="dark"]) .dx-pick{display:flex;flex-wrap:nowrap;align-items:flex-end;gap:3px;margin:0 0 -14px;padding:6px 8px 0;background:linear-gradient(#e8f0fb,#cfdff5);border:1px solid var(--dxl);border-bottom:0;border-radius:4px 4px 0 0;overflow-x:auto}
+html:not([data-theme="dark"]) .dx-pc{display:flex;align-items:center;gap:7px;padding:6px 14px;background:linear-gradient(#e9f1fc,#d3e2f6);border:1px solid var(--dxl);border-bottom:0;border-radius:6px 6px 0 0;box-shadow:none;transform:none;color:var(--dxd);flex:0 0 auto}
+html:not([data-theme="dark"]) .dx-pc:hover{background:linear-gradient(#fffbe9,#ffe9a8);border-color:#d9a21c;transform:none}
+html:not([data-theme="dark"]) .dx-pc i{grid-row:auto;width:18px;height:18px;font-size:11px;background:#fff;border:1px solid var(--dxl);color:var(--dxd)}
+html:not([data-theme="dark"]) .dx-pc b{font-size:13px}
+html:not([data-theme="dark"]) .dx-pc span,html:not([data-theme="dark"]) .dx-pc em{display:none}
+html:not([data-theme="dark"]) .dx-pc.on{background:linear-gradient(#fff,#cfe0f4);border-bottom:1px solid #cfe0f4;margin-bottom:-1px;box-shadow:none;padding-top:8px}
+html:not([data-theme="dark"]) .dx-pc.on i{background:#fdd88a;border-color:#d9a21c;color:#5a3b00}
+/* jendela */
+html:not([data-theme="dark"]) .dx-card{background:#cfe0f4;border:1px solid var(--dxl);border-radius:0 0 4px 4px;box-shadow:0 6px 22px rgba(10,30,70,.16)}
+html:not([data-theme="dark"]) .dx-hdr{position:absolute;right:14px;top:7px;z-index:2;padding:0;background:transparent;border:0}
+html:not([data-theme="dark"]) .dx-hdr>div:first-child{display:none}
+html:not([data-theme="dark"]) .dx-status{font-size:15px;color:#1c1c1c}
+html:not([data-theme="dark"]) .dx-status b{font-weight:800}
+html:not([data-theme="dark"]) #dxSt.dr,html:not([data-theme="dark"]) #dxSt.ok,html:not([data-theme="dark"]) #dxSt.vd{color:#8b0f0f}
+html:not([data-theme="dark"]) .dx-tool{padding:5px 8px;gap:2px;background:linear-gradient(#e4eefb,#c9dbf2);border-top:1px solid var(--dxl);border-bottom:1px solid var(--dxl)}
+html:not([data-theme="dark"]) .dx-tool button{padding:4px 10px;border-radius:3px;color:#10233f}
+html:not([data-theme="dark"]) .dx-tool button:hover{background:#fff6d6;border-color:#e3c15f}
+html:not([data-theme="dark"]) .dx-tool .dx-prim{background:transparent;border-color:transparent;color:#10233f;font-weight:700}
+html:not([data-theme="dark"]) .dx-tool .dx-prim:hover{background:#fff6d6;border-color:#e3c15f;filter:none}
+html:not([data-theme="dark"]) .dx-set{background:#eaf2fc;border:1px solid var(--dxl);border-radius:0}
+/* kotak dokumen */
+html:not([data-theme="dark"]) .dx-grp{margin:8px;border:1px solid var(--dxl);border-radius:0;background:#dbe8f9}
+html:not([data-theme="dark"]) .dx-gh{position:relative;padding:3px 10px;background:linear-gradient(#eef4fd,#c5d8f1);border-bottom:1px solid var(--dxl);color:#16315a;font-weight:400;font-size:13px}
+html:not([data-theme="dark"]) .dx-gh:after{content:"";position:absolute;right:8px;top:4px;width:11px;height:12px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 12'%3E%3Cpath d='M7 .5l3.5 3.5-2 .6-1.9 2.2.3 2.2-1 .5-2-2.4L.5 11.5 0 11l3.4-3.9L1 5.2l.6-1 2.2.2L6 2.5z' fill='%231c3a63'/%3E%3C/svg%3E") no-repeat center/contain}
+html:not([data-theme="dark"]) .dx-gb{grid-template-columns:minmax(380px,560px) minmax(380px,1fr);gap:8px 40px;padding:12px 16px 8px}
+html:not([data-theme="dark"]) .dx-f{grid-template-columns:170px minmax(0,1fr);gap:8px;margin-bottom:6px}
+html:not([data-theme="dark"]) .dx-f label{color:#1c3a63;font-weight:400;border-bottom:1px solid #b6c9e4;padding-bottom:1px;margin-right:6px}
+html:not([data-theme="dark"]) .dx-fv input,html:not([data-theme="dark"]) .dx-fv select,html:not([data-theme="dark"]) .dx-fv textarea{max-width:300px;height:25px;padding:2px 5px;background:#fff;color:#111;border:1px solid #5c6f8c;border-radius:0}
+html:not([data-theme="dark"]) .dx-fv textarea{height:70px;max-width:340px;padding:3px 5px}
+html:not([data-theme="dark"]) .dx-fv input[readonly]{background:#fff}
+html:not([data-theme="dark"]) .dx-fv input:focus,html:not([data-theme="dark"]) .dx-fv select:focus,html:not([data-theme="dark"]) .dx-fv textarea:focus{outline:2px solid #f2b52c;outline-offset:-1px}
+html:not([data-theme="dark"]) .dx-mg,html:not([data-theme="dark"]) .dx-lk{width:24px;height:24px;border-radius:2px}
+html:not([data-theme="dark"]) .dx-cap{border:1px solid #9bb6d8;border-radius:0;color:#1c3a63}
+html:not([data-theme="dark"]) .dx-cap div{background:linear-gradient(#f6f6f6,#d4d4d4);border:1px solid #7a7a7a;border-radius:2px;color:#111}
+/* tab detail + grid */
+html:not([data-theme="dark"]) .dx-dtabs{margin-top:4px;padding:0 8px;border-bottom:0}
+html:not([data-theme="dark"]) .dx-dtabs>button[data-tab]{padding:5px 14px;background:linear-gradient(#e9f1fc,#d3e2f6);border:1px solid var(--dxl);border-bottom:0;border-radius:5px 5px 0 0;color:#1c3a63;margin:0 2px -1px 0}
+html:not([data-theme="dark"]) .dx-dtabs>button.on{background:#fff;color:#0f2f66}
+html:not([data-theme="dark"]) .dx-mini{background:linear-gradient(#fff,#d9e6f7);border:1px solid #7f9db9;border-radius:3px;color:#10233f}
+html:not([data-theme="dark"]) .dx-mini:hover{background:#fff6d6;border-color:#e3c15f}
+html:not([data-theme="dark"]) .dx-pane{margin:0 8px 8px;background:#fff;border:1px solid var(--dxl);border-radius:0;color:#111}
+html:not([data-theme="dark"]) .dx-gp{background:#f2f5fa;color:#555;border-bottom:1px solid #cdd9ea}
+html:not([data-theme="dark"]) .dx-hd{background:linear-gradient(#fdfeff,#dce8f7);border-bottom:1px solid #9bb6d8;font-weight:400;color:#16315a}
+html:not([data-theme="dark"]) .dx-hd span{border-right:1px solid #b9cde6}
+html:not([data-theme="dark"]) .dx-r{border-bottom:1px solid #e1e8f2;min-height:26px}
+html:not([data-theme="dark"]) .dx-r.act{background:#fdd88a}
+html:not([data-theme="dark"]) .dx-no{color:#111}
+html:not([data-theme="dark"]) .dx-r input,html:not([data-theme="dark"]) .dx-r select{color:#111;border-right:1px solid #e1e8f2}
+html:not([data-theme="dark"]) .dx-r input:focus,html:not([data-theme="dark"]) .dx-r select:focus{outline:2px solid #e48a00;outline-offset:-2px;background:#fff}
+html:not([data-theme="dark"]) .dx-lot{background:linear-gradient(#f4f8fe,#d2e1f4);border-left:1px solid #b9cde6;color:#111}
+html:not([data-theme="dark"]) #dxPrevPane .dm-prev{background:#eef2f8}
+html:not([data-theme="dark"]) .dx-pk{border-bottom:1px solid #cdd9ea}
+html:not([data-theme="dark"]) .dx-pk button{background:#eef3fb;border:1px solid #9bb6d8;border-radius:3px;color:#10233f}
+html:not([data-theme="dark"]) .dx-pk button.on{background:#fdd88a;border-color:#d9a21c;color:#10233f}
+html:not([data-theme="dark"]) .dx-md{background:#eaf1fb;border:1px solid #5d85bd;border-radius:0}
+html:not([data-theme="dark"]) .dx-mh{background:linear-gradient(#f2f7fe,#bcd3f0);border-bottom:1px solid var(--dxl);color:#10233f}
+html:not([data-theme="dark"]) .dx-opt>button,html:not([data-theme="dark"]) .dx-o3{background:#fff;border:1.5px solid #9bb6d8;border-radius:5px}
+html:not([data-theme="dark"]) .dx-opt>button:hover{border-color:#e0a21b;background:#fff8e1}
+
+/* =====================================================================
+   v24 — TEMA GELAP: navy dalam, aksen biru-sian, kaca halus
+   ===================================================================== */
+html[data-theme="dark"]{--dx-card:#0e1730;--dx-head:#15234a;--dx-line:#263760;--dx-ink:#e9eefb;--dx-mut:#9fb2d6;--dx-in:#081022;--dx-inb:#33456f;--dx-act:rgba(255,176,32,.15);--dx-hov:#1a2a55;--dx-ok:#56d98c;--dx-dr:#ffb454;--dx-vd:#ff7f7f;--dx-sh:0 18px 50px rgba(0,0,0,.55),0 0 0 1px rgba(76,141,255,.10)}
+html[data-theme="dark"] .dm-pc{background:radial-gradient(900px 420px at 88% -8%,rgba(34,211,238,.11),transparent 62%),radial-gradient(900px 520px at -5% 8%,rgba(40,100,255,.17),transparent 58%)}
+html[data-theme="dark"] .dx-ttl h1{background:linear-gradient(90deg,#fff,#8fc2ff 60%,#5fe3ff);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+html[data-theme="dark"] .dx-msg{background:rgba(21,35,74,.7);border-color:#2c4175;color:#bcd0f5}
+html[data-theme="dark"] .dx-pc{background:linear-gradient(160deg,#111d3d,#0d1733);border-color:#26365f}
+html[data-theme="dark"] .dx-pc:hover{border-color:#4c8dff;background:linear-gradient(160deg,#16254c,#0f1a38);box-shadow:0 8px 22px rgba(30,90,255,.18)}
+html[data-theme="dark"] .dx-pc i{background:#1b2c58;color:#8fc2ff}
+html[data-theme="dark"] .dx-pc.on{background:linear-gradient(135deg,rgba(76,141,255,.30),rgba(34,211,238,.12));border-color:#4c8dff;box-shadow:0 0 0 1px rgba(76,141,255,.55),0 10px 28px rgba(30,100,255,.30)}
+html[data-theme="dark"] .dx-pc.on i{background:linear-gradient(135deg,#3b82ff,#22d3ee);color:#04122e}
+html[data-theme="dark"] .dx-pc.on b{color:#fff}
+html[data-theme="dark"] .dx-card{background:linear-gradient(180deg,#101b38,#0c1530);border-color:#27396a}
+html[data-theme="dark"] .dx-hdr{background:linear-gradient(90deg,#17285a,#101c3f 70%);border-bottom-color:#2a3d70}
+html[data-theme="dark"] .dx-hdr b{color:#fff}
+html[data-theme="dark"] .dx-status{padding:3px 12px;border:1px solid #2c4175;border-radius:99px;background:rgba(8,16,34,.55);font-size:14px}
+html[data-theme="dark"] .dx-tool{background:rgba(8,16,34,.35);border-bottom-color:#26365f}
+html[data-theme="dark"] .dx-tool button:hover{background:#1a2a55;border-color:#33477a}
+html[data-theme="dark"] .dx-tool .dx-prim{background:linear-gradient(135deg,#2f7bff,#19b4ff);border-color:#4aa3ff;color:#fff;box-shadow:0 4px 16px rgba(40,130,255,.45)}
+html[data-theme="dark"] .dx-tool .dx-prim:hover{filter:brightness(1.12);background:linear-gradient(135deg,#2f7bff,#19b4ff)}
+html[data-theme="dark"] .dx-grp{border-color:#2a3d70;background:rgba(8,16,34,.30)}
+html[data-theme="dark"] .dx-gh{background:linear-gradient(90deg,#17285a,#0f1a3b);color:#bcd8ff;box-shadow:inset 3px 0 0 #22d3ee}
+html[data-theme="dark"] .dx-f label{color:#a9bddf;border-bottom-color:#2a3b66}
+html[data-theme="dark"] .dx-fv input,html[data-theme="dark"] .dx-fv select,html[data-theme="dark"] .dx-fv textarea{background:#081022;border-color:#33456f;box-shadow:inset 0 1px 3px rgba(0,0,0,.55)}
+html[data-theme="dark"] .dx-fv input[readonly]{background:#0d1834;color:#bcd0f5}
+html[data-theme="dark"] .dx-fv input:focus,html[data-theme="dark"] .dx-fv select:focus,html[data-theme="dark"] .dx-fv textarea:focus,html[data-theme="dark"] .dx-sg input:focus,html[data-theme="dark"] .dx-sg select:focus{outline:0;border-color:#4c8dff;box-shadow:0 0 0 3px rgba(76,141,255,.28)}
+html[data-theme="dark"] .dx-fv input::placeholder,html[data-theme="dark"] .dx-fv textarea::placeholder{color:#5d7099}
+html[data-theme="dark"] .dx-mg,html[data-theme="dark"] .dx-lk{background:linear-gradient(#ffd56e,#e49d12);border-color:#9a6a08;box-shadow:0 2px 8px rgba(228,157,18,.30)}
+html[data-theme="dark"] .dx-cap{border-color:#2a3d70}
+html[data-theme="dark"] .dx-cap div{background:#0d1834;border-color:#2a3d70}
+html[data-theme="dark"] .dx-dtabs{border-bottom-color:#27396a}
+html[data-theme="dark"] .dx-dtabs>button.on{background:#0f1a3b;border-color:#2f447c;color:#8fc2ff;box-shadow:inset 0 2px 0 #22d3ee}
+html[data-theme="dark"] .dx-mini{background:#15234a;border-color:#2f447c}
+html[data-theme="dark"] .dx-pane{border-color:#27396a;background:rgba(6,12,28,.45)}
+html[data-theme="dark"] .dx-gp{background:#0d1834;border-bottom-color:#26365f}
+html[data-theme="dark"] .dx-hd{background:linear-gradient(#18285a,#101c40);color:#cfe0ff}
+html[data-theme="dark"] .dx-hd span{border-right-color:#26365f}
+html[data-theme="dark"] .dx-r{border-bottom-color:#1d2c50}
+html[data-theme="dark"] .dx-r:nth-child(even){background:rgba(255,255,255,.022)}
+html[data-theme="dark"] .dx-r.act{background:rgba(255,176,32,.15);box-shadow:inset 3px 0 0 #ffb020}
+html[data-theme="dark"] .dx-r input,html[data-theme="dark"] .dx-r select{border-right-color:#1d2c50}
+html[data-theme="dark"] .dx-r input:focus,html[data-theme="dark"] .dx-r select:focus{outline:0;background:#0b1530;box-shadow:inset 0 0 0 2px #4c8dff}
+html[data-theme="dark"] .dx-lot{background:rgba(255,255,255,.03);border-left:1px solid #1d2c50}
+html[data-theme="dark"] .dx-rows{scrollbar-width:thin;scrollbar-color:#33477a transparent}
+html[data-theme="dark"] .dx-rows::-webkit-scrollbar{width:10px}html[data-theme="dark"] .dx-rows::-webkit-scrollbar-thumb{background:#2b3f73;border-radius:6px}
+html[data-theme="dark"] #dxPrevPane .dm-prev{background:#060c1c}
+html[data-theme="dark"] .dx-md{background:#0e1730;border-color:#2f447c}
+html[data-theme="dark"] .dx-ov{background:rgba(2,6,18,.66)}
