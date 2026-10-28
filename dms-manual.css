@@ -110,3 +110,8 @@ a.nav-dropdown-item,a.drawer-acc-item{display:block;text-decoration:none;color:i
 .dx-ll{margin-top:8px;max-height:340px;overflow:auto;background:#fff;border:1px solid #9bb6d8}
 .dx-ll button{display:grid;grid-template-columns:90px 1fr auto;gap:8px;width:100%;padding:6px 8px;text-align:left;background:transparent;border:0;border-bottom:1px solid #e1e8f2;cursor:pointer}.dx-ll button:hover{background:#fdd88a}.dx-ll i{font-style:normal;opacity:.6}.dx-em{padding:12px;margin:0;opacity:.7}
 @media (max-width:1100px){.dx-gb,.dx-set{grid-template-columns:1fr}}
+
+/* panduan setelan sebelum cetak */
+.dx-fx{position:fixed;z-index:9999;font:13px/1.4 Tahoma,"Segoe UI",Arial,sans-serif;color:#1c3a63}
+.dx-gt{margin:0 0 8px}.dx-gtb{width:100%;border-collapse:collapse;background:#fff;border:1px solid #9bb6d8}.dx-gtb td{padding:5px 8px;border-bottom:1px solid #e1e8f2}.dx-gtb td:first-child{width:38%;opacity:.8}
+.dx-nz{display:block;margin:8px 0}.dx-go{font-weight:700;background:linear-gradient(#ffe9a8,#f2b52c)}

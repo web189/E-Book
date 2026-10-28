@@ -4,7 +4,7 @@ REM Tiap pintasan menjadikan printernya DEFAULT lalu membuka Chrome dengan
 REM --kiosk-printing, sehingga tombol Cetak langsung mencetak tanpa dialog.
 REM Tutup jendela aplikasi lebih dulu sebelum membuka pintasan printer lain.
 REM Ubah nama printer di bawah sesuai nama di Control Panel > Devices and Printers.
-set "EPSON=EPSON LX-310 ESC/P"
+set "EPSON=EPSON LX-310 ESC/P (Copy 1)"
 set "TERMAL=POS-80"
 set "URL=https://web189.github.io/E-Book/#/dms-manual"
 REM Mode OFFLINE: bila index.html ada di folder yang sama dengan berkas ini, pakai salinan lokal (tanpa internet).

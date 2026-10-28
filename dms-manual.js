@@ -4,7 +4,7 @@
   "use strict";
   var KEY = "lp_dms_manual", W = 120, AGENT = "http://localhost:9101", LEGEND = "Keterangan : Putih Sales, Merah Adm Gudang, Kuning Checker, Hijau Security";
   var GUDANG = ["GUDANG LAYAK PARUNG", "GUDANG BS PARUNG", "GUDANG REJECT PARUNG", "GUDANG LAYAK PET PARUNG"];
-  var FORMS = { "3": { name: "1/3 lembar (9,5 × 3,75 in ≈ 95 mm, hasil ukur)", h: 3.75 }, "2": { name: "1/2 lembar (9,5 × 5,5 in)", h: 5.5 }, "1": { name: "Penuh (9,5 × 11 in)", h: 11 } };
+  var FORMS = { "3": { name: "1/3 lembar (9,5 × 3⅔ in, 11 in : 3)", h: 11 / 3 }, "2": { name: "1/2 lembar (9,5 × 5,5 in)", h: 5.5 }, "1": { name: "Penuh (9,5 × 11 in)", h: 11 } };
   var UNITS = ["BOX", "PACK", "PCS"];
   var st, root, tick, PK = null, PC = false, TEST = false, SAMPLE = [{ k: "124172", n: "AQ.600ML MP 1X6", s: "PACK", q: "2" }, { k: "134578", n: "AQ.220ML 1X48", s: "BOX", q: "10" }, { k: "142009", n: "AQ.1100ML LOCAL 1X12", s: "BOX", q: "25" }];
 
@@ -12,7 +12,7 @@
     var d = {}; try { d = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
     st = { gudang: d.gudang || GUDANG[0], kendaraan: d.kendaraan || "", ket: d.ket || "",
       rows: (d.rows && d.rows.length) ? d.rows : [{ k: "", n: "", s: "BOX", q: "" }],
-      form: d.form || "3", printer: d.printer || (/Android|iPhone/i.test(navigator.userAgent) ? "termal" : "epson"), twv: 2, tw: d.twv === 2 ? (d.tw || "58") : "58", tmethod: d.tmethod || "ble", dens: d.dens || "3", logo: d.logo == null ? true : d.logo, left: d.left == null ? 11 : d.left, pname: d.pname == null ? "EPSON LX-310 ESC/P" : d.pname, solid: d.solid == null ? true : d.solid, pengemudi: d.pengemudi || "", slot: d.slot || "1", tebal: d.tebal == null ? true : d.tebal, top: d.top == null ? 0 : d.top, nodok: d.nodok || "", dokreq: d.dokreq || "", tipe: d.tipe || "JUAL", status: d.status || "Draft", fh: d.fh || "" };
+      form: d.form || "3", printer: d.printer || (/Android|iPhone/i.test(navigator.userAgent) ? "termal" : "epson"), twv: 2, tw: d.twv === 2 ? (d.tw || "58") : "58", tmethod: d.tmethod || "ble", dens: d.dens || "3", logo: d.logo == null ? true : d.logo, left: d.left == null ? 11 : d.left, pname: (d.pname == null || d.pname === "EPSON LX-310 ESC/P") ? "EPSON LX-310 ESC/P (Copy 1)" : d.pname, solid: d.solid == null ? true : d.solid, pengemudi: d.pengemudi || "", slot: d.slot || "1", tebal: d.tebal == null ? true : d.tebal, top: d.top == null ? 0 : d.top, nodok: d.nodok || "", dokreq: d.dokreq || "", tipe: d.tipe || "JUAL", status: d.status || "Draft", fh: d.fh || "" };
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
   function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
@@ -310,6 +310,27 @@
     fetch(AGENT + "/ping").then(function (r) { return r.text(); }).then(function () { agentMsg("Agen cetak: <b>tersambung</b> ✓ — tombol di atas langsung mencetak."); })
       .catch(function () { agentMsg("Agen cetak: <b>belum aktif</b>. Jalankan <b>pasang-agen-epson.bat</b> sekali di PC ini."); });
   }
+  function guideNext(next) {
+    var skip = false; try { skip = localStorage.getItem("lp_dms_noguide") === "1"; } catch (e) {}
+    if (skip || !document.getElementById("dxRoot")) { next(); return; }
+    var o = document.createElement("div"); o.className = "dx-ov dx-fx";
+    o.innerHTML = '<div class="dx-md" role="dialog" aria-label="Setelan sebelum mencetak"><div class="dx-mh">Setelan sebelum mencetak<button type="button" data-x aria-label="Tutup">✕</button></div><div class="dx-mb">' +
+      '<p class="dx-gt">Agen cetak belum aktif, jadi dicetak lewat browser. Di jendela <b>Print</b> Chrome atur seperti ini:</p>' +
+      '<table class="dx-gtb"><tr><td>Printer</td><td><b>EPSON LX-310 ESC/P (Copy 1)</b></td></tr>' +
+      '<tr><td>Paper size</td><td><b>9.5 x 11 in</b> (atau Letter). Jangan A4</td></tr>' +
+      '<tr><td>Margins</td><td><b>None</b></td></tr><tr><td>Scale</td><td><b>100</b> (bukan Fit)</td></tr>' +
+      '<tr><td>Headers and footers</td><td><b>Hilangkan centang</b></td></tr>' +
+      '<tr><td>Background graphics</td><td><b>Beri centang</b> (garis tabel tebal)</td></tr>' +
+      '<tr><td>Quality</td><td><b>240x144 dpi</b> atau lebih tinggi</td></tr></table>' +
+      '<p class="dx-hint">Sejajarkan perforasi atas form dengan kepala cetak sebelum menekan Print. Hasil yang sama persis dengan DMS (huruf asli printer, tanpa setelan ini): jalankan <b>pasang-agen-epson.bat</b> sekali di PC ini.</p>' +
+      '<label class="dx-nz"><input type="checkbox" id="dxNg"> Jangan tampilkan lagi</label><div class="dx-2"><button type="button" class="dx-b" data-x>Batal</button><button type="button" class="dx-b dx-go" id="dxGo">Lanjut cetak</button></div></div></div>';
+    o.addEventListener("click", function (e) {
+      var t = e.target;
+      if (t === o || (t.hasAttribute && t.hasAttribute("data-x"))) { o.parentNode && o.parentNode.removeChild(o); agentMsg("Dibatalkan."); }
+      else if (t.id === "dxGo") { try { if (o.querySelector("#dxNg").checked) localStorage.setItem("lp_dms_noguide", "1"); } catch (e2) {} o.parentNode && o.parentNode.removeChild(o); next(); }
+    });
+    document.body.appendChild(o);
+  }
   function rawSend(test) {
     if (!test && !items().length) { alert("Isi minimal satu barang dengan jumlah sebelum mencetak."); return; }
     var bytes = new Uint8Array(buildRaw(test));
@@ -318,7 +339,7 @@
       .then(function (r) { return r.text().then(function (t) { if (!r.ok) throw new Error(t); agentMsg("Terkirim ke printer ✓"); }); })
       .catch(function () {
         /* agen belum terpasang: langsung cetak lewat browser (otomatis tanpa dialog bila Chrome dibuka dengan --kiosk-printing) */
-        agentMsg("Mencetak langsung lewat browser…"); st.printer = "epson"; doPrint(test);
+        guideNext(function () { agentMsg("Mencetak lewat browser…"); st.printer = "epson"; doPrint(test); });
       });
   }
   function doPrint(test) {
@@ -331,13 +352,18 @@
       css = "@page{size:" + st.tw + "mm " + hmm + "mm;margin:0}html,body{margin:0;padding:0}.s{box-sizing:border-box;width:" + st.tw + "mm;padding:2mm 3mm}pre{margin:0;font:" + fp + 'pt/1.25 "Courier New",monospace;color:#000;white-space:pre}';
       html = pg.map(function (t) { return '<div class="s"><pre>' + esc(t) + "</pre></div>"; }).join("");
     } else {
-      var H = fhIn().toFixed(3), sl = st.form === "3" ? (parseInt(st.slot, 10) || 1) - 1 : 0, arr = [], wpt = (W * 72 / 17).toFixed(1), bold = st.tebal;
+      /* lembar tegak 9,5 x 11 in (bukan A4 mendatar); form ditumpuk dari atas dengan jarak = tinggi form */
+      var Pt = fhIn(), per = Math.max(1, Math.floor(11 / Pt + 0.02)), sl = (parseInt(st.slot, 10) || 1) - 1, arr = [], sheets = [], wpt = (W * 72 / 17).toFixed(1), bold = st.tebal;
+      if (sl >= per) sl = 0;
       for (var z = 0; z < sl; z++) arr.push(null);
       pg.forEach(function (t) { arr.push(t); });
-      css = "@page{size:9.5in " + H + "in;margin:0}html,body{margin:0;padding:0;background:#fff}.s{box-sizing:border-box;width:9.5in;height:" + (H - 0.03).toFixed(3) + "in;overflow:hidden;page-break-after:always;padding:" + st.top + "mm 0 0 " + st.left + "mm}.s:last-child{page-break-after:auto}" +
-        '.l{height:12pt;margin:0;font:' + (bold ? "bold " : "") + '7.0588pt/12pt "Courier New",Courier,monospace;color:#000;white-space:pre;letter-spacing:0;' + (bold ? "-webkit-text-stroke:.3pt #000;" : "") + '}.r{position:relative;height:12pt}.r i{position:absolute;left:0;top:5.5pt;width:' + wpt + "pt;border-top:" + (bold ? "1.3pt" : "0.8pt") + " solid #000}";
-      html = arr.map(function (t) {
-        return '<div class="s">' + (t ? t.split("\n").map(function (ln) { return /^[\u2500\-]{20,}$/.test(ln) ? '<div class="r"><i></i></div>' : '<div class="l">' + esc(ln) + "</div>"; }).join("") : "") + "</div>";
+      arr.forEach(function (t, g) { var n = Math.floor(g / per); (sheets[n] = sheets[n] || []).push({ t: t, pos: g % per }); });
+      css = "@page{size:9.5in 11in;margin:0}html,body{margin:0;padding:0;background:#fff}.sh{position:relative;width:9.5in;height:10.98in;overflow:hidden;page-break-after:always}.sh:last-child{page-break-after:auto}.s{position:absolute;left:" + st.left + "mm}" +
+        '.l{height:12pt;margin:0;font:' + (bold ? "bold " : "") + '7.0588pt/12pt "Courier New",Courier,monospace;color:#000;white-space:pre;letter-spacing:0}.r{position:relative;height:12pt}.r i{position:absolute;left:0;top:5.5pt;width:' + wpt + "pt;border-top:" + (bold ? "1.3pt" : "0.8pt") + " solid #000}";
+      html = sheets.map(function (sh) {
+        return '<div class="sh">' + sh.map(function (f) {
+          return f.t ? '<div class="s" style="top:calc(' + (f.pos * Pt).toFixed(4) + "in + " + st.top + 'mm)">' + f.t.split("\n").map(function (ln) { return /^[\u2500\-]{20,}$/.test(ln) ? '<div class="r"><i></i></div>' : '<div class="l">' + esc(ln) + "</div>"; }).join("") + "</div>" : "";
+        }).join("") + "</div>";
       }).join("");
     }
     printFrame(html, css);
@@ -431,7 +457,7 @@
       '<label>Tebal huruf' + sel("dmB", [["1", "Tebal (double-strike)"], ["0", "Normal"]], st.tebal ? "1" : "0") + '</label>' +
       '<div class="dx-2"><label>Geser kanan (mm)<input id="dmL" type="number" step="0.5" value="' + st.left + '"></label><label>Geser bawah (mm)<input id="dmT" type="number" step="0.5" value="' + st.top + '"></label></div>' +
       '<div class="dx-2"><button type="button" class="dx-b" id="dxTest">Cetak tes 2 form</button><button type="button" class="dx-b" id="dxPrn2">Simpan PDF</button></div>' +
-      '<p class="dx-hint">Kertas form menerus <b>9,5 × 3,75 in</b> (hasil ukur ± 24 × 9,5 cm). Sejajarkan perforasi atas form dengan kepala cetak, lalu nyalakan printer. Cetak <b>tes 2 form</b>: bila form ke-2 mulai pas di perforasi, tinggi sudah benar; bila bergeser, ubah <b>Tinggi form (mm)</b>.</p></div>' +
+      '<p class="dx-hint">Kertas form menerus <b>9,5 × 3⅔ in</b> (lembar 11 in dibagi 3, sesuai jarak lubang traktor). Sejajarkan perforasi atas form dengan kepala cetak, lalu nyalakan printer. Cetak <b>tes 2 form</b>: bila form ke-2 mulai pas di perforasi, tinggi sudah benar; bila bergeser, ubah <b>Tinggi form (mm)</b>.</p></div>' +
       '<div class="dx-sg"><h4>Printer IWARE Thermal</h4>' +
       '<label>Lebar kertas' + sel("dmW", [["58", "58 mm (IWARE MP-58SB)"], ["80", "80 mm"]], st.tw) + '</label>' +
       '<label>Cara kirim' + sel("dmM", [["ble", "Bluetooth langsung"], ["rawbt", "Aplikasi RawBT"], ["dialog", "Dialog cetak browser"]], st.tmethod) + '</label>' +

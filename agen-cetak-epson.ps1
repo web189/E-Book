@@ -66,6 +66,13 @@ while ($l.IsListening) {
         while (($n = $rq.InputStream.Read($buf, 0, $buf.Length)) -gt 0) { $ms.Write($buf, 0, $n) }
         $name = $rq.QueryString["printer"]
         if (-not $name) { $name = (New-Object System.Drawing.Printing.PrinterSettings).PrinterName }
+        $all = [System.Drawing.Printing.PrinterSettings]::InstalledPrinters
+        if ($all -notcontains $name) {
+          $m = $null
+          foreach ($pn in $all) { if (-not $m -and ($pn -like ($name + "*"))) { $m = $pn } }
+          foreach ($pn in $all) { if (-not $m -and ($pn -like "*LX-310*")) { $m = $pn } }
+          if ($m) { $name = $m }
+        }
         $err = [RawPrn]::Send($name, $ms.ToArray())
         if ($err) { Reply $rs 500 $err } else { Reply $rs 200 "OK" }
       }
