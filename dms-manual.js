@@ -307,27 +307,28 @@
   function agentMsg(h) { var e = document.getElementById("dmAgent"); if (e) e.innerHTML = h; }
   function ping() {
     if ((st.printer !== "epson" && !PC) || !document.getElementById("dmAgent") || !window.fetch) return;
-    fetch(AGENT + "/ping").then(function (r) { return r.text(); }).then(function () { agentMsg("Agen cetak: <b>tersambung</b> ✓ — tombol di atas langsung mencetak."); })
-      .catch(function () { agentMsg("Agen cetak: <b>belum aktif</b>. Jalankan <b>pasang-agen-epson.bat</b> sekali di PC ini."); });
+    fetch(AGENT + "/ping").then(function (r) { return r.text(); }).then(function () {
+      return fetch(AGENT + "/printers").then(function (r) { return r.text(); }).then(function (t) {
+        var ok = /LX-310/i.test(t);
+        agentMsg(ok ? "Agen cetak: <b>tersambung</b> ✓ — printer Epson LX-310 ditemukan." : "Agen cetak: <b>tersambung</b>, tetapi printer <b>EPSON LX-310</b> tidak ada di daftar printer Windows. Cek nama printer di Pengaturan.");
+      }).catch(function () { agentMsg("Agen cetak: <b>tersambung</b> ✓"); });
+    }).catch(function () { agentMsg("Agen cetak: <b>belum aktif</b>. Jalankan <b>pasang-agen-epson.bat</b> sekali di PC ini."); });
   }
-  function guideNext(next) {
-    var skip = false; try { skip = localStorage.getItem("lp_dms_noguide") === "1"; } catch (e) {}
-    if (skip || !document.getElementById("dxRoot")) { next(); return; }
+  function guideNext(next, retry) {
+    if (!document.getElementById("dxRoot")) { next(); return; }
     var o = document.createElement("div"); o.className = "dx-ov dx-fx";
-    o.innerHTML = '<div class="dx-md" role="dialog" aria-label="Setelan sebelum mencetak"><div class="dx-mh">Setelan sebelum mencetak<button type="button" data-x aria-label="Tutup">✕</button></div><div class="dx-mb">' +
-      '<p class="dx-gt">Agen cetak belum aktif, jadi dicetak lewat browser. Di jendela <b>Print</b> Chrome atur seperti ini:</p>' +
-      '<table class="dx-gtb"><tr><td>Printer</td><td><b>EPSON LX-310 ESC/P (Copy 1)</b></td></tr>' +
-      '<tr><td>Paper size</td><td><b>9.5 x 11 in</b> (atau Letter). Jangan A4</td></tr>' +
-      '<tr><td>Margins</td><td><b>None</b></td></tr><tr><td>Scale</td><td><b>100</b> (bukan Fit)</td></tr>' +
-      '<tr><td>Headers and footers</td><td><b>Hilangkan centang</b></td></tr>' +
-      '<tr><td>Background graphics</td><td><b>Beri centang</b> (garis tabel tebal)</td></tr>' +
-      '<tr><td>Quality</td><td><b>240x144 dpi</b> atau lebih tinggi</td></tr></table>' +
-      '<p class="dx-hint">Sejajarkan perforasi atas form dengan kepala cetak sebelum menekan Print. Hasil yang sama persis dengan DMS (huruf asli printer, tanpa setelan ini): jalankan <b>pasang-agen-epson.bat</b> sekali di PC ini.</p>' +
-      '<label class="dx-nz"><input type="checkbox" id="dxNg"> Jangan tampilkan lagi</label><div class="dx-2"><button type="button" class="dx-b" data-x>Batal</button><button type="button" class="dx-b dx-go" id="dxGo">Lanjut cetak</button></div></div></div>';
+    o.innerHTML = '<div class="dx-md" role="dialog" aria-label="Agen cetak belum aktif"><div class="dx-mh">Cetak Epson belum dikirim<button type="button" data-x aria-label="Tutup">✕</button></div><div class="dx-mb">' +
+      '<p class="dx-gt"><b>Agen cetak belum aktif di PC ini.</b> Hasil cetak seperti DMS (kertas kuning, huruf asli printer) hanya bisa lewat agen. Cetak lewat browser tidak dipakai otomatis lagi karena hasilnya gambar dan sering salah ukuran, sehingga kertas terbuang.</p>' +
+      '<ol class="dx-st"><li>Buka folder website di PC ini, klik dua kali <b>pasang-agen-epson.bat</b>.</li><li>Tunggu tulisan <b>BERHASIL</b>, pastikan <b>EPSON LX-310 ESC/P (Copy 1)</b> ada di daftar, lalu ketik <b>Y</b> untuk cetak form tes.</li><li>Kembali ke sini, tekan <b>Coba lagi</b>.</li></ol>' +
+      '<div class="dx-2"><button type="button" class="dx-b" data-x>Tutup</button><button type="button" class="dx-b dx-go" id="dxRetry">Coba lagi</button></div>' +
+      '<details class="dx-dt"><summary>Cetak darurat lewat browser (hasil tidak sama dengan DMS)</summary>' +
+      '<p class="dx-hint">Di jendela Print Chrome: Paper size 9.5 x 11 in (atau Letter, bukan A4), Margins None, Scale 100, Headers and footers dimatikan, Background graphics dicentang.</p>' +
+      '<button type="button" class="dx-b" id="dxBr">Cetak darurat</button></details></div></div>';
     o.addEventListener("click", function (e) {
-      var t = e.target;
-      if (t === o || (t.hasAttribute && t.hasAttribute("data-x"))) { o.parentNode && o.parentNode.removeChild(o); agentMsg("Dibatalkan."); }
-      else if (t.id === "dxGo") { try { if (o.querySelector("#dxNg").checked) localStorage.setItem("lp_dms_noguide", "1"); } catch (e2) {} o.parentNode && o.parentNode.removeChild(o); next(); }
+      var t = e.target, rm = function () { o.parentNode && o.parentNode.removeChild(o); };
+      if (t === o || (t.hasAttribute && t.hasAttribute("data-x"))) { rm(); agentMsg("Dibatalkan."); }
+      else if (t.id === "dxRetry") { rm(); retry(); }
+      else if (t.id === "dxBr") { rm(); next(); }
     });
     document.body.appendChild(o);
   }
@@ -339,7 +340,7 @@
       .then(function (r) { return r.text().then(function (t) { if (!r.ok) throw new Error(t); agentMsg("Terkirim ke printer ✓"); }); })
       .catch(function () {
         /* agen belum terpasang: langsung cetak lewat browser (otomatis tanpa dialog bila Chrome dibuka dengan --kiosk-printing) */
-        guideNext(function () { agentMsg("Mencetak lewat browser…"); st.printer = "epson"; doPrint(test); });
+        guideNext(function () { agentMsg("Mencetak darurat lewat browser…"); st.printer = "epson"; doPrint(test); }, function () { rawSend(test); });
       });
   }
   function doPrint(test) {

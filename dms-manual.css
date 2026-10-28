@@ -115,3 +115,4 @@ a.nav-dropdown-item,a.drawer-acc-item{display:block;text-decoration:none;color:i
 .dx-fx{position:fixed;z-index:9999;font:13px/1.4 Tahoma,"Segoe UI",Arial,sans-serif;color:#1c3a63}
 .dx-gt{margin:0 0 8px}.dx-gtb{width:100%;border-collapse:collapse;background:#fff;border:1px solid #9bb6d8}.dx-gtb td{padding:5px 8px;border-bottom:1px solid #e1e8f2}.dx-gtb td:first-child{width:38%;opacity:.8}
 .dx-nz{display:block;margin:8px 0}.dx-go{font-weight:700;background:linear-gradient(#ffe9a8,#f2b52c)}
+.dx-st{margin:8px 0 12px;padding-left:20px}.dx-st li{margin-bottom:5px}.dx-dt{margin-top:12px}.dx-dt summary{cursor:pointer;opacity:.8}
