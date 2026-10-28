@@ -3,16 +3,47 @@
 (function () {
   "use strict";
   var KEY = "lp_dms_manual", W = 120, AGENT = "http://localhost:9101", LEGEND = "Keterangan : Putih Sales, Merah Adm Gudang, Kuning Checker, Hijau Security";
+  var DEVTXT = "Sistem & Website Developer benyoriki.com";
+  /* logo DMS untuk Epson: bit-image ESC * mode 1 (120 dpi datar x 72 dpi tegak), 128 kolom x 9 pita (8 titik/pita), mulai kolom 100 */
+  var LGB = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwcPDwwcGB0PDw8yPD8fH3x8bk4GFnh8fOzGbux8fHgAHPz++Hg8Hn5+eEAAAAEHHz8+HhsfDw4FAwcHBwMDAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQMHBwUAAAAAw8PjcHg4GTsz9+fHz8/P35+ePj48PGx8WHh42Hj4mPAw8LBwsDCwMBA4EBgYGBgYCBgMDAwEBgYCAwMBAQVA4uXB8vj5eOTuzt09O3c3Lw8fDwQBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYOHh87t//fn4HAwODiZk4ePj18+fnx8ePDw4eHhw8PDx8PHx8/Hz8/Pz9/P38/f38/fz9/Py0/LTcbFw0TDQMBBQABBAEEAgUGA4ODw8HDYfGw+Py+fn9fP5+PB2Pg2Pz+9ufn58/HDw8PBgIAAAAAAAAAAAAAAAAAAAAAAx0vf39/eCAAAIOMMD6H4PLx+f38/P7+/v7+/v7+/v7+/Pz8/P39+fn78/Pz8+fn5+/nz8/Hz8/Xh4/Pj4WPhouHhIeBhoGCw8LFw8JD62Ph5/Hz8/H7+fl5ebm5ubm52dtTEwcP5+DAwICQPD8/TxsBAAAAAAAAAAAAAAAAAAD//////wAAAAAY/y//nz/vL5vF4/Hw+Pn9fHx+fn5+/v7+/v7+/v7+/v78/Pz8/f35+fn78/Pz9fP34+fjY+fjY+Jj4WPgYeFgoeFhsfHxsfHz+fn5+fn9+f38/f39/fn5+fvz9uTBHwAAAAAA/////994AAAAAAAAAAAAAAAAAMD4/v//vx4EAAHA+P7+/v7+/v7+/v6+Pr6ezu7udnJyenp4eHx8/Hz//Pz8/Pz8/P38/Pz8+Pj7+/v7+/Pz8/Pzs/Oz83Pzc7PzM/LydvLy8vLy+vr7+/v7+/v78vb25u7enDz8+OCAAAEEHH39/fzxgQEBAQEBAQMAAAAAAAAAAAAADIwdP//7r/v/67vv+qz/L+9fr18fXw8fDw8fDx8PHBkHCwUDDQIFA4fP/PLlggMKAwkDBwkEi4XPy+f1+/v39+Pvws+LhQ8PHw8fHz8/OnEP//fDjZcKFwwXDhcTPDt6Org6uHi4uvm7uvt7u/u/+fLywcCAAAAAAAAAAAEDBx8l3+uXf69333vHix9////354cPBw8HDw8PHx8ff/7+//37c/fPXPvnnn/+3//f/fnnDz/++PB4vN7u/87+/Ly5ef/7xT399fn98ev58Ikw9PLg7eLj6ubr5ufr5+fv5+fv7+/v7+//33///////v78/Tum/AAAAAQMHHz87v7evt7+vvz83Hz8/Nz8uPj5+bm5+7v787P3dnb2dv7u7v7u7uzs3Fzc3Ny8vLy8vLi4eDh4OHh4eDh4ODh4OHg4PDx8PDwsFCQUhoYGhoaCi46Lz9/Pn9/f39/f39/e397e3t7env6cvLy8uDh4cHDg4MCAgAAAAAAA", LG = { w: 128, bands: 9, col: 100, data: null };
+  function logoData() { if (!LG.data) { try { var t = atob(LGB), a = [], i; for (i = 0; i < t.length; i++) a.push(t.charCodeAt(i)); LG.data = a; } catch (e) { LG.data = []; } } return LG.data; }
   var GUDANG = ["GUDANG LAYAK PARUNG", "GUDANG BS PARUNG", "GUDANG REJECT PARUNG", "GUDANG LAYAK PET PARUNG"];
   var FORMS = { "3": { name: "1/3 lembar (9,5 × 3⅔ in, 11 in : 3)", h: 11 / 3 }, "2": { name: "1/2 lembar (9,5 × 5,5 in)", h: 5.5 }, "1": { name: "Penuh (9,5 × 11 in)", h: 11 } };
   var UNITS = ["BOX", "PACK", "PCS"];
   var st, root, tick, PK = null, PC = false, TEST = false, SAMPLE = [{ k: "124172", n: "AQ.600ML MP 1X6", s: "PACK", q: "2" }, { k: "134578", n: "AQ.220ML 1X48", s: "BOX", q: "10" }, { k: "142009", n: "AQ.1100ML LOCAL 1X12", s: "BOX", q: "25" }];
 
+  /* ---------- jenis dokumen (tampilan input DMS) ---------- */
+  function F(k, l, t, o) { var f = { k: k, l: l, t: t || "text" }, x; if (o) for (x in o) f[x] = o[x]; return f; }
+  var NO = F("nodok", "No. Dokumen", "text", { find: 1, ph: "mis. 281-0083795" }), TG = F("tgl", "Tanggal", "ro"), GD = F("gudang", "Gudang", "gudang"), TS = F("tipe", "Tipe Stok", "tipe"),
+    KD = F("kendaraan", "Kendaraan", "text", { find: 1, ph: "mis. D 9193 AE" }), KT = F("ket", "Keterangan", "area"),
+    SALES = F("pengemudi", "Salesman/Driver", "text", { find: 1, ph: "mis. 281-R061 - ARDI" }),
+    SUPR = [F("jasa", "Jasa Pengangkut"), KD, F("pengemudi", "Pengemudi"), F("ref1", "No. Ref. 1"), F("ref2", "No. Ref. 2"), F("ref3", "No. Ref. 3"), F("shift", "Shift", "num"), F("kuli", "Jml. Kuli", "num"), KT],
+    SUPL = function (lbl) { return [NO, TG, F("party", "Supplier", "text", { find: 1 }), GD, TS, F("sj", "No. Surat Jalan"), F("tglsj", "Tgl. Surat Jalan Pabrik", "date")]; };
+  var DOCS = {
+    bkd: { n: "BKB Distribusi", s: "Bukti Keluar Barang Distribusi", dir: "KELUAR", head: "Dokumen Bukti Keluar Barang Distribusi", det: "Detail Bukti Keluar Barang Distribusi", t0: "BUKTI KELUAR BARANG", t1: "DISTRIBUSI", v: 0, L: [NO, TG, F("dokreq", "Dok. Permintaan Barang", "text", { find: 1 }), SALES, GD, TS, KD], R: [F("ket", "Keterangan", "area", { ph: "mis. RIT 1 / REVINA" }), { t: "cap" }] },
+    btd: { n: "BTB Distribusi", s: "Bukti Terima Barang Distribusi", dir: "TERIMA", head: "Dokumen Bukti Terima Barang Distribusi", det: "Detil Bukti Terima Barang Distribusi", t0: "BUKTI TERIMA BARANG", t1: "DISTRIBUSI", v: 1, L: [NO, TG, SALES, GD, TS], R: [KT, KD] },
+    bts: { n: "BTB Supplier", s: "Bukti Terima Barang Supplier", dir: "TERIMA", head: "Dokumen Bukti Terima Barang Supplier", det: "Detil Bukti Terima Barang Supplier", t0: "BUKTI TERIMA BARANG", t1: "SUPPLIER", v: 0, L: SUPL(), R: SUPR },
+    bks: { n: "BKB Supplier", s: "Bukti Keluar Barang Supplier", dir: "KELUAR", head: "Dokumen Bukti Keluar Barang Supplier", det: "Detail Bukti Keluar Barang Supplier", t0: "BUKTI KELUAR BARANG", t1: "SUPPLIER", v: 1, L: SUPL(), R: SUPR },
+    bth: { n: "BTB Depo", s: "Bukti Terima Barang Cabang", dir: "TERIMA", head: "Dokumen Bukti Terima Barang Cabang", det: "Detil Bukti Terima Barang Cabang", t0: "BUKTI TERIMA BARANG", t1: "CABANG", v: 1, L: [NO, TG, F("party", "Dari Depo", "text", { find: 1 }), GD, TS], R: [F("pengemudi", "Driver", "text", { find: 1 }), KD, KT] },
+    bkh: { n: "BKB Depo", s: "Bukti Keluar Barang Cabang", dir: "KELUAR", head: "Dokumen Bukti Keluar Barang Cabang", det: "Detail Bukti Keluar Barang Cabang", t0: "BUKTI KELUAR BARANG", t1: "CABANG", v: 1, L: [NO, TG, F("party", "Depo Tujuan", "text", { find: 1 }), GD, TS], R: [F("pengemudi", "Driver", "text", { find: 1 }), KD, KT] }
+  };
+  var ORDER = ["bkd", "btd", "bts", "bks", "bth", "bkh"];
+  var DF = ["kendaraan", "pengemudi", "ket", "nodok", "dokreq", "tipe", "status", "rows", "party", "sj", "tglsj", "jasa", "ref1", "ref2", "ref3", "shift", "kuli"];
+  function blank() { return { kendaraan: "", pengemudi: "", ket: "", nodok: "", dokreq: "", tipe: "JUAL", status: "Draft", rows: [{ k: "", n: "", s: "BOX", q: "", l: "" }], party: "", sj: "", tglsj: "", jasa: "", ref1: "", ref2: "", ref3: "", shift: "0", kuli: "0" }; }
+  /* tiap jenis dokumen menyimpan isiannya sendiri; pindah jenis tidak menghapus isian jenis lain */
+  function switchDoc(id) {
+    if (!DOCS[id] || id === st.doc) return;
+    var cur = {}, nx, b = blank(); DF.forEach(function (k) { cur[k] = st[k]; }); st.docs[st.doc] = cur;
+    nx = st.docs[id] || b; DF.forEach(function (k) { st[k] = nx[k] == null ? b[k] : nx[k]; }); st.doc = id; save();
+  }
+  function fdate(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ""); return m ? m[3] + "/" + m[2] + "/" + m[1] : now().t.replace(/-/g, "/"); }
+  function U(s) { return String(s == null ? "" : s).toUpperCase(); }
+
   function load() {
     var d = {}; try { d = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
     st = { gudang: d.gudang || GUDANG[0], kendaraan: d.kendaraan || "", ket: d.ket || "",
       rows: (d.rows && d.rows.length) ? d.rows : [{ k: "", n: "", s: "BOX", q: "" }],
-      form: d.form || "3", printer: d.printer || (/Android|iPhone/i.test(navigator.userAgent) ? "termal" : "epson"), twv: 2, tw: d.twv === 2 ? (d.tw || "58") : "58", tmethod: d.tmethod || "ble", dens: d.dens || "3", logo: d.logo == null ? true : d.logo, left: d.left == null ? 11 : d.left, pname: (d.pname == null || d.pname === "EPSON LX-310 ESC/P") ? "EPSON LX-310 ESC/P (Copy 1)" : d.pname, solid: d.solid == null ? true : d.solid, pengemudi: d.pengemudi || "", slot: d.slot || "1", tebal: d.tebal == null ? true : d.tebal, top: d.top == null ? 0 : d.top, nodok: d.nodok || "", dokreq: d.dokreq || "", tipe: d.tipe || "JUAL", status: d.status || "Draft", fh: d.fh || "" };
+      form: d.form || "3", printer: d.printer || (/Android|iPhone/i.test(navigator.userAgent) ? "termal" : "epson"), twv: 2, tw: d.twv === 2 ? (d.tw || "58") : "58", tmethod: d.tmethod || "ble", dens: d.dens || "3", logo: d.logo == null ? true : d.logo, left: d.left == null ? 11 : d.left, pname: (d.pname == null || d.pname === "EPSON LX-310 ESC/P") ? "EPSON LX-310 ESC/P (Copy 1)" : d.pname, solid: d.solid == null ? true : d.solid, pengemudi: d.pengemudi || "", slot: d.slot || "1", tebal: d.tebal == null ? true : d.tebal, top: d.top == null ? 0 : d.top, nodok: d.nodok || "", dokreq: d.dokreq || "", tipe: d.tipe || "JUAL", status: d.status || "Draft", fh: d.fh || "", elogo: d.elogo == null ? true : d.elogo, doc: DOCS[d.doc] ? d.doc : "bkd", docs: d.docs || {}, party: d.party || "", sj: d.sj || "", tglsj: d.tglsj || "", jasa: d.jasa || "", ref1: d.ref1 || "", ref2: d.ref2 || "", ref3: d.ref3 || "", shift: d.shift == null ? "0" : d.shift, kuli: d.kuli == null ? "0" : d.kuli };
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
   function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
@@ -25,7 +56,7 @@
   function ctr(t, n) { return rep(Math.max(0, Math.floor((n - t.length) / 2))) + t; }
   function thermal() {
     var C = st.tw === "58" ? 32 : 42, nw = now(), it = items(), L = [], tot = 0, rule = new Array(C + 1).join("-");
-    if (TEST) L.push(("1234567890").repeat ? new Array(Math.ceil(C / 10) + 1).join("1234567890").substr(0, C) : ""); L.push(ctr("BUKTI KELUAR BARANG", C)); L.push(ctr(TEST ? "(TES CETAK)" : "(MANUAL)", C)); L.push(ctr("LP PARUNG", C)); L.push(rule);
+    if (TEST) L.push(("1234567890").repeat ? new Array(Math.ceil(C / 10) + 1).join("1234567890").substr(0, C) : ""); L.push(ctr(DOCS[st.doc].t0, C)); L.push(ctr(TEST ? "(TES CETAK)" : "(MANUAL)", C)); L.push(ctr("LP PARUNG", C)); L.push(rule);
     wrap("Gudang: " + st.gudang, C).forEach(function (x) { L.push(x); });
     L.push("Tanggal: " + nw.t + " " + nw.j);
     if (st.kendaraan) L.push("Kendaraan: " + st.kendaraan.toUpperCase());
@@ -53,20 +84,34 @@
                        untuk tanda tangan, lalu ( WAREHOUSE ADMIN ) ( CHECKER ) ( DRIVER ) ( SECURITY ) (6 barang/halaman).
      Bila barang terakhir > 6, tanda tangan dicetak di halaman tambahan tanpa barang (seperti DMS). */
   function epsonPages() {
-    var it = items(), nL = nLines(), capMid = Math.max(1, nL - 12), capLast = Math.max(1, nL - 16), nw = now(), tgl = nw.t.replace(/-/g, "/"), out = [], chunks = [], i = 0, HW = 66;
+    var it = items(), D = DOCS[st.doc] || DOCS.bkd, nw = now(), tgl = nw.t.replace(/-/g, "/"), out = [], chunks = [], i = 0, HW = 66;
+    function pairs(p) {
+      var A = [["NAMA DEPO", "LP PARUNG", "HALAMAN", p + 1], ["NAMA GUDANG", st.gudang, "DOKUMEN ID", U(st.nodok)]], d = st.doc;
+      if (d === "bkd") A.push(["PENGEMUDI", U(st.pengemudi), "TANGGAL", tgl], ["KENDARAAN", U(st.kendaraan), "NO. FB", U(st.dokreq)]);
+      else if (d === "btd") A.push(["PENGEMUDI", U(st.pengemudi), "TANGGAL", tgl], ["KENDARAAN", U(st.kendaraan), "TIPE STOK", U(st.tipe)]);
+      else if (d === "bts" || d === "bks") A.push(["SUPPLIER", U(st.party), "TANGGAL", tgl], ["SURAT JALAN", U(st.sj), "TGL. SJ PABRIK", fdate(st.tglsj)], ["KENDARAAN", U(st.kendaraan) + (st.pengemudi ? " / " + U(st.pengemudi) : ""), "NO. REF 1", U(st.ref1)]);
+      else A.push([d === "bth" ? "DARI DEPO" : "DEPO TUJUAN", U(st.party), "TANGGAL", tgl], ["KENDARAAN", U(st.kendaraan), "DRIVER", U(st.pengemudi)]);
+      return A;
+    }
+    function ketLine() {
+      var ex = [], t = U(String(st.ket).replace(/\s*[\r\n]+\s*/g, " "));
+      if (st.doc === "bts" || st.doc === "bks") {
+        if (st.ref2) ex.push("REF 2: " + U(st.ref2)); if (st.ref3) ex.push("REF 3: " + U(st.ref3)); if (st.jasa) ex.push("ANGKUTAN: " + U(st.jasa));
+        if (parseFloat(st.shift)) ex.push("SHIFT: " + st.shift); if (parseFloat(st.kuli)) ex.push("KULI: " + st.kuli);
+      }
+      return t + (t && ex.length ? " | " : "") + ex.join(" | ");
+    }
+    var xh = pairs(0).length - 4, nL = nLines(), capMid = Math.max(1, nL - 12 - xh), capLast = Math.max(1, nL - 16 - xh);
     while (it.length - i > capLast) { var take = Math.min(capMid, it.length - i); chunks.push({ r: it.slice(i, i + take), last: false, o: i }); i += take; }
     chunks.push({ r: it.slice(i), last: true, o: i });
     function LB(a, b) { return pad(a, 13) + ": " + b; }   /* titik dua kolom 13, isi kolom 15 */
     function RB(a, b) { return pad(a, 14) + ": " + b; }   /* label kanan mulai kolom 66, titik dua kolom 80 */
     chunks.forEach(function (c, p) {
-      var L = [], cap = c.last ? capLast : capMid, title = TEST ? "BUKTI KELUAR BARANG (TES CETAK)" : "BUKTI KELUAR BARANG (DISTRIBUSI)";
+      var L = [], cap = c.last ? capLast : capMid, title = D.t0 + " (" + (TEST ? "TES CETAK" : D.t1) + ")";
       L.push("");
       L.push(rep(45) + title);
-      L.push(pad(LB("NAMA DEPO", "LP PARUNG"), HW) + RB("HALAMAN", p + 1));
-      L.push(pad(LB("NAMA GUDANG", st.gudang), HW) + RB("DOKUMEN ID", String(st.nodok || "").toUpperCase()));
-      L.push(pad(LB("PENGEMUDI", st.pengemudi.toUpperCase()), HW) + RB("TANGGAL", tgl));
-      L.push(pad(LB("KENDARAAN", st.kendaraan.toUpperCase()), HW) + RB("NO. FB", String(st.dokreq || "").toUpperCase()));
-      L.push(pad(LB("KETERANGAN", String(st.ket).replace(/\s*[\r\n]+\s*/g, " ").toUpperCase()), W));
+      pairs(p).forEach(function (a, ai) { L.push(pad(LB(a[0], a[1]), HW) + RB(a[2], ai < 4 ? String(a[3]).substr(0, 17) : a[3])); });
+      L.push(pad(LB("KETERANGAN", ketLine()), W));
       L.push(dash());
       L.push(pad("NO", 4) + pad("KODE", 12) + pad("NAMA PRODUK", 46) + pad("SATUAN", 14) + lpad("JUMLAH", 6) + rep(5) + "BATCH ID");
       L.push(dash());
@@ -76,7 +121,7 @@
           : (TEST && k === c.r.length ? new Array(Math.ceil(W / 10) + 1).join("1234567890").substr(0, W) : ""));
       }
       L.push(dash());
-      L.push(LEGEND);
+      L.push(pad(LEGEND, W - DEVTXT.length) + DEVTXT);
       if (c.last) {
         L.push(pad(rep(9) + "DIINPUT OLEH,", 38) + pad("DISERAHKAN OLEH,", 31) + pad("DITERIMA OLEH,", 28) + "DIPERIKSA OLEH,");
         L.push(""); L.push("");
@@ -98,7 +143,7 @@
       '<button type="button" class="dm-del" data-del aria-label="Hapus baris">×</button></div>';
   }
   function renderMobile(el) {
-    PK = null; PC = false; load(); root = el; clearInterval(tick);
+    PK = null; PC = false; load(); root = el; clearInterval(tick); if (st.doc !== "bkd") switchDoc("bkd");
     var P = (window.OpeningClosing && window.OpeningClosing.api && window.OpeningClosing.api.products) || [];
     P.forEach(function (p) { if (UNITS.indexOf(p[2]) < 0) UNITS.push(p[2]); });
     st.rows.forEach(function (r) { if (r.s && UNITS.indexOf(r.s) < 0) UNITS.push(r.s); });
@@ -206,6 +251,29 @@
   }
   /* ---------- ESC/P mentah: huruf draft bawaan printer (condensed 17 cpi, 6 lpi) ---------- */
   function adv(o, u) { while (u > 0) { var c = Math.min(255, u); o.push(27, 74, c); u -= c; } }
+  function rawText(o, ln) { for (var i = 0; i < ln.length; i++) { var c = ln.charCodeAt(i); o.push(c === 9472 ? 196 : (c < 32 || c > 126 ? 63 : c)); } }
+  /* 6 baris teks teratas (216/216 in) dicetak bersama logo setinggi 9 pita x 24/216 in.
+     Teks berjarak 36/216, pita logo berjarak 24/216: dua-duanya bertemu tiap 72/216, jadi tiap lintasan kepala cetak
+     membawa teks, pita logo, atau keduanya; kertas dimajukan dengan ESC J sehingga total tinggi tetap 6 baris. */
+  function logoRegion(o, lines) {
+    var ev = [], u = [], k, j, d = logoData();
+    for (k = 0; k < 6; k++) ev.push(36 * k);
+    for (j = 0; j < LG.bands; j++) ev.push(24 * j);
+    ev.sort(function (a, b) { return a - b; });
+    ev.forEach(function (x) { if (u[u.length - 1] !== x) u.push(x); });
+    u.forEach(function (t, idx) {
+      var kk = t % 36 === 0 ? t / 36 : -1, jj = t % 24 === 0 ? t / 24 : -1, ln = kk >= 0 ? lines[kk].replace(/\s+$/, "") : "", n, x;
+      if (ln.length > LG.col) ln = ln.substr(0, LG.col);
+      rawText(o, ln);
+      if (jj >= 0 && jj < LG.bands) {
+        for (n = ln.length; n < LG.col; n++) o.push(32);
+        o.push(27, 42, 1, LG.w & 255, LG.w >> 8);
+        for (x = 0; x < LG.w; x++) o.push(d[jj * LG.w + x]);
+      }
+      o.push(13);
+      adv(o, (idx + 1 < u.length ? u[idx + 1] : 216) - t);
+    });
+  }
   function buildRaw(test) {
     TEST = !!test;
     var pg = epsonPages(), H = Math.round(fhIn() * 216), o = [27, 64, 27, 120, 0, 15, 27, 51, 36, 27, 67, 0, 22], k, i;
@@ -219,9 +287,10 @@
     for (k = 0; k < sl; k++) adv(o, H);
     var topU = Math.max(0, Math.round(st.top / 25.4 * 216));
     pg.forEach(function (t) {
-      var lines = t.split("\n"), used = topU + lines.length * 36;
+      var lines = t.split("\n"), used = topU + lines.length * 36, from = 0, li;
       adv(o, topU);
-      lines.forEach(function (ln) { for (i = 0; i < ln.length; i++) { var c = ln.charCodeAt(i); o.push(c === 9472 ? 196 : (c < 32 || c > 126 ? 63 : c)); } o.push(13, 10); });
+      if (st.elogo !== false && lines.length >= 6 && logoData().length === LG.w * LG.bands) { logoRegion(o, lines); from = 6; }
+      for (li = from; li < lines.length; li++) { rawText(o, lines[li]); o.push(13, 10); }
       adv(o, Math.max(0, H - used));
     });
     return o;
@@ -267,7 +336,7 @@
   }
   /* ---------- printer termal: gambar struk (logo + huruf tajam) -> ESC/POS ---------- */
   var pseq = 0;
-  function tdata(test) { return { gudang: st.gudang, kendaraan: st.kendaraan, pengemudi: st.pengemudi, ket: st.ket, items: test ? SAMPLE : items(), test: !!test, now: now() }; }
+  function tdata(test) { var D = DOCS[st.doc] || DOCS.bkd; return { title: D.t0, doc: D.n, nodok: st.nodok, party: st.party, gudang: st.gudang, kendaraan: st.kendaraan, pengemudi: st.pengemudi, ket: st.ket, items: test ? SAMPLE : items(), test: !!test, now: now() }; }
   function tPreview(pv) {
     var seq = ++pseq;
     window.ThermalPrint.render(tdata(false), { tw: st.tw, logo: st.logo }).then(function (cv) {
@@ -422,20 +491,22 @@
 
   var ICO = {
     ref: '<svg viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="#2f7d32" stroke-width="2" d="M13 8a5 5 0 1 1-1.6-3.7"/><path fill="#2f7d32" d="M14 1v5h-5z"/></svg>',
-    prn: '<svg viewBox="0 0 16 16" width="16" height="16"><rect x="4" y="1.5" width="8" height="4" fill="#fff" stroke="#556"/><rect x="1.5" y="5.5" width="13" height="6" rx="1" fill="#6b7a90" stroke="#334"/><rect x="4" y="9.5" width="8" height="5" fill="#fff" stroke="#556"/></svg>',
+    prn: '<svg viewBox="0 0 16 16" width="16" height="16"><rect x="4" y="1.5" width="8" height="4" fill="#fff" stroke="currentColor"/><rect x="1.5" y="5.5" width="13" height="6" rx="1" fill="#6b7a90" stroke="currentColor"/><rect x="4" y="9.5" width="8" height="5" fill="#fff" stroke="currentColor"/></svg>',
     sav: '<svg viewBox="0 0 16 16" width="16" height="16"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5" fill="#43a047" stroke="#1b5e20"/><path d="M4 8l3 3 5-6" fill="none" stroke="#fff" stroke-width="2"/></svg>',
-    nw: '<svg viewBox="0 0 16 16" width="16" height="16"><path d="M3 1.5h7l3 3v10H3z" fill="#fff" stroke="#556"/><path d="M8 6v5M5.5 8.5h5" stroke="#1e6fd9" stroke-width="1.6"/></svg>',
-    set: '<svg viewBox="0 0 16 16" width="16" height="16"><circle cx="8" cy="8" r="2.4" fill="none" stroke="#445" stroke-width="1.6"/><path d="M8 1.5v2.2M8 12.3v2.2M1.5 8h2.2M12.3 8h2.2M3.4 3.4l1.5 1.5M11.1 11.1l1.5 1.5M12.6 3.4l-1.5 1.5M4.9 11.1l-1.5 1.5" stroke="#445" stroke-width="1.6"/></svg>',
+    vd: '<svg viewBox="0 0 16 16" width="16" height="16"><rect x="1.5" y="2" width="13" height="12" rx="2" fill="#ffd9a0" stroke="#c2370f"/><path d="M5 5l6 6M11 5l-6 6" stroke="#c2370f" stroke-width="2"/></svg>',
+    nw: '<svg viewBox="0 0 16 16" width="16" height="16"><path d="M3 1.5h7l3 3v10H3z" fill="#fff" stroke="currentColor"/><path d="M8 6v5M5.5 8.5h5" stroke="#1e6fd9" stroke-width="1.6"/></svg>',
+    set: '<svg viewBox="0 0 16 16" width="16" height="16"><circle cx="8" cy="8" r="2.4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 1.5v2.2M8 12.3v2.2M1.5 8h2.2M12.3 8h2.2M3.4 3.4l1.5 1.5M11.1 11.1l1.5 1.5M12.6 3.4l-1.5 1.5M4.9 11.1l-1.5 1.5" stroke="currentColor" stroke-width="1.6"/></svg>',
     find: '<svg viewBox="0 0 16 16" width="14" height="14"><circle cx="6.5" cy="6.5" r="4.2" fill="#fff4cf" stroke="#d98a00" stroke-width="1.8"/><path d="M9.6 9.6L14 14" stroke="#d98a00" stroke-width="2.2"/></svg>'
   };
   var GCODE = { "GUDANG LAYAK PARUNG": "281-W01", "GUDANG LAYAK PET PARUNG": "281-W13" };
 
   function renderPC(el) {
     load(); PC = true; PK = PK === "termal" ? "termal" : "epson"; clearInterval(tick);
-    var P = (window.OpeningClosing && window.OpeningClosing.api && window.OpeningClosing.api.products) || [], act = 0, tab = "detail";
+    var D = DOCS[st.doc], P = (window.OpeningClosing && window.OpeningClosing.api && window.OpeningClosing.api.products) || [], act = 0, tab = "detail";
     P.forEach(function (p) { if (UNITS.indexOf(p[2]) < 0) UNITS.push(p[2]); });
     st.rows.forEach(function (r) { if (r.s && UNITS.indexOf(r.s) < 0) UNITS.push(r.s); });
     function dstr() { return now().t.replace(/-/g, "/"); }
+    function isoToday() { var d = new Date(); return d.getFullYear() + "-" + two(d.getMonth() + 1) + "-" + two(d.getDate()); }
     function rowsHtml() {
       return st.rows.map(function (r, i) {
         return '<div class="dx-r' + (i === act ? " act" : "") + '" data-i="' + i + '"><span class="dx-no">' + (i + 1) + '</span>' +
@@ -447,7 +518,18 @@
           '<button type="button" class="dx-lot" data-lot title="Lot/SN (Batch ID)">' + (r.l ? "<i>" + esc(r.l) + "</i>" : "") + ICO.find + '</button></div>';
       }).join("");
     }
-    function fld(label, inner, mg) { return '<div class="dx-f"><label>' + label + '</label><div class="dx-fv">' + inner + (mg ? '<button type="button" class="dx-mg" data-mg title="Cari">' + ICO.find + '</button>' : "") + '</div></div>'; }
+    function fieldHtml(f) {
+      if (f.t === "cap") return '<fieldset class="dx-cap"><legend>Capacity Info</legend><div>Volume : 0%</div><div>Weight : 0%</div></fieldset>';
+      var v = st[f.k] == null ? "" : st[f.k], inner, id = ' data-f="' + f.k + '" id="dxf-' + f.k + '"';
+      if (f.t === "gudang") inner = '<select' + id + '>' + GUDANG.map(function (g) { return '<option value="' + g + '"' + (g === st.gudang ? " selected" : "") + ">" + (GCODE[g] ? GCODE[g] + " - " : "") + g + "</option>"; }).join("") + '</select>';
+      else if (f.t === "tipe") inner = '<select' + id + '><option value="JUAL" selected>JUAL - Stok untuk penjualan</option></select>';
+      else if (f.t === "ro") inner = '<input id="dxTgl" readonly value="' + dstr() + '">';
+      else if (f.t === "date") inner = '<input' + id + ' type="date" value="' + esc(v || isoToday()) + '">';
+      else if (f.t === "num") inner = '<input' + id + ' type="number" min="0" value="' + esc(v) + '">';
+      else if (f.t === "area") return '<div class="dx-f dx-fa"><label for="dxf-' + f.k + '">' + f.l + '</label><div class="dx-fv"><textarea' + id + ' rows="3" placeholder="' + esc(f.ph || "") + '">' + esc(v) + '</textarea></div></div>';
+      else inner = '<input' + id + ' autocomplete="off" placeholder="' + esc(f.ph || "") + '" value="' + esc(v) + '">';
+      return '<div class="dx-f"><label' + (f.t === "ro" ? "" : ' for="dxf-' + f.k + '"') + '>' + f.l + '</label><div class="dx-fv">' + inner + (f.find ? '<button type="button" class="dx-mg" data-mg title="Cari" aria-label="Cari">' + ICO.find + '</button>' : "") + '</div></div>';
+    }
     function sel(id, arr, cur) { return '<select id="' + id + '">' + arr.map(function (a) { return '<option value="' + a[0] + '"' + (a[0] === cur ? " selected" : "") + ">" + a[1] + "</option>"; }).join("") + "</select>"; }
     var set = '<div class="dx-set" id="dxSet" hidden><div class="dx-sg"><h4>Epson LX-310</h4>' +
       '<label>Ukuran form' + sel("dmF", Object.keys(FORMS).map(function (k) { return [k, FORMS[k].name]; }), st.form) + '</label>' +
@@ -456,6 +538,7 @@
       '<label>Garis tabel' + sel("dmR", [["1", "Solid (PC437)"], ["0", "Putus-putus (-)"]], st.solid ? "1" : "0") + '</label>' +
       '<label>Nama printer Windows<input id="dmN" value="' + esc(st.pname) + '" placeholder="kosong = printer default"></label>' +
       '<label>Tebal huruf' + sel("dmB", [["1", "Tebal (double-strike)"], ["0", "Normal"]], st.tebal ? "1" : "0") + '</label>' +
+      '<label>Logo DMS di form Epson' + sel("dmEL", [["1", "Cetak logo (kanan atas)"], ["0", "Tanpa logo"]], st.elogo === false ? "0" : "1") + '</label>' +
       '<div class="dx-2"><label>Geser kanan (mm)<input id="dmL" type="number" step="0.5" value="' + st.left + '"></label><label>Geser bawah (mm)<input id="dmT" type="number" step="0.5" value="' + st.top + '"></label></div>' +
       '<div class="dx-2"><button type="button" class="dx-b" id="dxTest">Cetak tes 2 form</button><button type="button" class="dx-b" id="dxPrn2">Simpan PDF</button></div>' +
       '<p class="dx-hint">Kertas form menerus <b>9,5 × 3⅔ in</b> (lembar 11 in dibagi 3, sesuai jarak lubang traktor). Sejajarkan perforasi atas form dengan kepala cetak, lalu nyalakan printer. Cetak <b>tes 2 form</b>: bila form ke-2 mulai pas di perforasi, tinggi sudah benar; bila bergeser, ubah <b>Tinggi form (mm)</b>.</p></div>' +
@@ -464,37 +547,37 @@
       '<label>Cara kirim' + sel("dmM", [["ble", "Bluetooth langsung"], ["rawbt", "Aplikasi RawBT"], ["dialog", "Dialog cetak browser"]], st.tmethod) + '</label>' +
       '<label>Kegelapan cetak' + sel("dmDn", [["1", "Terang"], ["2", "Normal"], ["3", "Gelap"], ["4", "Sangat gelap"]], st.dens) + '</label>' +
       '<label>Logo di struk' + sel("dmLg", [["1", "Tampilkan logo"], ["0", "Tanpa logo"]], st.logo ? "1" : "0") + '</label></div></div>';
-    el.innerHTML = '<section class="dm-page"><div class="dx" id="dxRoot">' +
-      '<div class="dx-tabs"><span class="dx-tab on">BKB Distribusi <i>✕</i></span><span class="dx-ch">▾</span></div>' +
-      '<div class="dx-tool"><button type="button" id="dxRef">' + ICO.ref + 'Refresh</button><button type="button" id="dxPrn">' + ICO.prn + 'Cetak</button><button type="button" id="dxSav">' + ICO.sav + 'Simpan Applied</button><button type="button" id="dxNew">' + ICO.nw + 'Baru</button><button type="button" id="dxSetB">' + ICO.set + 'Pengaturan</button>' +
-      '<span class="dx-status">Status : <b id="dxSt"></b> ⓘ</span></div>' + set +
-      '<div class="dx-grp"><div class="dx-gh">Dokumen Bukti Keluar Barang Distribusi<span>📌</span></div><div class="dx-gb"><div class="dx-col">' +
-      fld("No. Dokumen", '<input id="dxNo" autocomplete="off" placeholder="mis. 281-0083795" value="' + esc(st.nodok) + '">', 1) +
-      fld("Tanggal", '<input id="dxTgl" readonly value="' + dstr() + '"><span class="dx-dd">▾</span>') +
-      fld("Dok. Permintaan Barang", '<input id="dxReq" autocomplete="off" value="' + esc(st.dokreq) + '">', 1) +
-      fld("Salesman/Driver", '<input id="dxDrv" autocomplete="off" placeholder="mis. 281-R061 - ARDI" value="' + esc(st.pengemudi) + '">', 1) +
-      fld("Gudang", '<select id="dxG">' + GUDANG.map(function (g) { return "<option value=\"" + g + "\"" + (g === st.gudang ? " selected" : "") + ">" + (GCODE[g] ? GCODE[g] + " - " : "") + g + "</option>"; }).join("") + '</select>') +
-      fld("Tipe Stok", '<select id="dxTs"><option value="JUAL"' + (st.tipe === "JUAL" ? " selected" : "") + '>JUAL - Stok untuk penjualan</option></select>') +
-      fld("Kendaraan", '<input id="dxV" autocomplete="off" placeholder="mis. D 9193 AE" value="' + esc(st.kendaraan) + '">', 1) +
-      '</div><div class="dx-col2"><div class="dx-kl">Keterangan</div><textarea id="dxK" rows="3" placeholder="mis. RIT 1 / REVINA">' + esc(st.ket) + '</textarea>' +
-      '<fieldset class="dx-cap"><legend>Capacity Info</legend><div>Volume : 0%</div><div>Weight : 0%</div></fieldset></div></div></div>' +
-      '<div class="dx-dtabs"><button type="button" class="on" data-tab="detail">Detail Bukti Keluar Barang Distribusi</button><button type="button" data-tab="prev">Pratinjau Cetak</button>' +
+    var pick = ORDER.map(function (id, n) {
+      var d = DOCS[id];
+      return '<button type="button" role="tab" aria-selected="' + (id === st.doc) + '" class="dx-pc ' + (d.dir === "KELUAR" ? "out" : "in") + (id === st.doc ? " on" : "") + '" data-doc="' + id + '"><i>' + (n + 1) + '</i><b>' + d.n + '</b><span>' + d.s + '</span><em>' + d.dir + '</em></button>';
+    }).join("");
+    el.innerHTML = '<section class="dm-page dm-pc"><div class="dx" id="dxRoot">' +
+      '<div class="dx-top"><div class="dx-ttl"><h1>DMS Manual</h1><p>Pilih jenis dokumen, isi data, lalu cetak. Tanggal dan jam terisi otomatis saat dicetak.</p></div><div id="dmAgent" class="dx-msg" role="status">Memeriksa agen cetak…</div></div>' +
+      '<div class="dx-pick" role="tablist" aria-label="Pilih jenis dokumen">' + pick + '</div>' +
+      '<div class="dx-card">' +
+      '<div class="dx-hdr"><div><b>' + D.n + '</b><span>' + D.s + '</span></div><div class="dx-status">Status : <b id="dxSt"></b></div></div>' +
+      '<div class="dx-tool"><button type="button" id="dxRef">' + ICO.ref + 'Refresh</button>' + (D.v ? '<button type="button" id="dxVoid">' + ICO.vd + 'Void</button>' : "") + '<button type="button" id="dxPrn" class="dx-prim">' + ICO.prn + 'Cetak</button><button type="button" id="dxSav">' + ICO.sav + 'Simpan Applied</button><button type="button" id="dxNew">' + ICO.nw + 'Baru</button><button type="button" id="dxSetB">' + ICO.set + 'Pengaturan</button></div>' + set +
+      '<div class="dx-grp"><div class="dx-gh">' + D.head + '</div><div class="dx-gb"><div class="dx-col">' + D.L.map(fieldHtml).join("") + '</div><div class="dx-col">' + D.R.map(fieldHtml).join("") + '</div></div></div>' +
+      '<div class="dx-dtabs"><button type="button" class="on" data-tab="detail">' + D.det + '</button><button type="button" data-tab="prev">Pratinjau Cetak</button>' +
       '<span class="dx-sp"></span><button type="button" class="dx-mini" id="dxAdd">+ Baris</button><button type="button" class="dx-mini" id="dxDel">− Hapus baris</button></div>' +
       '<div class="dx-pane" id="dxDetail"><div class="dx-gp">Drag a column here to group by this column.</div>' +
       '<div class="dx-hd"><span>No.</span><span>...</span><span>Kode Produk</span><span>Nama Produk</span><span>Qty</span><span>Satuan</span><span>Lot/SN</span></div>' +
       '<div class="dx-rows" id="dxRows">' + rowsHtml() + '</div></div>' +
       '<div class="dx-pane" id="dxPrevPane" hidden><div class="dx-pk"><button type="button" data-pk="epson" class="' + (PK === "epson" ? "on" : "") + '">Form Epson LX-310</button><button type="button" data-pk="termal" class="' + (PK === "termal" ? "on" : "") + '">Struk Thermal</button><small id="dmInfo"></small></div><div id="dmPrev" class="dm-prev"></div></div>' +
-      '<div class="dx-foot"><span id="dmAgent" class="dx-msg">Siap.</span></div>' +
+      '</div>' +
       '<datalist id="dxPL">' + P.map(function (p) { return '<option value="' + esc(p[0]) + '">' + esc(p[1]) + "</option>"; }).join("") + '</datalist></div></section>';
     var R = el.querySelector("#dxRoot");
     function $(s) { return R.querySelector(s); }
-    function stat() { var b = $("#dxSt"); b.textContent = st.status; b.className = st.status === "Applied" ? "ok" : "dr"; }
+    function stat() { var b = $("#dxSt"); b.textContent = st.status; b.className = st.status === "Applied" ? "ok" : st.status === "Void" ? "vd" : "dr"; }
     function rebuild() { $("#dxRows").innerHTML = rowsHtml(); save(); }
     function read() {
-      st.nodok = $("#dxNo").value.trim(); st.dokreq = $("#dxReq").value.trim(); st.pengemudi = $("#dxDrv").value; st.gudang = $("#dxG").value; st.tipe = $("#dxTs").value;
-      st.kendaraan = $("#dxV").value; st.ket = $("#dxK").value.replace(/\s*[\r\n]+\s*/g, " ");
+      [].forEach.call(R.querySelectorAll("[data-f]"), function (f) {
+        var k = f.getAttribute("data-f"), v = f.value;
+        if (k === "ket") v = v.replace(/\s*[\r\n]+\s*/g, " ");
+        st[k] = (k === "pengemudi" || k === "ket" || k === "kendaraan" || k === "gudang") ? v : v.trim();
+      });
       st.form = $("#dmF").value; st.fh = $("#dxFH").value.trim(); st.slot = $("#dmS").value; st.solid = $("#dmR").value === "1"; st.pname = $("#dmN").value.trim();
-      st.tebal = $("#dmB").value === "1"; st.left = parseFloat($("#dmL").value) || 0; st.top = parseFloat($("#dmT").value) || 0;
+      st.tebal = $("#dmB").value === "1"; st.elogo = $("#dmEL").value === "1"; st.left = parseFloat($("#dmL").value) || 0; st.top = parseFloat($("#dmT").value) || 0;
       st.tw = $("#dmW").value; st.tmethod = $("#dmM").value; st.dens = $("#dmDn").value; st.logo = $("#dmLg").value === "1";
       st.rows = [].map.call(R.querySelectorAll(".dx-r"), function (r) {
         var i = +r.getAttribute("data-i");
@@ -533,7 +616,7 @@
       });
     }
     function printDialog() {
-      var m = modal("Cetak Bukti Keluar Barang",
+      var m = modal("Cetak " + D.s,
         '<div class="dx-opt"><button type="button" data-do="epson"><b>Epson LX-310</b><span>Form kertas menerus 3–4 ply, huruf asli printer</span></button>' +
         '<button type="button" data-do="termal"><b>Printer IWARE Thermal</b><span>Struk ' + st.tw + ' mm lewat ' + (st.tmethod === "ble" ? "Bluetooth" : st.tmethod === "rawbt" ? "RawBT" : "dialog cetak") + '</span></button>' +
         '<div class="dx-o3"><b>Simpan gambar / PDF</b><span>Untuk dicetak lewat gambar atau PDF (Windows 7, HP)</span><div><button type="button" data-do="img-termal">Gambar struk thermal</button><button type="button" data-do="img-epson">Gambar form Epson</button><button type="button" data-do="pdf-epson">PDF form Epson</button></div></div></div>');
@@ -560,6 +643,7 @@
     });
     R.addEventListener("click", function (e) {
       var t = e.target, b;
+      if ((b = t.closest("[data-doc]"))) { read(); switchDoc(b.getAttribute("data-doc")); renderPC(el); return; }
       if ((b = t.closest("[data-tab]"))) {
         tab = b.getAttribute("data-tab"); [].forEach.call(R.querySelectorAll("[data-tab]"), function (x) { x.classList.toggle("on", x === b); });
         $("#dxDetail").hidden = tab !== "detail"; $("#dxPrevPane").hidden = tab !== "prev"; if (tab === "prev") preview(); return;
@@ -573,15 +657,16 @@
       }
       if ((b = t.closest("[data-mg]"))) { var inp = b.parentNode.querySelector("input"); if (inp) inp.focus(); return; }
       b = t.closest("button"); if (!b) return;
-      if (b.id === "dxPrn") { read(); printDialog(); }
+      if (b.id === "dxPrn") { read(); if (st.status === "Void") { alert("Dokumen berstatus Void tidak bisa dicetak. Klik Baru untuk membuat dokumen lain."); return; } printDialog(); }
       else if (b.id === "dxRef") { agentMsg("Memeriksa agen cetak…"); ping(true); $("#dxTgl").value = dstr(); if (tab === "prev") preview(); }
+      else if (b.id === "dxVoid") { if (window.confirm("Batalkan (Void) dokumen ini?")) { read(); st.status = "Void"; save(); stat(); agentMsg("Dokumen ditandai Void."); } }
       else if (b.id === "dxSav") {
         read(); if (!items().length) { alert("Isi minimal satu barang dengan jumlah sebelum menyimpan."); return; }
         st.status = "Applied"; save(); stat(); agentMsg("Tersimpan di komputer ini ✓");
       }
       else if (b.id === "dxNew") {
         if (!window.confirm("Mulai dokumen baru? Isian saat ini dikosongkan.")) return;
-        st.rows = [{ k: "", n: "", s: "BOX", q: "", l: "" }]; st.kendaraan = ""; st.ket = ""; st.nodok = ""; st.dokreq = ""; st.pengemudi = ""; st.status = "Draft"; save(); renderPC(el);
+        var z = blank(); DF.forEach(function (k) { st[k] = z[k]; }); save(); renderPC(el);
       }
       else if (b.id === "dxSetB") { var s = $("#dxSet"); s.hidden = !s.hidden; }
       else if (b.id === "dxAdd") { read(); st.rows.push({ k: "", n: "", s: "BOX", q: "", l: "" }); act = st.rows.length - 1; rebuild(); var ks = R.querySelectorAll(".dx-k"); ks[ks.length - 1].focus(); }

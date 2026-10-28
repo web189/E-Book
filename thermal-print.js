@@ -64,10 +64,13 @@
 
     if (img) { logoY = y; y += img.height + 4; }
     center("DEPO PARUNG", 25, true); y += 4;
-    bar("BUKTI KELUAR BARANG", "", 22, "center");
+    bar(d.title || "BUKTI KELUAR BARANG", "", 22, "center");
     center(d.test ? "( TES CETAK )" : "( MANUAL )", 17, false); y += 2;
     line([7, 4], 2);
+    if (d.doc) kv("Jenis", d.doc);
+    if (d.nodok) kv("No. Dok", String(d.nodok).toUpperCase());
     kv("Gudang", d.gudang);
+    if (d.party) kv("Pihak", String(d.party).toUpperCase());
     kv("Tanggal", d.now.t + "  " + d.now.j);
     kv("Kendaraan", (d.kendaraan || "").toUpperCase());
     kv("Pengemudi", (d.pengemudi || "").toUpperCase());
