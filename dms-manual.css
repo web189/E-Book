@@ -259,3 +259,13 @@ html[data-theme="dark"] .dx-rows::-webkit-scrollbar{width:10px}html[data-theme="
 html[data-theme="dark"] #dxPrevPane .dm-prev{background:#060c1c}
 html[data-theme="dark"] .dx-md{background:#0e1730;border-color:#2f447c}
 html[data-theme="dark"] .dx-ov{background:rgba(2,6,18,.66)}
+
+/* tombol Pengaturan: dekat & sejajar dengan "Status : Draft" */
+.dx-hr{display:flex;align-items:center;gap:10px;margin-left:auto}
+.dx-hdr .dx-setb{display:inline-flex;align-items:center;gap:6px;margin:0;padding:4px 10px;font-size:13.5px;line-height:1.3;background:transparent;border:1px solid transparent;border-radius:8px;cursor:pointer;color:var(--dx-ink);white-space:nowrap}
+.dx-hdr .dx-setb:hover{background:var(--dx-hov);border-color:var(--dx-line)}
+.dx-hdr .dx-setb svg{width:15px;height:15px;flex:none}
+.dx-hdr .dx-status{display:flex;align-items:center;white-space:nowrap}
+html:not([data-theme="dark"]) .dx-hdr .dx-setb{padding:3px 9px;border-radius:3px;color:#10233f}
+html:not([data-theme="dark"]) .dx-hdr .dx-setb:hover{background:#fff6d6;border-color:#e3c15f}
+html[data-theme="dark"] .dx-hdr .dx-setb:hover{background:#1a2a55;border-color:#33477a}

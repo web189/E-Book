@@ -3,7 +3,9 @@
 (function () {
   "use strict";
   var KEY = "lp_dms_manual", W = 120, AGENT = "http://localhost:9101", LEGEND = "Keterangan : Putih Sales, Merah Adm Gudang, Kuning Checker, Hijau Security";
-  var DEVTXT = "Sistem & Website Developer benyoriki.com";
+  var DEVVIS = "Sistem Developer benyoriki.com", DEV = "Sistem Developer \u0001benyoriki.com\u0002", LP = 30;
+  /* \u0001 = garis bawah ON, \u0002 = garis bawah OFF (ESC - 1 / ESC - 0); tidak memakai lebar kolom */
+  function mk(t) { return esc(t).replace(/\u0001/g, "<u>").replace(/\u0002/g, "</u>"); }
   /* logo DMS untuk Epson: bit-image ESC * mode 1 (120 dpi datar x 72 dpi tegak), 128 kolom x 9 pita (8 titik/pita), mulai kolom 100 */
   var LGB = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwcPDwwcGB0PDw8yPD8fH3x8bk4GFnh8fOzGbux8fHgAHPz++Hg8Hn5+eEAAAAEHHz8+HhsfDw4FAwcHBwMDAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQMHBwUAAAAAw8PjcHg4GTsz9+fHz8/P35+ePj48PGx8WHh42Hj4mPAw8LBwsDCwMBA4EBgYGBgYCBgMDAwEBgYCAwMBAQVA4uXB8vj5eOTuzt09O3c3Lw8fDwQBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYOHh87t//fn4HAwODiZk4ePj18+fnx8ePDw4eHhw8PDx8PHx8/Hz8/Pz9/P38/f38/fz9/Py0/LTcbFw0TDQMBBQABBAEEAgUGA4ODw8HDYfGw+Py+fn9fP5+PB2Pg2Pz+9ufn58/HDw8PBgIAAAAAAAAAAAAAAAAAAAAAAx0vf39/eCAAAIOMMD6H4PLx+f38/P7+/v7+/v7+/v7+/Pz8/P39+fn78/Pz8+fn5+/nz8/Hz8/Xh4/Pj4WPhouHhIeBhoGCw8LFw8JD62Ph5/Hz8/H7+fl5ebm5ubm52dtTEwcP5+DAwICQPD8/TxsBAAAAAAAAAAAAAAAAAAD//////wAAAAAY/y//nz/vL5vF4/Hw+Pn9fHx+fn5+/v7+/v7+/v7+/v78/Pz8/f35+fn78/Pz9fP34+fjY+fjY+Jj4WPgYeFgoeFhsfHxsfHz+fn5+fn9+f38/f39/fn5+fvz9uTBHwAAAAAA/////994AAAAAAAAAAAAAAAAAMD4/v//vx4EAAHA+P7+/v7+/v7+/v6+Pr6ezu7udnJyenp4eHx8/Hz//Pz8/Pz8/P38/Pz8+Pj7+/v7+/Pz8/Pzs/Oz83Pzc7PzM/LydvLy8vLy+vr7+/v7+/v78vb25u7enDz8+OCAAAEEHH39/fzxgQEBAQEBAQMAAAAAAAAAAAAADIwdP//7r/v/67vv+qz/L+9fr18fXw8fDw8fDx8PHBkHCwUDDQIFA4fP/PLlggMKAwkDBwkEi4XPy+f1+/v39+Pvws+LhQ8PHw8fHz8/OnEP//fDjZcKFwwXDhcTPDt6Org6uHi4uvm7uvt7u/u/+fLywcCAAAAAAAAAAAEDBx8l3+uXf69333vHix9////354cPBw8HDw8PHx8ff/7+//37c/fPXPvnnn/+3//f/fnnDz/++PB4vN7u/87+/Ly5ef/7xT399fn98ev58Ikw9PLg7eLj6ubr5ufr5+fv5+fv7+/v7+//33///////v78/Tum/AAAAAQMHHz87v7evt7+vvz83Hz8/Nz8uPj5+bm5+7v787P3dnb2dv7u7v7u7uzs3Fzc3Ny8vLy8vLi4eDh4OHh4eDh4ODh4OHg4PDx8PDwsFCQUhoYGhoaCi46Lz9/Pn9/f39/f39/e397e3t7env6cvLy8uDh4cHDg4MCAgAAAAAAA", LG = { w: 128, bands: 9, col: 100, data: null };
   function logoData() { if (!LG.data) { try { var t = atob(LGB), a = [], i; for (i = 0; i < t.length; i++) a.push(t.charCodeAt(i)); LG.data = a; } catch (e) { LG.data = []; } } return LG.data; }
@@ -107,11 +109,11 @@
     function LB(a, b) { return pad(a, 13) + ": " + b; }   /* titik dua kolom 13, isi kolom 15 */
     function RB(a, b) { return pad(a, 14) + ": " + b; }   /* label kanan mulai kolom 66, titik dua kolom 80 */
     chunks.forEach(function (c, p) {
-      var L = [], cap = c.last ? capLast : capMid, title = D.t0 + " (" + (TEST ? "TES CETAK" : D.t1) + ")";
+      var L = [], cap = c.last ? capLast : capMid, title = D.t0 + " (" + (TEST ? "TES CETAK" : D.t1) + ") MANUAL";
       L.push("");
       L.push(rep(45) + title);
       pairs(p).forEach(function (a, ai) { L.push(pad(LB(a[0], a[1]), HW) + RB(a[2], ai < 4 ? String(a[3]).substr(0, 17) : a[3])); });
-      L.push(pad(LB("KETERANGAN", ketLine()), W));
+      L.push(pad(LB("KETERANGAN", ketLine()), W - DEVVIS.length) + DEV);
       L.push(dash());
       L.push(pad("NO", 4) + pad("KODE", 12) + pad("NAMA PRODUK", 46) + pad("SATUAN", 14) + lpad("JUMLAH", 6) + rep(5) + "BATCH ID");
       L.push(dash());
@@ -121,7 +123,7 @@
           : (TEST && k === c.r.length ? new Array(Math.ceil(W / 10) + 1).join("1234567890").substr(0, W) : ""));
       }
       L.push(dash());
-      L.push(pad(LEGEND, W - DEVTXT.length) + DEVTXT);
+      L.push(LEGEND);
       if (c.last) {
         L.push(pad(rep(9) + "DIINPUT OLEH,", 38) + pad("DISERAHKAN OLEH,", 31) + pad("DITERIMA OLEH,", 28) + "DIPERIKSA OLEH,");
         L.push(""); L.push("");
@@ -160,7 +162,7 @@
       '<details class="dm-set"' + (st.set ? " open" : "") + '><summary>Pengaturan ' + (st.printer === "epson" ? "Epson LX-310" : "printer termal") + '</summary>' +
       (st.printer === "epson" ?
       '<label>Ukuran form<select id="dmF">' + Object.keys(FORMS).map(function (k) { return '<option value="' + k + '"' + (k === st.form ? " selected" : "") + ">" + FORMS[k].name + "</option>"; }).join("") + '</select></label>' +
-      '<div class="dm-two"><label>Posisi form di lembar<select id="dmS">' + ["1", "2", "3"].map(function (k) { return '<option value="' + k + '"' + (k === st.slot ? " selected" : "") + ">Form ke-" + k + "</option>"; }).join("") + '</select></label><label>Garis tabel<select id="dmR"><option value="1"' + (st.solid ? " selected" : "") + '>Solid (PC437)</option><option value="0"' + (st.solid ? "" : " selected") + '>Putus-putus (-)</option></select></label><label>Nama printer Windows<input id="dmN" value="' + esc(st.pname) + '" placeholder="kosong = printer default"></label><label>Tebal huruf<select id="dmB"><option value="1"' + (st.tebal ? " selected" : "") + '>Tebal (double-strike)</option><option value="0"' + (st.tebal ? "" : " selected") + '>Normal</option></select></label></div>' +
+      '<div class="dm-two"><label>Posisi form di lembar<select id="dmS">' + ["1", "2", "3"].map(function (k) { return '<option value="' + k + '"' + (k === st.slot ? " selected" : "") + ">Form ke-" + k + "</option>"; }).join("") + '</select></label><label>Garis tabel<select id="dmR"><option value="1"' + (st.solid ? " selected" : "") + '>Solid (PC437)</option><option value="0"' + (st.solid ? "" : " selected") + '>Putus-putus (-)</option></select></label><label>Nama printer Windows<input id="dmN" value="' + esc(st.pname) + '" placeholder="kosong = printer default"></label><label>Tebal huruf<select id="dmB"><option value="1"' + (st.tebal ? " selected" : "") + '>Tebal (cepat & jelas)</option><option value="0"' + (st.tebal ? "" : " selected") + '>Normal</option></select></label></div>' +
       '<div class="dm-two"><label>Geser kanan (mm)<input id="dmL" type="number" step="0.5" value="' + st.left + '"></label><label>Geser bawah (mm)<input id="dmT" type="number" step="0.5" value="' + st.top + '"></label></div>' +
       '<p class="dm-hint">Kertas di driver Windows: <b>9,5 × 11 in</b> (Portrait). Form 1/3 dicetak di bagian atas lembar; pilih "Form ke-2/3" bila form ke-1 sudah terpakai.</p>' :
       '<label>Lebar kertas<select id="dmW"><option value="58"' + (st.tw === "58" ? " selected" : "") + '>58 mm (IWARE MP-58SB)</option><option value="80"' + (st.tw === "80" ? " selected" : "") + '>80 mm (bukan untuk MP-58SB)</option></select></label>' +
@@ -230,7 +232,7 @@
     var kind = PK || st.printer;
     if (kind === "termal" && window.ThermalPrint) { tPreview(pv); return; }
     var pg = pages(kind), none = !items().length;
-    pv.innerHTML = pg.map(function (t, i) { return '<pre class="dm-paper' + (none ? " is-empty" : "") + '">' + esc(t) + "</pre>"; }).join("");
+    pv.innerHTML = pg.map(function (t, i) { return '<pre class="dm-paper' + (none ? " is-empty" : "") + '">' + mk(t) + "</pre>"; }).join("");
     document.getElementById("dmInfo").textContent = pg.length + (kind === "epson" ? " form" : " struk") + " · " + items().length + " barang";
     [].forEach.call(pv.querySelectorAll("pre"), function (pre) {
       var fs = kind === "epson" ? 12 : 13; pre.style.fontSize = fs + "px";
@@ -251,7 +253,7 @@
   }
   /* ---------- ESC/P mentah: huruf draft bawaan printer (condensed 17 cpi, 6 lpi) ---------- */
   function adv(o, u) { while (u > 0) { var c = Math.min(255, u); o.push(27, 74, c); u -= c; } }
-  function rawText(o, ln) { for (var i = 0; i < ln.length; i++) { var c = ln.charCodeAt(i); o.push(c === 9472 ? 196 : (c < 32 || c > 126 ? 63 : c)); } }
+  function rawText(o, ln) { for (var i = 0; i < ln.length; i++) { var c = ln.charCodeAt(i); if (c === 1) { o.push(27, 45, 1); continue; } if (c === 2) { o.push(27, 45, 0); continue; } o.push(c === 9472 ? 196 : (c < 32 || c > 126 ? 63 : c)); } }
   /* 6 baris teks teratas (216/216 in) dicetak bersama logo setinggi 9 pita x 24/216 in.
      Teks berjarak 36/216, pita logo berjarak 24/216: dua-duanya bertemu tiap 72/216, jadi tiap lintasan kepala cetak
      membawa teks, pita logo, atau keduanya; kertas dimajukan dengan ESC J sehingga total tinggi tetap 6 baris. */
@@ -276,21 +278,23 @@
   }
   function buildRaw(test) {
     TEST = !!test;
-    var pg = epsonPages(), H = Math.round(fhIn() * 216), o = [27, 64, 27, 120, 0, 15, 27, 51, 36, 27, 67, 0, 22], k, i;
+    var pg = epsonPages(), H = Math.round(fhIn() * 216), o = [27, 64, 27, 120, 0, 15, 27, 51, LP, 27, 67, 0, 22], k, i;
     TEST = false;
-    /* ESC 3 36 = 6 lpi (36/216 in). ESC C 0 22 = halaman 22 in, jadi printer TIDAK pernah loncat form sendiri.
-       Tiap form dimajukan tepat setinggi form (ESC J n/216 in) — tidak ada FF, tidak ada selisih yang menumpuk. */
+    /* ESC 3 LP = jarak baris LP/216 in (30 = 7,2 lpi, rapat tetapi jelas) supaya 22 baris + tanda tangan muat di form 3 2/3 in
+       dan tidak terpotong di bawah. ESC C 0 22 = halaman 22 in, jadi printer TIDAK pernah loncat form sendiri.
+       Tiap form dimajukan tepat setinggi form (ESC J n/216 in) — tidak ada FF, tidak ada selisih yang menumpuk.
+       Huruf tebal = ESC E (emphasized) saja. Double-strike (ESC G) dibuang: tiap baris dicetak 2x, bukan 4x, jadi 2x lebih cepat. */
     if (st.solid) o.push(27, 116, 1);
-    if (st.tebal) o.push(27, 71, 27, 69);
+    if (st.tebal) o.push(27, 69);
     o.push(27, 108, Math.min(60, Math.round(st.left / 25.4 * 17)));
     var per = Math.max(1, Math.floor(11 / fhIn() + 0.01)), sl = per === 1 ? 0 : (parseInt(st.slot, 10) || 1) - 1;
     for (k = 0; k < sl; k++) adv(o, H);
     var topU = Math.max(0, Math.round(st.top / 25.4 * 216));
     pg.forEach(function (t) {
-      var lines = t.split("\n"), used = topU + lines.length * 36, from = 0, li;
+      var lines = t.split("\n"), used = topU, from = 0, li;
       adv(o, topU);
-      if (st.elogo !== false && lines.length >= 6 && logoData().length === LG.w * LG.bands) { logoRegion(o, lines); from = 6; }
-      for (li = from; li < lines.length; li++) { rawText(o, lines[li]); o.push(13, 10); }
+      if (st.elogo !== false && lines.length >= 6 && logoData().length === LG.w * LG.bands) { logoRegion(o, lines); from = 6; used += 216; }
+      for (li = from; li < lines.length; li++) { rawText(o, lines[li].replace(/\s+$/, "")); o.push(13, 10); used += LP; }
       adv(o, Math.max(0, H - used));
     });
     return o;
@@ -302,6 +306,7 @@
     var Wp = 684, Hp = Math.round(fhIn() * 7200) / 100, fs = 7.0588, cw = 72 / 17, lh = 12;
     var x0 = st.left / 25.4 * 72, y0 = st.top / 25.4 * 72, objs = [], pageIds = [], i;
     function esc(t) { return t.replace(/[^\x20-\x7e]/g, "?").replace(/([\\()])/g, "\\$1"); }
+    function uline(ln, base) { var a = ln.indexOf("\u0001"), b = ln.indexOf("\u0002"); return a < 0 || b < a ? "" : "0.6 w " + f(x0 + a * cw) + " " + f(base - 1.4) + " m " + f(x0 + (b - 1) * cw) + " " + f(base - 1.4) + " l S\n"; }
     function f(v) { return (Math.round(v * 100) / 100).toString(); }
     objs[1] = "<< /Type /Catalog /Pages 2 0 R /ViewerPreferences << /PrintScaling /None >> >>";
     objs[3] = "<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>";
@@ -309,9 +314,9 @@
     pg.forEach(function (t, k) {
       var c = "0 g 0 G\n", fn = st.tebal ? "/F2" : "/F1";
       t.split("\n").forEach(function (ln, j) {
-        var base = Hp - (y0 + 9 + j * lh);
+        var base = Hp - (y0 + 9 + j * lh), raw = ln; ln = ln.replace(/[\u0001\u0002]/g, "");
         if (/^[\u2500\-]{20,}$/.test(ln)) { c += (st.tebal ? "1 w " : "0.7 w ") + f(x0) + " " + f(base + 2.6) + " m " + f(x0 + ln.length * cw) + " " + f(base + 2.6) + " l S\n"; }
-        else if (ln.replace(/\s+$/, "")) c += (st.tebal ? "0.25 w " : "") + "BT " + fn + " " + fs + " Tf " + (st.tebal ? "2 Tr " : "") + f(x0) + " " + f(base) + " Td (" + esc(ln.replace(/\s+$/, "")) + ") Tj " + (st.tebal ? "0 Tr " : "") + "ET\n";
+        else if (ln.replace(/\s+$/, "")) c += (st.tebal ? "0.25 w " : "") + "BT " + fn + " " + fs + " Tf " + (st.tebal ? "2 Tr " : "") + f(x0) + " " + f(base) + " Td (" + esc(ln.replace(/\s+$/, "")) + ") Tj " + (st.tebal ? "0 Tr " : "") + "ET\n" + uline(raw, base);
       });
       var pid = 5 + k * 2, cid = pid + 1; pageIds.push(pid);
       objs[pid] = "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 " + Wp + " " + f(Hp) + "] /Contents " + cid + " 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> >>";
@@ -420,7 +425,7 @@
     if (th) {
       var fp = st.tw === "58" ? 7 : 8, lines = pg[0].split("\n").length, hmm = Math.ceil(lines * fp * 1.25 * 0.3528 + 6);
       css = "@page{size:" + st.tw + "mm " + hmm + "mm;margin:0}html,body{margin:0;padding:0}.s{box-sizing:border-box;width:" + st.tw + "mm;padding:2mm 3mm}pre{margin:0;font:" + fp + 'pt/1.25 "Courier New",monospace;color:#000;white-space:pre}';
-      html = pg.map(function (t) { return '<div class="s"><pre>' + esc(t) + "</pre></div>"; }).join("");
+      html = pg.map(function (t) { return '<div class="s"><pre>' + mk(t) + "</pre></div>"; }).join("");
     } else {
       /* lembar tegak 9,5 x 11 in (bukan A4 mendatar); form ditumpuk dari atas dengan jarak = tinggi form */
       var Pt = fhIn(), per = Math.max(1, Math.floor(11 / Pt + 0.02)), sl = (parseInt(st.slot, 10) || 1) - 1, arr = [], sheets = [], wpt = (W * 72 / 17).toFixed(1), bold = st.tebal;
@@ -432,7 +437,7 @@
         '.l{height:12pt;margin:0;font:' + (bold ? "bold " : "") + '7.0588pt/12pt "Courier New",Courier,monospace;color:#000;white-space:pre;letter-spacing:0}.r{position:relative;height:12pt}.r i{position:absolute;left:0;top:5.5pt;width:' + wpt + "pt;border-top:" + (bold ? "1.3pt" : "0.8pt") + " solid #000}";
       html = sheets.map(function (sh) {
         return '<div class="sh">' + sh.map(function (f) {
-          return f.t ? '<div class="s" style="top:calc(' + (f.pos * Pt).toFixed(4) + "in + " + st.top + 'mm)">' + f.t.split("\n").map(function (ln) { return /^[\u2500\-]{20,}$/.test(ln) ? '<div class="r"><i></i></div>' : '<div class="l">' + esc(ln) + "</div>"; }).join("") + "</div>" : "";
+          return f.t ? '<div class="s" style="top:calc(' + (f.pos * Pt).toFixed(4) + "in + " + st.top + 'mm)">' + f.t.split("\n").map(function (ln) { return /^[\u2500\-]{20,}$/.test(ln) ? '<div class="r"><i></i></div>' : '<div class="l">' + mk(ln) + "</div>"; }).join("") + "</div>" : "";
         }).join("") + "</div>";
       }).join("");
     }
@@ -482,6 +487,8 @@
         var c = cv.getContext("2d"); c.scale(S, S); c.fillStyle = "#fff"; c.fillRect(0, 0, cv.width, cv.height);
         c.fillStyle = "#000"; c.textBaseline = "top"; c.font = (st.tebal ? "bold " : "") + fs + 'px "Courier New",Consolas,monospace';
         L.forEach(function (ln, j) {
+          var ua = ln.indexOf("\u0001"), ub = ln.indexOf("\u0002"); ln = ln.replace(/[\u0001\u0002]/g, "");
+          if (ua >= 0 && ub > ua) c.fillRect(M + ua * cw, M + j * lh + fs * 1.05, (ub - 1 - ua) * cw, 1);
           if (/^[\u2500\-]{20,}$/.test(ln)) c.fillRect(M, M + j * lh + fs * 0.55, W * cw, 1); else { c.fillText(ln, M, M + j * lh); if (st.tebal) { c.lineWidth = 0.5; c.strokeStyle = "#000"; c.strokeText(ln, M, M + j * lh); } }
         });
         cv.toBlob(function (b) { dl(b, base + (pg.length > 1 ? "-" + (i + 1) : "") + ".png"); agentMsg("Gambar form disimpan: " + esc(base) + ".png"); }, "image/png");
@@ -537,7 +544,7 @@
       '<label>Posisi form di lembar' + sel("dmS", [["1", "Form ke-1"], ["2", "Form ke-2"], ["3", "Form ke-3"]], st.slot) + '</label>' +
       '<label>Garis tabel' + sel("dmR", [["1", "Solid (PC437)"], ["0", "Putus-putus (-)"]], st.solid ? "1" : "0") + '</label>' +
       '<label>Nama printer Windows<input id="dmN" value="' + esc(st.pname) + '" placeholder="kosong = printer default"></label>' +
-      '<label>Tebal huruf' + sel("dmB", [["1", "Tebal (double-strike)"], ["0", "Normal"]], st.tebal ? "1" : "0") + '</label>' +
+      '<label>Tebal huruf' + sel("dmB", [["1", "Tebal (cepat & jelas)"], ["0", "Normal"]], st.tebal ? "1" : "0") + '</label>' +
       '<label>Logo DMS di form Epson' + sel("dmEL", [["1", "Cetak logo (kanan atas)"], ["0", "Tanpa logo"]], st.elogo === false ? "0" : "1") + '</label>' +
       '<div class="dx-2"><label>Geser kanan (mm)<input id="dmL" type="number" step="0.5" value="' + st.left + '"></label><label>Geser bawah (mm)<input id="dmT" type="number" step="0.5" value="' + st.top + '"></label></div>' +
       '<div class="dx-2"><button type="button" class="dx-b" id="dxTest">Cetak tes 2 form</button><button type="button" class="dx-b" id="dxPrn2">Simpan PDF</button></div>' +
@@ -555,8 +562,8 @@
       '<div class="dx-top"><div class="dx-ttl"><h1>DMS Manual</h1><p>Pilih jenis dokumen, isi data, lalu cetak. Tanggal dan jam terisi otomatis saat dicetak.</p></div><div id="dmAgent" class="dx-msg" role="status">Memeriksa agen cetak…</div></div>' +
       '<div class="dx-pick" role="tablist" aria-label="Pilih jenis dokumen">' + pick + '</div>' +
       '<div class="dx-card">' +
-      '<div class="dx-hdr"><div><b>' + D.n + '</b><span>' + D.s + '</span></div><div class="dx-status">Status : <b id="dxSt"></b></div></div>' +
-      '<div class="dx-tool"><button type="button" id="dxRef">' + ICO.ref + 'Refresh</button>' + (D.v ? '<button type="button" id="dxVoid">' + ICO.vd + 'Void</button>' : "") + '<button type="button" id="dxPrn" class="dx-prim">' + ICO.prn + 'Cetak</button><button type="button" id="dxSav">' + ICO.sav + 'Simpan Applied</button><button type="button" id="dxNew">' + ICO.nw + 'Baru</button><button type="button" id="dxSetB">' + ICO.set + 'Pengaturan</button></div>' + set +
+      '<div class="dx-hdr"><div><b>' + D.n + '</b><span>' + D.s + '</span></div><div class="dx-hr"><button type="button" id="dxSetB" class="dx-setb">' + ICO.set + 'Pengaturan</button><div class="dx-status">Status : <b id="dxSt"></b></div></div></div>' +
+      '<div class="dx-tool"><button type="button" id="dxRef">' + ICO.ref + 'Refresh</button>' + (D.v ? '<button type="button" id="dxVoid">' + ICO.vd + 'Void</button>' : "") + '<button type="button" id="dxPrn" class="dx-prim">' + ICO.prn + 'Cetak</button><button type="button" id="dxSav">' + ICO.sav + 'Simpan Applied</button><button type="button" id="dxNew">' + ICO.nw + 'Baru</button></div>' + set +
       '<div class="dx-grp"><div class="dx-gh">' + D.head + '</div><div class="dx-gb"><div class="dx-col">' + D.L.map(fieldHtml).join("") + '</div><div class="dx-col">' + D.R.map(fieldHtml).join("") + '</div></div></div>' +
       '<div class="dx-dtabs"><button type="button" class="on" data-tab="detail">' + D.det + '</button><button type="button" data-tab="prev">Pratinjau Cetak</button>' +
       '<span class="dx-sp"></span><button type="button" class="dx-mini" id="dxAdd">+ Baris</button><button type="button" class="dx-mini" id="dxDel">− Hapus baris</button></div>' +
