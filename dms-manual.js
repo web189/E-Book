@@ -278,11 +278,12 @@
   }
   function buildRaw(test) {
     TEST = !!test;
-    var pg = epsonPages(), H = Math.round(fhIn() * 216), o = [27, 64, 27, 120, 0, 15, 27, 51, LP, 27, 67, 0, 22], k, i;
+    var pg = epsonPages(), H = Math.round(fhIn() * 216), o = [27, 64, 27, 120, 0, 15, 27, 51, LP, 27, 67, 0, 22, 27, 85, 0], k, i;
     TEST = false;
     /* ESC 3 LP = jarak baris LP/216 in (30 = 7,2 lpi, rapat tetapi jelas) supaya 22 baris + tanda tangan muat di form 3 2/3 in
        dan tidak terpotong di bawah. ESC C 0 22 = halaman 22 in, jadi printer TIDAK pernah loncat form sendiri.
        Tiap form dimajukan tepat setinggi form (ESC J n/216 in) — tidak ada FF, tidak ada selisih yang menumpuk.
+       Cetak DUA ARAH (ESC U 0): kepala cetak mencetak saat ke kanan dan ke kiri, tanpa jalan kosong; hanya logo satu arah agar titik rapi.
        Huruf tebal = ESC E (emphasized) saja. Double-strike (ESC G) dibuang: tiap baris dicetak 2x, bukan 4x, jadi 2x lebih cepat. */
     if (st.solid) o.push(27, 116, 1);
     if (st.tebal) o.push(27, 69);
@@ -293,7 +294,7 @@
     pg.forEach(function (t) {
       var lines = t.split("\n"), used = topU, from = 0, li;
       adv(o, topU);
-      if (st.elogo !== false && lines.length >= 6 && logoData().length === LG.w * LG.bands) { logoRegion(o, lines); from = 6; used += 216; }
+      if (st.elogo !== false && lines.length >= 6 && logoData().length === LG.w * LG.bands) { o.push(27, 85, 1); logoRegion(o, lines); o.push(27, 85, 0); from = 6; used += 216; }
       for (li = from; li < lines.length; li++) { rawText(o, lines[li].replace(/\s+$/, "")); o.push(13, 10); used += LP; }
       adv(o, Math.max(0, H - used));
     });
@@ -544,7 +545,7 @@
       '<label>Posisi form di lembar' + sel("dmS", [["1", "Form ke-1"], ["2", "Form ke-2"], ["3", "Form ke-3"]], st.slot) + '</label>' +
       '<label>Garis tabel' + sel("dmR", [["1", "Solid (PC437)"], ["0", "Putus-putus (-)"]], st.solid ? "1" : "0") + '</label>' +
       '<label>Nama printer Windows<input id="dmN" value="' + esc(st.pname) + '" placeholder="kosong = printer default"></label>' +
-      '<label>Tebal huruf' + sel("dmB", [["1", "Tebal (cepat & jelas)"], ["0", "Normal"]], st.tebal ? "1" : "0") + '</label>' +
+      '<label>Tebal huruf' + sel("dmB", [["1", "Tebal (cepat & jelas)"], ["0", "Normal (paling cepat, lebih tipis)"]], st.tebal ? "1" : "0") + '</label>' +
       '<label>Logo DMS di form Epson' + sel("dmEL", [["1", "Cetak logo (kanan atas)"], ["0", "Tanpa logo"]], st.elogo === false ? "0" : "1") + '</label>' +
       '<div class="dx-2"><label>Geser kanan (mm)<input id="dmL" type="number" step="0.5" value="' + st.left + '"></label><label>Geser bawah (mm)<input id="dmT" type="number" step="0.5" value="' + st.top + '"></label></div>' +
       '<div class="dx-2"><button type="button" class="dx-b" id="dxTest">Cetak tes 2 form</button><button type="button" class="dx-b" id="dxPrn2">Simpan PDF</button></div>' +
