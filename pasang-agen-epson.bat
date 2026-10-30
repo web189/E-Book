@@ -21,6 +21,8 @@ echo.
 set /p T=Cetak form tes ke Epson sekarang? Ketik Y lalu Enter (N untuk lewati): 
 if /i "%T%"=="Y" powershell -NoProfile -ExecutionPolicy Bypass -File "%D%\agen-cetak-epson.ps1" -Test
 echo.
+echo Bila tes GAGAL (mis. "StartDoc gagal") atau form keluar di printer yang salah: jalankan pilih-printer-epson.bat di folder ini.
+echo.
 echo Selesai. Buka website DMS Manual: status harus "Agen cetak: tersambung".
 pause
 exit /b 0

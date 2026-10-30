@@ -459,8 +459,10 @@
     var bytes = new Uint8Array(buildRaw(test));
     agentMsg("Mengirim ke printer…");
     fetch(AGENT + "/print?printer=" + encodeURIComponent(st.pname || ""), { method: "POST", headers: { "Content-Type": "application/octet-stream" }, body: bytes })
-      .then(function (r) { return r.text().then(function (t) { if (!r.ok) throw new Error(t); agentMsg("Terkirim ke printer ✓"); }); })
-      .catch(function () {
+      .then(function (r) { return r.text().then(function (t) { if (!r.ok) { var er = new Error(t); er.fromAgent = true; throw er; } agentMsg("Terkirim ke printer ✓"); }); })
+      .catch(function (er) {
+        /* agen AKTIF tetapi Windows menolak mencetak (mis. StartDoc gagal): jangan tampilkan "agen belum aktif" yang menyesatkan */
+        if (er && er.fromAgent) { agentMsg("Agen aktif tetapi gagal mencetak: <b>" + esc(er.message) + "</b>. Bila tertulis StartDoc/printer: jalankan <b>pilih-printer-epson.bat</b>. Bila tertulis Origin ditolak: perbarui agen dengan <b>pasang-agen-epson.bat</b>. Detail: <b>cek-agen.bat</b>."); return; }
         /* agen belum terpasang: langsung cetak lewat browser (otomatis tanpa dialog bila Chrome dibuka dengan --kiosk-printing) */
         guideNext(function () { agentMsg("Mencetak darurat lewat browser…"); st.printer = "epson"; doPrint(test); }, function () { rawSend(test); });
       });

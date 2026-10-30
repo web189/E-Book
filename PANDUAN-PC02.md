@@ -49,3 +49,30 @@ Cara paling aman: **Komputer 01 membagikan (share) printer lewat LAN, Komputer 0
 Website berjalan di `https://web189.github.io`. Browser memblokir halaman HTTPS memanggil alamat HTTP di jaringan
 (`http://192.168.x.x:9101`), tetapi mengizinkan `http://localhost`. Karena itu tiap komputer memakai agennya
 sendiri di `localhost`, dan yang dibagikan lewat LAN adalah **printernya**, bukan agennya.
+
+## Perbaikan: "GAGAL: StartDoc gagal" di Komputer 02
+
+Penyebab: di Komputer 02 sudah ada printer lokal bernama sama (`EPSON LX-310 ESC/P (Copy 1)`) yang tidak tersambung ke
+mesin Epson, sehingga agen memakainya dan Windows menolak. Di daftar Komputer 02 juga ada banyak Epson milik PC lain,
+jadi agen tidak boleh menebak.
+
+1. Salin ulang folder terbaru ke Komputer 02 (berisi `agen-cetak-epson.ps1` baru, `pilih-printer-epson.bat`, `pilih-printer-epson.ps1`).
+2. Klik dua kali **pasang-agen-epson.bat** (memperbarui agen). Untuk tes, ketik **N**.
+3. Klik dua kali **pilih-printer-epson.bat**, ketik nomor printer milik **Komputer 01**
+   (bentuknya `\\NAMA-KOMPUTER-01\EPSON LX-310 ESC/P ...`; nama komputer 01 ada di Computer > Properties di PC 01).
+   Jangan pilih milik `ADMIN-PC`, `PARUNG-BIAYA`, dsb. kecuali memang itu PC 01.
+4. Ketik **Y** untuk tes: form harus keluar di printer Komputer 01. Pilihan tersimpan dan dipakai semua cetakan DMS
+   (nama printer di Pengaturan website diabaikan). Untuk membatalkan: jalankan lagi dan ketik **0**.
+5. Bila masih gagal, pesan error kini memuat kode Windows. Kode umum: **5** = tidak ada izin
+   (matikan *Password protected sharing* di PC 01 / cek share), **1722/53** = PC 01 tidak terjangkau (mati atau kabel LAN),
+   **1801** = nama printer salah. Kirim kode itu bila perlu bantuan lanjut.
+
+## Perbaikan: tes cetak berhasil, tetapi tombol Cetak di website gagal ("Agen cetak belum aktif")
+
+1. Salin folder terbaru, jalankan **pasang-agen-epson.bat** lagi (memperbarui agen; agen kini menerima alamat website
+   dari LAN/localhost dan mencatat semua penolakan). Lalu **pilih-printer-epson.bat** bila belum.
+2. Muat ulang website dengan **Ctrl + F5** (versi website lama tidak menampilkan penyebab sebenarnya).
+3. Tekan **Cetak** di website, lalu klik dua kali **cek-agen.bat**. Baris terakhir `agen.log` menjelaskan penyebabnya:
+   - `DITOLAK origin: ...` = alamat website tidak diizinkan agen (kirim alamat itu).
+   - `print ... GAGAL: StartDoc ...` = printer terpilih salah (ulangi pilih-printer-epson.bat).
+   - Tidak ada baris baru sama sekali = permintaan tidak sampai ke agen (browser memblokir; kirim alamat di address bar).
