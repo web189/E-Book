@@ -6,9 +6,49 @@
   var DEVVIS = "Sistem Developer benyoriki.com", DEV = "Sistem Developer \u0001benyoriki.com\u0002", LP = 30;
   /* \u0001 = garis bawah ON, \u0002 = garis bawah OFF (ESC - 1 / ESC - 0); tidak memakai lebar kolom */
   function mk(t) { return esc(t).replace(/\u0001/g, "<u>").replace(/\u0002/g, "</u>"); }
-  /* logo DMS untuk Epson: bit-image ESC * mode 1 (120 dpi datar x 72 dpi tegak), 128 kolom x 9 pita (8 titik/pita), mulai kolom 100 */
-  var LGB = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwcPDwwcGB0PDw8yPD8fH3x8bk4GFnh8fOzGbux8fHgAHPz++Hg8Hn5+eEAAAAEHHz8+HhsfDw4FAwcHBwMDAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQMHBwUAAAAAw8PjcHg4GTsz9+fHz8/P35+ePj48PGx8WHh42Hj4mPAw8LBwsDCwMBA4EBgYGBgYCBgMDAwEBgYCAwMBAQVA4uXB8vj5eOTuzt09O3c3Lw8fDwQBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYOHh87t//fn4HAwODiZk4ePj18+fnx8ePDw4eHhw8PDx8PHx8/Hz8/Pz9/P38/f38/fz9/Py0/LTcbFw0TDQMBBQABBAEEAgUGA4ODw8HDYfGw+Py+fn9fP5+PB2Pg2Pz+9ufn58/HDw8PBgIAAAAAAAAAAAAAAAAAAAAAAx0vf39/eCAAAIOMMD6H4PLx+f38/P7+/v7+/v7+/v7+/Pz8/P39+fn78/Pz8+fn5+/nz8/Hz8/Xh4/Pj4WPhouHhIeBhoGCw8LFw8JD62Ph5/Hz8/H7+fl5ebm5ubm52dtTEwcP5+DAwICQPD8/TxsBAAAAAAAAAAAAAAAAAAD//////wAAAAAY/y//nz/vL5vF4/Hw+Pn9fHx+fn5+/v7+/v7+/v7+/v78/Pz8/f35+fn78/Pz9fP34+fjY+fjY+Jj4WPgYeFgoeFhsfHxsfHz+fn5+fn9+f38/f39/fn5+fvz9uTBHwAAAAAA/////994AAAAAAAAAAAAAAAAAMD4/v//vx4EAAHA+P7+/v7+/v7+/v6+Pr6ezu7udnJyenp4eHx8/Hz//Pz8/Pz8/P38/Pz8+Pj7+/v7+/Pz8/Pzs/Oz83Pzc7PzM/LydvLy8vLy+vr7+/v7+/v78vb25u7enDz8+OCAAAEEHH39/fzxgQEBAQEBAQMAAAAAAAAAAAAADIwdP//7r/v/67vv+qz/L+9fr18fXw8fDw8fDx8PHBkHCwUDDQIFA4fP/PLlggMKAwkDBwkEi4XPy+f1+/v39+Pvws+LhQ8PHw8fHz8/OnEP//fDjZcKFwwXDhcTPDt6Org6uHi4uvm7uvt7u/u/+fLywcCAAAAAAAAAAAEDBx8l3+uXf69333vHix9////354cPBw8HDw8PHx8ff/7+//37c/fPXPvnnn/+3//f/fnnDz/++PB4vN7u/87+/Ly5ef/7xT399fn98ev58Ikw9PLg7eLj6ubr5ufr5+fv5+fv7+/v7+//33///////v78/Tum/AAAAAQMHHz87v7evt7+vvz83Hz8/Nz8uPj5+bm5+7v787P3dnb2dv7u7v7u7uzs3Fzc3Ny8vLy8vLi4eDh4OHh4eDh4ODh4OHg4PDx8PDwsFCQUhoYGhoaCi46Lz9/Pn9/f39/f39/e397e3t7env6cvLy8uDh4cHDg4MCAgAAAAAAA", LG = { w: 128, bands: 9, col: 100, data: null };
-  function logoData() { if (!LG.data) { try { var t = atob(LGB), a = [], i; for (i = 0; i < t.length; i++) a.push(t.charCodeAt(i)); LG.data = a; } catch (e) { LG.data = []; } } return LG.data; }
+  /* QR benyoriki.com untuk Epson (menggantikan logo DMS). Matriks 25 x 25 modul (1 = hitam), dibaca dari benyoriki.png.
+     Dicetak sebagai bit-image ESC * dengan tiap modul = 3 titik tegak (72 dpi, 1,06 mm). Dua kualitas:
+       "f" Cepat : ESC * 4 (80 dpi),  3 titik/modul -> 75 kolom,  0,94 in  (bawaan; kolom 40 persen lebih sedikit dari logo lama)
+       "s" Tajam : ESC * 1 (120 dpi), 5 titik/modul -> 125 kolom, 1,04 in  (modul persegi 1,06 mm; mode yang sama dengan logo lama) */
+  var QRM = [
+    "1111111001100010001111111",
+    "1000001000100110001000001",
+    "1011101011000100101011101",
+    "1011101011111001101011101",
+    "1011101011110011001011101",
+    "1000001010101100001000001",
+    "1111111010101010101111111",
+    "0000000011111100100000000",
+    "1011111000100111001111100",
+    "0000010100010000010110001",
+    "0010101010110111111010100",
+    "1001010111011000100000000",
+    "0000101011010101101111011",
+    "1110110010101010100110000",
+    "1001101110000110011010111",
+    "1001010000101100100000011",
+    "1000111000101111111111001",
+    "0000000010100010100010001",
+    "1111111001111111101010111",
+    "1000001011010101100011000",
+    "1011101011011010111111000",
+    "1011101010001010111010011",
+    "1011101010101100011010101",
+    "1000001000101101111111010",
+    "1111111010000110100000111"];
+  var QRP = { f: { mode: 4, hx: 3 }, s: { mode: 1, hx: 5 } }, QVY = 3;
+  var LG = { col: 101, cache: {} };
+  function logoData() {
+    var q = (st && QRP[st.qrq]) ? st.qrq : "f", P = QRP[q], N = QRM.length, rows = N * QVY, w = N * P.hx, bands = Math.ceil(rows / 8), d, b, x, i, r, v;
+    if (LG.cache[q]) return LG.cache[q];
+    d = [];
+    for (b = 0; b < bands; b++) for (x = 0; x < w; x++) {
+      v = 0;
+      for (i = 0; i < 8; i++) { r = b * 8 + i; if (r < rows && QRM[Math.floor(r / QVY)].charAt(Math.floor(x / P.hx)) === "1") v |= 128 >> i; }
+      d.push(v);
+    }
+    return (LG.cache[q] = { w: w, bands: bands, mode: P.mode, data: d });
+  }
   var GUDANG = ["GUDANG LAYAK PARUNG", "GUDANG BS PARUNG", "GUDANG REJECT PARUNG", "GUDANG LAYAK PET PARUNG"];
   var FORMS = { "3": { name: "1/3 lembar (9,5 × 3⅔ in, 11 in : 3)", h: 11 / 3 }, "2": { name: "1/2 lembar (9,5 × 5,5 in)", h: 5.5 }, "1": { name: "Penuh (9,5 × 11 in)", h: 11 } };
   var UNITS = ["BOX", "PACK", "PCS"];
@@ -45,7 +85,7 @@
     var d = {}; try { d = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
     st = { gudang: d.gudang || GUDANG[0], kendaraan: d.kendaraan || "", ket: d.ket || "",
       rows: (d.rows && d.rows.length) ? d.rows : [{ k: "", n: "", s: "BOX", q: "" }],
-      form: d.form || "3", printer: d.printer || (/Android|iPhone/i.test(navigator.userAgent) ? "termal" : "epson"), twv: 2, tw: d.twv === 2 ? (d.tw || "58") : "58", tmethod: d.tmethod || "ble", dens: d.dens || "3", logo: d.logo == null ? true : d.logo, left: d.left == null ? 11 : d.left, pname: (d.pname == null || d.pname === "EPSON LX-310 ESC/P") ? "EPSON LX-310 ESC/P (Copy 1)" : d.pname, solid: d.solid == null ? true : d.solid, pengemudi: d.pengemudi || "", slot: d.slot || "1", tebal: d.tebal == null ? true : d.tebal, top: d.top == null ? 0 : d.top, nodok: d.nodok || "", dokreq: d.dokreq || "", tipe: d.tipe || "JUAL", status: d.status || "Draft", fh: d.fh || "", elogo: d.elogo == null ? true : d.elogo, doc: DOCS[d.doc] ? d.doc : "bkd", docs: d.docs || {}, party: d.party || "", sj: d.sj || "", tglsj: d.tglsj || "", jasa: d.jasa || "", ref1: d.ref1 || "", ref2: d.ref2 || "", ref3: d.ref3 || "", shift: d.shift == null ? "0" : d.shift, kuli: d.kuli == null ? "0" : d.kuli };
+      form: d.form || "3", printer: d.printer || (/Android|iPhone/i.test(navigator.userAgent) ? "termal" : "epson"), twv: 2, tw: d.twv === 2 ? (d.tw || "58") : "58", tmethod: d.tmethod || "ble", dens: d.dens || "3", logo: d.logo == null ? true : d.logo, left: d.left == null ? 11 : d.left, pname: (d.pname == null || d.pname === "EPSON LX-310 ESC/P") ? "EPSON LX-310 ESC/P (Copy 1)" : d.pname, solid: d.solid == null ? true : d.solid, pengemudi: d.pengemudi || "", slot: d.slot || "1", tebal: d.tv === 4 ? !!d.tebal : false, tv: 4, qrq: (d.qrq === "s" || d.qrq === "f") ? d.qrq : "f", top: d.top == null ? 0 : d.top, nodok: d.nodok || "", dokreq: d.dokreq || "", tipe: d.tipe || "JUAL", status: d.status || "Draft", fh: d.fh || "", elogo: d.elogo == null ? true : d.elogo, doc: DOCS[d.doc] ? d.doc : "bkd", docs: d.docs || {}, party: d.party || "", sj: d.sj || "", tglsj: d.tglsj || "", jasa: d.jasa || "", ref1: d.ref1 || "", ref2: d.ref2 || "", ref3: d.ref3 || "", shift: d.shift == null ? "0" : d.shift, kuli: d.kuli == null ? "0" : d.kuli };
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
   function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
@@ -162,12 +202,12 @@
       '<details class="dm-set"' + (st.set ? " open" : "") + '><summary>Pengaturan ' + (st.printer === "epson" ? "Epson LX-310" : "printer termal") + '</summary>' +
       (st.printer === "epson" ?
       '<label>Ukuran form<select id="dmF">' + Object.keys(FORMS).map(function (k) { return '<option value="' + k + '"' + (k === st.form ? " selected" : "") + ">" + FORMS[k].name + "</option>"; }).join("") + '</select></label>' +
-      '<div class="dm-two"><label>Posisi form di lembar<select id="dmS">' + ["1", "2", "3"].map(function (k) { return '<option value="' + k + '"' + (k === st.slot ? " selected" : "") + ">Form ke-" + k + "</option>"; }).join("") + '</select></label><label>Garis tabel<select id="dmR"><option value="1"' + (st.solid ? " selected" : "") + '>Solid (PC437)</option><option value="0"' + (st.solid ? "" : " selected") + '>Putus-putus (-)</option></select></label><label>Nama printer Windows<input id="dmN" value="' + esc(st.pname) + '" placeholder="kosong = printer default"></label><label>Tebal huruf<select id="dmB"><option value="1"' + (st.tebal ? " selected" : "") + '>Tebal (cepat & jelas)</option><option value="0"' + (st.tebal ? "" : " selected") + '>Normal</option></select></label></div>' +
+      '<div class="dm-two"><label>Posisi form di lembar<select id="dmS">' + ["1", "2", "3"].map(function (k) { return '<option value="' + k + '"' + (k === st.slot ? " selected" : "") + ">Form ke-" + k + "</option>"; }).join("") + '</select></label><label>Garis tabel<select id="dmR"><option value="1"' + (st.solid ? " selected" : "") + '>Solid (PC437)</option><option value="0"' + (st.solid ? "" : " selected") + '>Putus-putus (-)</option></select></label><label>Nama printer Windows<input id="dmN" value="' + esc(st.pname) + '" placeholder="kosong = printer default"></label><label>Tebal huruf<select id="dmB"><option value="1"' + (st.tebal ? " selected" : "") + '>Tebal (lebih lambat, mesin lebih keras)</option><option value="0"' + (st.tebal ? "" : " selected") + '>Normal (cepat, tenang, jelas)</option></select></label></div>' +
       '<div class="dm-two"><label>Geser kanan (mm)<input id="dmL" type="number" step="0.5" value="' + st.left + '"></label><label>Geser bawah (mm)<input id="dmT" type="number" step="0.5" value="' + st.top + '"></label></div>' +
       '<p class="dm-hint">Kertas di driver Windows: <b>9,5 × 11 in</b> (Portrait). Form 1/3 dicetak di bagian atas lembar; pilih "Form ke-2/3" bila form ke-1 sudah terpakai.</p>' :
       '<label>Lebar kertas<select id="dmW"><option value="58"' + (st.tw === "58" ? " selected" : "") + '>58 mm (IWARE MP-58SB)</option><option value="80"' + (st.tw === "80" ? " selected" : "") + '>80 mm (bukan untuk MP-58SB)</option></select></label>' +
       '<div class="dm-two"><label>Cara kirim<select id="dmM">' + [["ble", "Bluetooth langsung"], ["rawbt", "Aplikasi RawBT"], ["dialog", "Dialog cetak browser"]].map(function (m) { return '<option value="' + m[0] + '"' + (m[0] === st.tmethod ? " selected" : "") + ">" + m[1] + "</option>"; }).join("") + '</select></label><label>Kegelapan cetak<select id="dmDn">' + [["1", "Terang"], ["2", "Normal"], ["3", "Gelap"], ["4", "Sangat gelap"]].map(function (m) { return '<option value="' + m[0] + '"' + (m[0] === st.dens ? " selected" : "") + ">" + m[1] + "</option>"; }).join("") + '</select></label></div>' +
-      '<label>Logo di struk<select id="dmLg"><option value="1"' + (st.logo ? " selected" : "") + '>Tampilkan logo</option><option value="0"' + (st.logo ? "" : " selected") + '>Tanpa logo</option></select></label>' +
+      '<label>QR di struk<select id="dmLg"><option value="1"' + (st.logo ? " selected" : "") + '>Tampilkan QR</option><option value="0"' + (st.logo ? "" : " selected") + '>Tanpa QR</option></select></label>' +
       '<p class="dm-hint">Pasangkan printer dulu di Pengaturan Bluetooth HP (PIN 0000 atau 1234). Bila "Bluetooth langsung" tidak menemukan printer, pilih <b>Aplikasi RawBT</b>. Cetak buram? Naikkan kegelapan.</p>') +
       '</details>' +
       '<button type="button" class="dm-btn dm-primary" id="dmPrint">' + (st.printer === "epson" ? "Cetak ke Epson LX-310 (huruf asli printer)" : "Cetak ke printer termal " + st.tw + " mm") + '</button><button type="button" class="dm-btn dm-test" id="' + (st.printer === "epson" ? "dmTest" : "dmSave") + '">' + (st.printer === "epson" ? "Cetak tes langsung (data contoh)" : "Simpan gambar struk") + '</button>' +
@@ -254,37 +294,41 @@
   /* ---------- ESC/P mentah: huruf draft bawaan printer (condensed 17 cpi, 6 lpi) ---------- */
   function adv(o, u) { while (u > 0) { var c = Math.min(255, u); o.push(27, 74, c); u -= c; } }
   function rawText(o, ln) { for (var i = 0; i < ln.length; i++) { var c = ln.charCodeAt(i); if (c === 1) { o.push(27, 45, 1); continue; } if (c === 2) { o.push(27, 45, 0); continue; } o.push(c === 9472 ? 196 : (c < 32 || c > 126 ? 63 : c)); } }
-  /* 6 baris teks teratas (216/216 in) dicetak bersama logo setinggi 9 pita x 24/216 in.
-     Teks berjarak 36/216, pita logo berjarak 24/216: dua-duanya bertemu tiap 72/216, jadi tiap lintasan kepala cetak
-     membawa teks, pita logo, atau keduanya; kertas dimajukan dengan ESC J sehingga total tinggi tetap 6 baris. */
+  /* 6 baris teks teratas (216/216 in) dicetak bersama QR setinggi 10 pita x 24/216 in (240/216 in).
+     Teks berjarak 36/216, pita QR berjarak 24/216: dua-duanya bertemu tiap 72/216, jadi tiap lintasan kepala cetak
+     membawa teks, pita QR, atau keduanya; kertas dimajukan dengan ESC J. Lintasan yang membawa pita QR dicetak SATU ARAH
+     (titik QR harus lurus agar terbaca scanner); lintasan yang hanya berisi teks tetap DUA ARAH (lebih cepat).
+     Mengembalikan tinggi daerah ini (satuan 1/216 in). */
   function logoRegion(o, lines) {
-    var ev = [], u = [], k, j, d = logoData();
+    var ev = [], u = [], k, j, q = logoData(), total = Math.max(216, q.bands * 24), uni = -1;
     for (k = 0; k < 6; k++) ev.push(36 * k);
-    for (j = 0; j < LG.bands; j++) ev.push(24 * j);
+    for (j = 0; j < q.bands; j++) ev.push(24 * j);
     ev.sort(function (a, b) { return a - b; });
     ev.forEach(function (x) { if (u[u.length - 1] !== x) u.push(x); });
     u.forEach(function (t, idx) {
-      var kk = t % 36 === 0 ? t / 36 : -1, jj = t % 24 === 0 ? t / 24 : -1, ln = kk >= 0 ? lines[kk].replace(/\s+$/, "") : "", n, x;
-      if (ln.length > LG.col) ln = ln.substr(0, LG.col);
+      var kk = t % 36 === 0 && t / 36 < 6 ? t / 36 : -1, jj = t % 24 === 0 ? t / 24 : -1, ln = kk >= 0 ? lines[kk].replace(/\s+$/, "") : "", n, x, hasQ = jj >= 0 && jj < q.bands;
+      if (ln.length > LG.col - 1) ln = ln.substr(0, LG.col - 1);
+      if (uni !== (hasQ ? 1 : 0)) { uni = hasQ ? 1 : 0; o.push(27, 85, uni); }
       rawText(o, ln);
-      if (jj >= 0 && jj < LG.bands) {
+      if (hasQ) {
         for (n = ln.length; n < LG.col; n++) o.push(32);
-        o.push(27, 42, 1, LG.w & 255, LG.w >> 8);
-        for (x = 0; x < LG.w; x++) o.push(d[jj * LG.w + x]);
+        o.push(27, 42, q.mode, q.w & 255, q.w >> 8);
+        for (x = 0; x < q.w; x++) o.push(q.data[jj * q.w + x]);
       }
       o.push(13);
-      adv(o, (idx + 1 < u.length ? u[idx + 1] : 216) - t);
+      adv(o, (idx + 1 < u.length ? u[idx + 1] : total) - t);
     });
+    return total;
   }
   function buildRaw(test) {
     TEST = !!test;
-    var pg = epsonPages(), H = Math.round(fhIn() * 216), o = [27, 64, 27, 120, 0, 15, 27, 51, LP, 27, 67, 0, 22, 27, 85, 0], k, i;
+    var pg = epsonPages(), H = Math.round(fhIn() * 216), o = [27, 64, 27, 120, 0, 27, 70, 27, 72, 15, 27, 51, LP, 27, 67, 0, 22, 27, 85, 0], k, i;
     TEST = false;
     /* ESC 3 LP = jarak baris LP/216 in (30 = 7,2 lpi, rapat tetapi jelas) supaya 22 baris + tanda tangan muat di form 3 2/3 in
        dan tidak terpotong di bawah. ESC C 0 22 = halaman 22 in, jadi printer TIDAK pernah loncat form sendiri.
        Tiap form dimajukan tepat setinggi form (ESC J n/216 in) — tidak ada FF, tidak ada selisih yang menumpuk.
-       Cetak DUA ARAH (ESC U 0): kepala cetak mencetak saat ke kanan dan ke kiri, tanpa jalan kosong; hanya logo satu arah agar titik rapi.
-       Huruf tebal = ESC E (emphasized) saja. Double-strike (ESC G) dibuang: tiap baris dicetak 2x, bukan 4x, jadi 2x lebih cepat. */
+       Cetak DUA ARAH (ESC U 0): kepala cetak mencetak saat ke kanan dan ke kiri, tanpa jalan kosong; hanya lintasan yang membawa QR satu arah agar titik rapi.
+       Bawaan NORMAL (draft, 1x pukul per titik): paling cepat dan tenang. ESC F + ESC H di awal MEMBATALKAN emphasized/double-strike (penyebab suara menjerit dan lambat). Tebal = ESC E hanya bila dipilih di Pengaturan. */
     if (st.solid) o.push(27, 116, 1);
     if (st.tebal) o.push(27, 69);
     o.push(27, 108, Math.min(60, Math.round(st.left / 25.4 * 17)));
@@ -294,10 +338,13 @@
     pg.forEach(function (t) {
       var lines = t.split("\n"), used = topU, from = 0, li;
       adv(o, topU);
-      if (st.elogo !== false && lines.length >= 6 && logoData().length === LG.w * LG.bands) { o.push(27, 85, 1); logoRegion(o, lines); o.push(27, 85, 0); from = 6; used += 216; }
+      if (st.elogo !== false && lines.length >= 6) { used += logoRegion(o, lines); o.push(27, 85, 0); from = 6; }
       for (li = from; li < lines.length; li++) { rawText(o, lines[li].replace(/\s+$/, "")); o.push(13, 10); used += LP; }
       adv(o, Math.max(0, H - used));
     });
+    /* WAJIB: kembalikan printer ke keadaan normal (ESC @). Tanpa ini mode tebal, condensed, jarak baris, dan panjang halaman 22 in
+       tertinggal di printer sehingga cetakan DMS asli ikut lambat dan salah ukuran. */
+    o.push(27, 64);
     return o;
   }
   /* PDF form Epson: 1 form = 1 halaman (9,5 in x tinggi form), Courier 17 cpi / 6 lpi seperti hasil printer asli.
@@ -545,8 +592,9 @@
       '<label>Posisi form di lembar' + sel("dmS", [["1", "Form ke-1"], ["2", "Form ke-2"], ["3", "Form ke-3"]], st.slot) + '</label>' +
       '<label>Garis tabel' + sel("dmR", [["1", "Solid (PC437)"], ["0", "Putus-putus (-)"]], st.solid ? "1" : "0") + '</label>' +
       '<label>Nama printer Windows<input id="dmN" value="' + esc(st.pname) + '" placeholder="kosong = printer default"></label>' +
-      '<label>Tebal huruf' + sel("dmB", [["1", "Tebal (cepat & jelas)"], ["0", "Normal (paling cepat, lebih tipis)"]], st.tebal ? "1" : "0") + '</label>' +
-      '<label>Logo DMS di form Epson' + sel("dmEL", [["1", "Cetak logo (kanan atas)"], ["0", "Tanpa logo"]], st.elogo === false ? "0" : "1") + '</label>' +
+      '<label>Tebal huruf' + sel("dmB", [["1", "Tebal (ESC E: 2x pukul, lambat, keras)"], ["0", "Normal (cepat, tenang, jelas)"]], st.tebal ? "1" : "0") + '</label>' +
+      '<label>QR benyoriki.com di form Epson' + sel("dmEL", [["1", "Cetak QR (kanan atas)"], ["0", "Tanpa QR (paling cepat)"]], st.elogo === false ? "0" : "1") + '</label>' +
+      '<label>Kualitas QR Epson' + sel("dmQ", [["f", "Cepat (80 dpi, 24 mm)"], ["s", "Tajam (120 dpi, 26 mm)"]], st.qrq) + '</label>' +
       '<div class="dx-2"><label>Geser kanan (mm)<input id="dmL" type="number" step="0.5" value="' + st.left + '"></label><label>Geser bawah (mm)<input id="dmT" type="number" step="0.5" value="' + st.top + '"></label></div>' +
       '<div class="dx-2"><button type="button" class="dx-b" id="dxTest">Cetak tes 2 form</button><button type="button" class="dx-b" id="dxPrn2">Simpan PDF</button></div>' +
       '<p class="dx-hint">Kertas form menerus <b>9,5 × 3⅔ in</b> (lembar 11 in dibagi 3, sesuai jarak lubang traktor). Sejajarkan perforasi atas form dengan kepala cetak, lalu nyalakan printer. Cetak <b>tes 2 form</b>: bila form ke-2 mulai pas di perforasi, tinggi sudah benar; bila bergeser, ubah <b>Tinggi form (mm)</b>.</p></div>' +
@@ -554,7 +602,7 @@
       '<label>Lebar kertas' + sel("dmW", [["58", "58 mm (IWARE MP-58SB)"], ["80", "80 mm"]], st.tw) + '</label>' +
       '<label>Cara kirim' + sel("dmM", [["ble", "Bluetooth langsung"], ["rawbt", "Aplikasi RawBT"], ["dialog", "Dialog cetak browser"]], st.tmethod) + '</label>' +
       '<label>Kegelapan cetak' + sel("dmDn", [["1", "Terang"], ["2", "Normal"], ["3", "Gelap"], ["4", "Sangat gelap"]], st.dens) + '</label>' +
-      '<label>Logo di struk' + sel("dmLg", [["1", "Tampilkan logo"], ["0", "Tanpa logo"]], st.logo ? "1" : "0") + '</label></div></div>';
+      '<label>QR di struk' + sel("dmLg", [["1", "Tampilkan QR"], ["0", "Tanpa QR"]], st.logo ? "1" : "0") + '</label></div></div>';
     var pick = ORDER.map(function (id, n) {
       var d = DOCS[id];
       return '<button type="button" role="tab" aria-selected="' + (id === st.doc) + '" class="dx-pc ' + (d.dir === "KELUAR" ? "out" : "in") + (id === st.doc ? " on" : "") + '" data-doc="' + id + '"><i>' + (n + 1) + '</i><b>' + d.n + '</b><span>' + d.s + '</span><em>' + d.dir + '</em></button>';
@@ -585,7 +633,7 @@
         st[k] = (k === "pengemudi" || k === "ket" || k === "kendaraan" || k === "gudang") ? v : v.trim();
       });
       st.form = $("#dmF").value; st.fh = $("#dxFH").value.trim(); st.slot = $("#dmS").value; st.solid = $("#dmR").value === "1"; st.pname = $("#dmN").value.trim();
-      st.tebal = $("#dmB").value === "1"; st.elogo = $("#dmEL").value === "1"; st.left = parseFloat($("#dmL").value) || 0; st.top = parseFloat($("#dmT").value) || 0;
+      st.tebal = $("#dmB").value === "1"; st.elogo = $("#dmEL").value === "1"; if ($("#dmQ")) st.qrq = $("#dmQ").value; st.left = parseFloat($("#dmL").value) || 0; st.top = parseFloat($("#dmT").value) || 0;
       st.tw = $("#dmW").value; st.tmethod = $("#dmM").value; st.dens = $("#dmDn").value; st.logo = $("#dmLg").value === "1";
       st.rows = [].map.call(R.querySelectorAll(".dx-r"), function (r) {
         var i = +r.getAttribute("data-i");

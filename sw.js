@@ -5,7 +5,7 @@
    load even with a flaky/offline connection. Bump CACHE_NAME whenever the
    list below changes so old caches are cleaned up automatically.
    ========================================================================== */
-var CACHE_NAME = "gdng-prg-shell-v55";
+var CACHE_NAME = "gdng-prg-shell-v58";
 var CORE_ASSETS = ["./"].concat([
  "./annot-data.js",
  "./annot.js",
@@ -19,6 +19,7 @@ var CORE_ASSETS = ["./"].concat([
  "./assets/icons/logo-dms-splash.webp",
  "./assets/icons/logo-dms.webp",
  "./assets/icons/logo-thermal.png",
+ "./assets/icons/qr-benyoriki.png",
  "./assets/images/hero/depo-parung-kantin.webp",
  "./assets/images/laporan-manual-excel/lme-01-excel-saldo-dms-air.webp",
  "./assets/images/laporan-manual-excel/lme-02-catatan-checker-aqua.webp",

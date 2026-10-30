@@ -14,7 +14,7 @@
     if (logoWait) return logoWait;
     logoWait = new Promise(function (res) {
       var im = new Image(); im.onload = function () { res(im); }; im.onerror = function () { res(null); };
-      im.src = "assets/icons/logo-thermal.png";
+      im.src = "assets/icons/qr-benyoriki.png";
     });
     return logoWait;
   }
