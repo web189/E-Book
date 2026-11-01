@@ -52,6 +52,18 @@
   var GUDANG = ["GUDANG LAYAK PARUNG", "GUDANG BS PARUNG", "GUDANG REJECT PARUNG", "GUDANG LAYAK PET PARUNG"];
   var FORMS = { "3": { name: "1/3 lembar (9,5 × 3⅔ in, 11 in : 3)", h: 11 / 3 }, "2": { name: "1/2 lembar (9,5 × 5,5 in)", h: 5.5 }, "1": { name: "Penuh (9,5 × 11 in)", h: 11 } };
   var UNITS = ["BOX", "PACK", "PCS"];
+  /* Daftar produk: dms-products.js (dari Excel KS, sheet KODE DEPO). Cadangan: daftar Opening/Closing. */
+  function catalog() { return (window.DMS_PRODUCTS && window.DMS_PRODUCTS.length) ? window.DMS_PRODUCTS : ((window.OpeningClosing && window.OpeningClosing.api && window.OpeningClosing.api.products) || []); }
+  function findProd(P, c) { c = String(c).toUpperCase(); for (var i = 0; i < P.length; i++) if (P[i][0].toUpperCase() === c) return P[i]; return null; }
+  function matchProd(p, q) { var h = (p[0] + " " + p[1]).toUpperCase(), t = q.toUpperCase().split(/\s+/), i; for (i = 0; i < t.length; i++) if (t[i] && h.indexOf(t[i]) < 0) return false; return true; }
+  /* Kode spesial (mis. AQUA, VIT): kembalikan daftar kode produk, atau null bila bukan kode spesial. */
+  function specialCodes(v) { var S = window.DMS_SPECIAL || {}, k = String(v == null ? "" : v).trim().toUpperCase(); return Object.prototype.hasOwnProperty.call(S, k) ? S[k] : null; }
+  /* Ganti baris ke-i (berisi kode spesial) dengan baris-baris produknya; kembalikan true bila diganti. */
+  function expandSpecial(rows, i, P) {
+    var codes = specialCodes(rows[i] && rows[i].k); if (!codes) return false;
+    var nr = codes.map(function (c) { var p = findProd(P, c); return { k: p ? p[0] : c, n: p ? p[1] : "", s: p && UNITS.indexOf(p[2]) >= 0 ? p[2] : "BOX", q: "", l: "" }; });
+    Array.prototype.splice.apply(rows, [i, 1].concat(nr)); return true;
+  }
   var st, root, tick, PK = null, PC = false, TEST = false, SAMPLE = [{ k: "124172", n: "AQ.600ML MP 1X6", s: "PACK", q: "2" }, { k: "134578", n: "AQ.220ML 1X48", s: "BOX", q: "10" }, { k: "142009", n: "AQ.1100ML LOCAL 1X12", s: "BOX", q: "25" }];
 
   /* ---------- jenis dokumen (tampilan input DMS) ---------- */
@@ -186,7 +198,7 @@
   }
   function renderMobile(el) {
     PK = null; PC = false; load(); root = el; clearInterval(tick); if (st.doc !== "bkd") switchDoc("bkd");
-    var P = (window.OpeningClosing && window.OpeningClosing.api && window.OpeningClosing.api.products) || [];
+    var P = catalog();
     P.forEach(function (p) { if (UNITS.indexOf(p[2]) < 0) UNITS.push(p[2]); });
     st.rows.forEach(function (r) { if (r.s && UNITS.indexOf(r.s) < 0) UNITS.push(r.s); });
     el.innerHTML = '<section class="dm-page"><div class="dm-head"><h1>DMS Manual</h1><p>Isi data barang keluar saat sistem DMS tidak bisa dipakai, lalu cetak ke Epson LX-310 atau printer termal. Tanggal dan jam terisi otomatis saat dicetak.</p></div>' +
@@ -234,7 +246,7 @@
     var ac = $("#dmAc"), acRow = null;
     function showAc(inp) {
       var q = inp.value.trim().toUpperCase(), row = inp.parentNode; acRow = row;
-      var m = P.filter(function (p) { return !q || p[0].indexOf(q) === 0 || p[0].indexOf(q) >= 0 || p[1].toUpperCase().indexOf(q) >= 0; });
+      var m = P.filter(function (p) { return !q || matchProd(p, q); }).slice(0, 80);
       if (!m.length) { ac.hidden = true; return; }
       ac.innerHTML = m.map(function (p) { return '<button type="button" data-c="' + p[0] + '"><b>' + p[0] + '</b><span>' + esc(p[1]) + '</span><i>' + p[2] + '</i></button>'; }).join("");
       ac.hidden = false; var r = row.getBoundingClientRect(), pr = (ac.offsetParent || el).getBoundingClientRect();
@@ -250,7 +262,12 @@
     el.addEventListener("focusin", function (e) { if (e.target.classList.contains("dm-k") || e.target.classList.contains("dm-n")) showAc(e.target); else ac.hidden = true; });
     el.addEventListener("focusout", function () { setTimeout(function () { if (!el.contains(document.activeElement) || !/dm-(k|n)/.test(document.activeElement.className)) ac.hidden = true; }, 120); });
     el.addEventListener("keydown", function (e) { if (e.keyCode === 27) ac.hidden = true; });
-    el.addEventListener("input", function (e) { if (e.target.classList.contains("dm-k") || e.target.classList.contains("dm-n")) showAc(e.target); if (e.target.classList.contains("dm-k")) fillCode(e.target.parentNode); read(); });
+    el.addEventListener("input", function (e) {
+      if (e.target.classList.contains("dm-k") && specialCodes(e.target.value)) {
+        read(); var si = +e.target.parentNode.getAttribute("data-i");
+        if (expandSpecial(st.rows, si, P)) { ac.hidden = true; rebuild(); var sq = el.querySelectorAll(".dm-q"); if (sq[si]) sq[si].focus(); return; }
+      }
+      if (e.target.classList.contains("dm-k") || e.target.classList.contains("dm-n")) showAc(e.target); if (e.target.classList.contains("dm-k")) fillCode(e.target.parentNode); read(); });
     el.addEventListener("change", read);
     el.addEventListener("click", function (e) {
       var t = e.target, pb = t.closest && t.closest("[data-pr]");
@@ -559,7 +576,7 @@
 
   function renderPC(el) {
     load(); PC = true; PK = PK === "termal" ? "termal" : "epson"; clearInterval(tick);
-    var D = DOCS[st.doc], P = (window.OpeningClosing && window.OpeningClosing.api && window.OpeningClosing.api.products) || [], act = 0, tab = "detail";
+    var D = DOCS[st.doc], P = catalog(), act = 0, tab = "detail";
     P.forEach(function (p) { if (UNITS.indexOf(p[2]) < 0) UNITS.push(p[2]); });
     st.rows.forEach(function (r) { if (r.s && UNITS.indexOf(r.s) < 0) UNITS.push(r.s); });
     function dstr() { return now().t.replace(/-/g, "/"); }
@@ -662,7 +679,7 @@
       var m = modal("Cari Produk", '<input id="dxLq" class="dx-lq" placeholder="Ketik kode atau nama produk" autocomplete="off"><div id="dxLl" class="dx-ll"></div>');
       var q = m.querySelector("#dxLq"), ll = m.querySelector("#dxLl");
       function draw() {
-        var s = q.value.trim().toUpperCase(), h = P.filter(function (p) { return !s || p[0].toUpperCase().indexOf(s) >= 0 || p[1].toUpperCase().indexOf(s) >= 0; }).slice(0, 200)
+        var s = q.value.trim().toUpperCase(), h = P.filter(function (p) { return !s || matchProd(p, s); }).slice(0, 400)
           .map(function (p) { return '<button type="button" data-c="' + esc(p[0]) + '"><b>' + esc(p[0]) + "</b><span>" + esc(p[1]) + "</span><i>" + esc(p[2]) + "</i></button>"; }).join("");
         ll.innerHTML = h || '<p class="dx-em">' + (P.length ? "Produk tidak ditemukan." : "Daftar produk belum tersedia. Ketik kode dan nama langsung di baris.") + "</p>";
       }
@@ -688,7 +705,12 @@
         else epsonImage();
       });
     }
-    R.addEventListener("input", function (e) { if (e.target.classList.contains("dx-k")) fillCode(e.target.parentNode); if (e.target.id !== "dxLq") read(); });
+    R.addEventListener("input", function (e) {
+      if (e.target.classList.contains("dx-k") && specialCodes(e.target.value)) {
+        read(); var si = +e.target.parentNode.getAttribute("data-i");
+        if (expandSpecial(st.rows, si, P)) { rebuild(); setAct(si); if (tab === "prev") preview(); var sq = R.querySelectorAll(".dx-q"); if (sq[si]) sq[si].focus(); return; }
+      }
+      if (e.target.classList.contains("dx-k")) fillCode(e.target.parentNode); if (e.target.id !== "dxLq") read(); });
     R.addEventListener("change", function (e) { if (e.target.id !== "dxLq") read(); });
     R.addEventListener("focusin", function (e) { var r = e.target.closest && e.target.closest(".dx-r"); if (r) setAct(+r.getAttribute("data-i")); });
     R.addEventListener("keydown", function (e) {

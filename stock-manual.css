@@ -6,3 +6,10 @@
 .sm-cv{display:block;width:100%;height:auto;border:1px solid var(--border);border-radius:6px;background:#fff;margin-bottom:6px}
 .sm-stick{position:sticky;top:calc(var(--header-h,62px) + 14px)}
 @media (max-width:900px){.sm-row{grid-template-columns:repeat(3,1fr) 62px}.sm-name{grid-column:1/-1}.sm-stick{position:static}}
+.sm-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}.sm-bar h2{margin:0}
+.sm-reload{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.sm-reload svg{flex:none}
+.sm-name{position:relative}
+.sm-x{position:absolute;top:-2px;right:0;width:28px;height:28px;border:1px solid var(--border);border-radius:50%;background:transparent;color:inherit;font-size:1.15rem;line-height:1;cursor:pointer;opacity:.7;padding:0}
+.sm-x:hover,.sm-x:focus-visible{opacity:1;background:rgba(220,38,38,.12);color:#dc2626;border-color:#dc2626}
+.sm-name{padding-right:34px}
+.sm-empty{padding:18px 0;opacity:.75;text-align:center}

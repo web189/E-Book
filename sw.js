@@ -5,7 +5,7 @@
    load even with a flaky/offline connection. Bump CACHE_NAME whenever the
    list below changes so old caches are cleaned up automatically.
    ========================================================================== */
-var CACHE_NAME = "gdng-prg-shell-v60";
+var CACHE_NAME = "gdng-prg-shell-v61";
 var CORE_ASSETS = ["./"].concat([
  "./annot-data.js",
  "./annot.js",
@@ -79,6 +79,7 @@ var CORE_ASSETS = ["./"].concat([
  "./assets/images/transaksi-produk-sgm/sgm2-08-point-agreement-sgm.webp",
  "./assets/images/transaksi-produk-sgm/sgm2-09-btb-supplier-sgm.webp",
  "./dms-manual.css",
+ "./dms-products.js",
  "./dms-manual.js",
  "./index.html",
  "./manifest.json",
