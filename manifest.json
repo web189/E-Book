@@ -46,6 +46,32 @@
   ],
   "shortcuts": [
     {
+      "name": "Daftar Materi",
+      "short_name": "Materi",
+      "description": "Buka semua materi",
+      "url": "./index.html#/materi",
+      "icons": [
+        {
+          "src": "assets/icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Opening & Closing",
+      "short_name": "Opening",
+      "description": "Website Opening & Closing",
+      "url": "./index.html#/opening-closing",
+      "icons": [
+        {
+          "src": "assets/icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
       "name": "DMS Manual",
       "short_name": "DMS Manual",
       "description": "Cetak bukti keluar barang",

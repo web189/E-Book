@@ -1,0 +1,113 @@
+/* ==========================================================================
+   PWA 2026 — tombol instal, panel instal, banner, status offline & update.
+   Ringan: hanya transform/opacity. Aman untuk Windows 7 / Chrome 109.
+   ========================================================================== */
+/* ---------- tombol instal (header) ---------- */
+.pwa-btn{
+  position:relative; display:inline-flex; align-items:center; gap:9px; height:42px; padding:0 16px 0 6px; flex:none;
+  border:0; border-radius:999px; cursor:pointer; color:#fff; font:800 .82rem/1 var(--font,'Plus Jakarta Sans',sans-serif); letter-spacing:.01em;
+  background:linear-gradient(135deg,#2F7BFF 0%,#1F6BFF 45%,#10B5E6 100%);
+  box-shadow:0 10px 20px -10px rgba(31,107,255,.95),0 0 0 1px rgba(255,255,255,.22) inset;
+  transition:transform .15s,box-shadow .15s;
+}
+.pwa-btn:hover{transform:translateY(-2px); box-shadow:0 14px 24px -10px rgba(31,107,255,1),0 0 0 1px rgba(255,255,255,.3) inset;}
+.pwa-btn:active{transform:scale(.96);}
+.pwa-btn::after{ /* cincin perhatian: 3x lalu berhenti */
+  content:""; position:absolute; left:0; top:0; right:0; bottom:0; border-radius:999px; pointer-events:none;
+  border:2px solid rgba(34,211,238,.9); opacity:0; animation:pwaRing 1.8s ease-out 1.2s 3;
+}
+@keyframes pwaRing{0%{transform:scale(1); opacity:.8;}100%{transform:scale(1.35,1.6); opacity:0;}}
+.pwa-ico{display:flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,.22); flex:none;}
+.pwa-ico svg{width:18px; height:18px; fill:none; stroke:#fff; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round;}
+.pwa-btn[hidden],.drawer-quick-btn[hidden]{display:none !important;}
+@media (max-width:1320px){ .pwa-btn{padding:0 6px; width:42px; justify-content:center;} .pwa-btn .pwa-txt{display:none;} }
+@media (max-width:860px){ .pwa-btn{height:38px; width:38px;} .pwa-ico{width:28px; height:28px;} }
+
+/* ---------- panel instal ---------- */
+.pw-ov{
+  position:fixed; left:0; top:0; right:0; bottom:0; z-index:9500; display:flex; align-items:center; justify-content:center; padding:18px;
+  background:rgba(4,10,28,.66); opacity:0; visibility:hidden; transition:opacity .2s,visibility .2s;
+}
+.pw-ov.show{opacity:1; visibility:visible;}
+.pw-sheet{
+  position:relative; width:100%; max-width:440px; max-height:92vh; overflow:auto; border-radius:28px; padding:28px 24px 22px;
+  background:var(--u-card,#fff); color:var(--text-primary,#0E1420); border:1px solid var(--u-line,#E2E8F4);
+  box-shadow:0 40px 80px -30px rgba(0,0,0,.8); transform:translateY(24px) scale(.98); transition:transform .22s ease; text-align:center;
+}
+.pw-ov.show .pw-sheet{transform:none;}
+.pw-x{position:absolute; right:14px; top:14px; width:36px; height:36px; border-radius:12px; border:1px solid var(--u-line,#E2E8F4); background:var(--u-card-2,#F7F9FE); color:inherit; cursor:pointer; font-size:1.1rem; line-height:1;}
+.pw-app{
+  width:84px; height:84px; margin:0 auto 14px; border-radius:24px; display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(160deg,#08183F,#0E3A8A); box-shadow:0 18px 30px -14px rgba(31,107,255,.9),0 0 0 4px rgba(34,211,238,.18);
+}
+.pw-app img{width:62px; height:62px; display:block;}
+.pw-sheet h2{margin:0 0 6px; font:800 1.35rem/1.2 var(--font-display,'Sora',sans-serif); letter-spacing:-.02em;}
+.pw-sheet p.pw-sub{margin:0 0 16px; color:var(--text-secondary,#5B667A); font-size:.92rem; line-height:1.55;}
+.pw-perks{display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:0 0 18px; padding:0; list-style:none;}
+.pw-perks li{padding:6px 12px; border-radius:999px; font-size:.76rem; font-weight:700; color:#1F6BFF; background:rgba(31,107,255,.1); border:1px solid rgba(31,107,255,.22);}
+html[data-theme="dark"] .pw-perks li{color:#8FC4FF;}
+.pw-go{
+  display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:15px 20px; border:0; border-radius:16px; cursor:pointer;
+  font:800 1rem/1 var(--font,sans-serif); color:#fff; background:linear-gradient(135deg,#2F7BFF,#1F6BFF 50%,#10B5E6);
+  box-shadow:0 16px 26px -14px rgba(31,107,255,1);
+}
+.pw-go svg{width:20px; height:20px; fill:none; stroke:#fff; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
+.pw-steps{text-align:left; margin:0 0 6px; padding:14px 16px 14px 36px; border-radius:16px; background:var(--u-card-2,#F7F9FE); border:1px solid var(--u-line,#E2E8F4); font-size:.88rem; line-height:1.6;}
+.pw-steps li{margin:0 0 6px;}
+.pw-steps li:last-child{margin:0;}
+.pw-note{margin:12px 0 0; font-size:.76rem; color:var(--text-faint,#8A93A6);}
+
+/* ---------- banner tawaran ---------- */
+.pw-banner{
+  position:fixed; z-index:9000; left:16px; bottom:20px; width:360px; max-width:calc(100vw - 32px); display:flex; align-items:center; gap:12px;
+  padding:12px 12px 12px 14px; border-radius:20px; background:var(--u-card,#fff); border:1px solid var(--u-line,#E2E8F4);
+  box-shadow:0 24px 44px -20px rgba(7,18,43,.7); color:var(--text-primary,#0E1420);
+  transform:translateY(30px); opacity:0; visibility:hidden; transition:transform .25s,opacity .25s,visibility .25s;
+}
+.pw-banner.show{transform:none; opacity:1; visibility:visible;}
+.pw-banner .pw-app{width:46px; height:46px; margin:0; border-radius:14px; box-shadow:none; flex:none;}
+.pw-banner .pw-app img{width:34px; height:34px;}
+.pw-banner b{display:block; font-size:.9rem; font-weight:800;}
+.pw-banner span.t{display:block; font-size:.76rem; color:var(--text-secondary,#5B667A); line-height:1.35;}
+.pw-banner .tx{flex:1; min-width:0;}
+.pw-banner .ac{display:flex; flex-direction:column; gap:4px; flex:none;}
+.pw-banner button{border:0; cursor:pointer; border-radius:10px; font:800 .78rem/1 var(--font,sans-serif); padding:9px 14px;}
+.pw-banner .ok{color:#fff; background:linear-gradient(135deg,#2F7BFF,#10B5E6);}
+.pw-banner .no{background:transparent; color:var(--text-faint,#8A93A6); padding:5px 14px;}
+@media (max-width:860px){ .pw-banner{left:14px; right:14px; width:auto; max-width:none; bottom:calc(96px + env(safe-area-inset-bottom,0px));} }
+
+/* ---------- status offline / update / toast ---------- */
+.pw-net{
+  position:fixed; z-index:9100; left:50%; top:76px; transform:translate(-50%,-14px); max-width:calc(100vw - 28px);
+  padding:9px 16px; border-radius:999px; font:700 .78rem/1.2 var(--font,sans-serif); text-align:center; color:#fff; opacity:0; visibility:hidden;
+  transition:transform .25s,opacity .25s,visibility .25s; box-shadow:0 14px 28px -14px rgba(0,0,0,.7);
+}
+.pw-net.show{opacity:1; visibility:visible; transform:translate(-50%,0);}
+.pw-net.off{background:linear-gradient(135deg,#B45309,#F59E0B); color:#1B1200;}
+.pw-net.on{background:linear-gradient(135deg,#047857,#10B981);}
+.pw-upd{
+  position:fixed; z-index:9200; left:50%; bottom:24px; transform:translate(-50%,30px); width:420px; max-width:calc(100vw - 28px);
+  display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:18px; color:#fff;
+  background:linear-gradient(135deg,#071A44,#0E3A8A); border:1px solid rgba(34,211,238,.4); box-shadow:0 24px 44px -18px rgba(0,0,0,.85);
+  opacity:0; visibility:hidden; transition:transform .25s,opacity .25s,visibility .25s;
+}
+.pw-upd.show{opacity:1; visibility:visible; transform:translate(-50%,0);}
+.pw-upd .pw-spin{flex:none; width:22px; height:22px; border-radius:50%; border:3px solid rgba(255,255,255,.25); border-top-color:#22D3EE; animation:pwSpin .8s linear infinite;}
+@keyframes pwSpin{to{transform:rotate(360deg);}}
+.pw-upd .t{flex:1; font-size:.84rem; font-weight:700; line-height:1.35;}
+.pw-upd .t small{display:block; font-weight:500; color:#A9C2EE; font-size:.74rem;}
+.pw-upd button{border:0; cursor:pointer; border-radius:10px; padding:9px 14px; font:800 .78rem/1 var(--font,sans-serif); color:#06122F; background:#fff;}
+@media (max-width:860px){ .pw-upd{bottom:calc(96px + env(safe-area-inset-bottom,0px));} }
+.pw-toast{
+  position:fixed; z-index:9300; left:50%; bottom:28px; transform:translate(-50%,24px); max-width:calc(100vw - 28px);
+  padding:12px 18px; border-radius:16px; font:700 .84rem/1.35 var(--font,sans-serif); color:#fff; background:#0B1D45; border:1px solid rgba(34,211,238,.4);
+  box-shadow:0 22px 40px -18px rgba(0,0,0,.8); opacity:0; visibility:hidden; transition:transform .25s,opacity .25s,visibility .25s;
+}
+.pw-toast.show{opacity:1; visibility:visible; transform:translate(-50%,0);}
+.pw-toast.ok{border-color:rgba(74,222,128,.55);}
+@media (max-width:860px){ .pw-toast{bottom:calc(98px + env(safe-area-inset-bottom,0px));} }
+@media (prefers-reduced-motion:reduce){ .pwa-btn::after{animation:none;} .pw-upd .pw-spin{animation:none;} }
+
+/* drawer HP: 4 tombol cepat dalam satu baris */
+.drawer-quick-row{display:grid !important; grid-template-columns:repeat(4,1fr); gap:8px;}
+.drawer-quick-row .drawer-quick-btn{min-width:0; padding-left:4px; padding-right:4px; font-size:.78rem;}

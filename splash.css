@@ -1,0 +1,100 @@
+/* ==========================================================================
+   SPLASH 2026 "Boot Sequence" — 4 detik, ringan (hanya transform/opacity,
+   tanpa blur/filter). Aman untuk Windows 7 / Chrome 109.
+   ========================================================================== */
+.sp{
+  position:fixed; left:0; top:0; right:0; bottom:0; z-index:9999; overflow:hidden;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+  color:#EAF3FF; font-family:'Plus Jakarta Sans','Segoe UI',Tahoma,Arial,sans-serif;
+  background-color:#030A1C;
+  background-image:
+    radial-gradient(620px 460px at 50% 36%,rgba(31,107,255,.40),transparent 70%),
+    radial-gradient(420px 300px at 85% 100%,rgba(34,211,238,.16),transparent 70%),
+    linear-gradient(180deg,#061433 0%,#030A1C 60%,#02060F 100%);
+  transition:opacity .35s ease,transform .35s ease;
+}
+.sp.sp-out{opacity:0; transform:scale(1.04); pointer-events:none;}
+/* grid statis */
+.sp-grid{
+  position:absolute; left:0; top:0; right:0; bottom:0; opacity:.5; pointer-events:none;
+  background-image:linear-gradient(rgba(120,180,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(120,180,255,.07) 1px,transparent 1px);
+  background-size:44px 44px; background-position:center center;
+}
+/* sudut HUD */
+.sp::before,.sp::after{content:""; position:absolute; width:44px; height:44px; pointer-events:none; opacity:.85;}
+.sp::before{left:16px; top:16px; border-left:2px solid #22D3EE; border-top:2px solid #22D3EE; border-top-left-radius:12px;}
+.sp::after{right:16px; bottom:16px; border-right:2px solid #22D3EE; border-bottom:2px solid #22D3EE; border-bottom-right-radius:12px;}
+.sp-tl,.sp-tr{position:absolute; top:24px; font:700 .66rem/1 Consolas,'Courier New',monospace; letter-spacing:.14em; color:rgba(150,200,255,.7); text-transform:uppercase;}
+.sp-tl{left:72px;} .sp-tr{right:72px;}
+.sp-tl i,.sp-tr i{font-style:normal; color:#22D3EE;}
+
+.sp-core{position:relative; width:272px; height:272px; margin-bottom:48px; flex:none;}
+.sp-core svg,.sp-ring{position:absolute; left:0; top:0; width:100%; height:100%;}
+.sp-track{fill:none; stroke:rgba(120,180,255,.16); stroke-width:3;}
+.sp-arc{fill:none; stroke:url(#spg); stroke-width:5; stroke-linecap:round;}
+.sp-ring-a{animation:spRot 22s linear infinite;}
+.sp-ring-b{animation:spRot 9s linear infinite reverse;}
+.sp-tick{fill:none; stroke:rgba(150,210,255,.55); stroke-width:6;}
+.sp-dash{fill:none; stroke:rgba(34,211,238,.35); stroke-width:1.2; stroke-dasharray:3 7;}
+.sp-orbit{position:absolute; left:0; top:0; width:100%; height:100%;}
+.sp-orbit b{position:absolute; left:50%; top:-1px; width:9px; height:9px; margin-left:-4.5px; border-radius:50%; background:#7FE3FF; box-shadow:0 0 12px 2px rgba(34,211,238,.9);}
+.sp-o1{animation:spRot 2.6s linear infinite;}
+.sp-o2{width:86%; height:86%; left:7%; top:7%; animation:spRot 4.4s linear infinite reverse;}
+.sp-o2 b{width:6px; height:6px; margin-left:-3px; background:#A5B4FF; box-shadow:0 0 10px 2px rgba(129,140,248,.9);}
+@keyframes spRot{to{transform:rotate(360deg);}}
+
+.sp-logo{
+  position:absolute; left:50%; top:50%; width:176px; height:176px; margin:-88px 0 0 -88px; border-radius:50%;
+  background:radial-gradient(circle,rgba(70,150,255,.42) 0%,rgba(20,60,140,.3) 55%,transparent 72%);
+  display:flex; align-items:center; justify-content:center;
+}
+.sp-logo img{width:150px; height:150px; display:block; animation:spPop .7s ease-out both;}
+@keyframes spPop{from{opacity:0; transform:scale(.8);}to{opacity:1; transform:none;}}
+.sp-pct{
+  position:absolute; left:0; right:0; bottom:-30px; text-align:center; font:800 .95rem/1 Consolas,'Courier New',monospace;
+  letter-spacing:.08em; color:#fff;
+}
+.sp-pct em{font-style:normal; color:#7FE3FF; font-size:.7rem; margin-left:2px;}
+
+.sp-brand{margin:0 0 6px; font:800 1.7rem/1.1 'Sora','Plus Jakarta Sans',sans-serif; letter-spacing:.2em; color:#fff; text-shadow:0 0 22px rgba(34,211,238,.45);}
+.sp-tag{margin:0 18px 20px; max-width:340px; font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; color:#8FB4EA; line-height:1.6;}
+
+.sp-steps{list-style:none; margin:0 0 18px; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:8px 12px; text-align:left;}
+.sp-steps li{
+  display:flex; align-items:center; gap:8px; font-size:.7rem; font-weight:600; color:rgba(150,185,235,.55);
+  padding:7px 11px; border-radius:10px; border:1px solid rgba(120,180,255,.14); background:rgba(255,255,255,.03);
+  transition:color .25s,border-color .25s,background-color .25s;
+}
+.sp-steps li::before{
+  content:""; flex:none; width:9px; height:9px; border-radius:50%; border:2px solid rgba(150,185,235,.45); box-sizing:border-box;
+}
+.sp-steps li.on{color:#CFE6FF; border-color:rgba(34,211,238,.4);}
+.sp-steps li.on::before{border-color:#22D3EE; background:rgba(34,211,238,.35);}
+.sp-steps li.done{color:#fff; border-color:rgba(34,211,238,.35); background:rgba(34,211,238,.08);}
+.sp-steps li.done::before{border-color:#22D3EE; background:#22D3EE; box-shadow:0 0 8px rgba(34,211,238,.8);}
+
+.sp-bar{width:280px; max-width:78vw; height:5px; border-radius:5px; background:rgba(255,255,255,.1); overflow:hidden; margin-bottom:20px;}
+.sp-bar i{display:block; width:100%; height:100%; border-radius:5px; transform-origin:0 50%; transform:scaleX(0); background:linear-gradient(90deg,#1F6BFF,#22D3EE,#8F7BFF); box-shadow:0 0 12px rgba(34,211,238,.8);}
+
+.sp-foot{position:absolute; left:0; right:0; bottom:26px; font-size:.66rem; letter-spacing:.16em; text-transform:uppercase; color:rgba(180,210,255,.6);}
+.sp-foot b{color:#7FE3FF; font-weight:700;}
+.sp-net{display:inline-block; margin-right:10px; padding:3px 9px; border-radius:999px; border:1px solid rgba(74,222,128,.45); color:#86EFAC; font-weight:700;}
+.sp-net.off{border-color:rgba(251,191,36,.5); color:#FCD34D;}
+
+@media (max-width:420px){
+  .sp-core{width:236px; height:236px; margin-bottom:44px;}
+  .sp-logo{width:150px; height:150px; margin:-75px 0 0 -75px;}
+  .sp-logo img{width:128px; height:128px;}
+  .sp-brand{font-size:1.4rem; letter-spacing:.16em;}
+  .sp-tl{left:66px;} .sp-tr{right:66px;}
+}
+@media (max-height:640px){
+  .sp-core{width:190px; height:190px; margin-bottom:40px;}
+  .sp-logo{width:108px; height:108px; margin:-54px 0 0 -54px;}
+  .sp-logo img{width:92px; height:92px;}
+  .sp-steps{display:none;}
+}
+@media (prefers-reduced-motion:reduce){
+  .sp-ring-a,.sp-ring-b,.sp-o1,.sp-o2{animation:none;}
+  .sp-logo img{animation:none;}
+}

@@ -30,6 +30,7 @@
 <link rel="icon" type="image/png" href="assets/icons/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
 <link rel="stylesheet" href="vendor/fonts.css">
+<link rel="stylesheet" href="splash.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="pc.css" media="(min-width:961px)">
 <link rel="stylesheet" href="opening.css">
@@ -38,25 +39,38 @@
 <link rel="stylesheet" href="modern.css">
 <link rel="stylesheet" href="dms-manual.css">
 <link rel="stylesheet" href="stock-manual.css">
+<link rel="stylesheet" href="ui26.css">
+<link rel="stylesheet" href="pwa.css">
 </head>
 <body>
 
-<!-- ============ LOADING SCREEN (splash, ~5s) ============ -->
-<div id="loadingScreen" class="loading-screen" role="status" aria-label="Memuat situs">
-  <span class="loading-glow" aria-hidden="true"></span>
-  <span class="loading-grid" aria-hidden="true"></span>
-  <div class="loading-inner">
-    <div class="loading-logo-ring">
-      <span class="loading-logo-ping" aria-hidden="true"></span>
-      <img src="assets/icons/logo-dms-splash.webp" alt="" class="loading-logo">
-    </div>
-    <p class="loading-brand">DEPO PARUNG</p>
-    <p class="loading-tagline">Modul Sistem Database Centralized Real-Time</p>
-    <p class="loading-status" id="loadingStatus" aria-live="polite"></p>
-    <div class="loading-meter"><div class="loading-bar"><span></span></div><b class="loading-pct" id="loadingPct">0%</b></div>
+<!-- ============ SPLASH 2026 (4 detik) ============ -->
+<div id="spl" class="sp" role="status" aria-label="Memuat situs">
+  <span class="sp-grid" aria-hidden="true"></span>
+  <span class="sp-tl" aria-hidden="true">SYS<i>://</i>DMS-PRG</span>
+  <span class="sp-tr" aria-hidden="true">v.07 <i>&bull;</i> 2026</span>
+  <div class="sp-core">
+    <svg viewBox="0 0 272 272" aria-hidden="true">
+      <defs><linearGradient id="spg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22D3EE"/><stop offset=".55" stop-color="#3B8BFF"/><stop offset="1" stop-color="#8F7BFF"/></linearGradient></defs>
+      <circle class="sp-track" cx="136" cy="136" r="118"/>
+      <circle class="sp-arc" cx="136" cy="136" r="118" transform="rotate(-90 136 136)"/>
+    </svg>
+    <div class="sp-ring sp-ring-a"><svg viewBox="0 0 272 272" aria-hidden="true"><circle class="sp-tick" cx="136" cy="136" r="130" stroke-dasharray="1.5 26"/></svg></div>
+    <div class="sp-ring sp-ring-b"><svg viewBox="0 0 272 272" aria-hidden="true"><circle class="sp-dash" cx="136" cy="136" r="100"/></svg></div>
+    <div class="sp-orbit sp-o1"><b></b></div>
+    <div class="sp-orbit sp-o2"><b></b></div>
+    <div class="sp-logo"><img src="assets/icons/logo-dms-splash.webp" alt=""></div>
+    <div class="sp-pct" id="spPct">0<em>%</em></div>
   </div>
-  <p class="loading-foot">Sistem Developer <b>benyoriki.com</b></p>
+  <h1 class="sp-brand">DEPO PARUNG</h1>
+  <p class="sp-tag">Modul Sistem Database Centralized <span style="white-space:nowrap">Real-Time</span></p>
+  <ul class="sp-steps">
+    <li>Inisialisasi sistem</li><li>Database DMS</li><li>Modul materi</li><li>Mode offline</li>
+  </ul>
+  <div class="sp-bar"><i></i></div>
+  <p class="sp-foot"><span class="sp-net" id="spNet">&#9679; Online</span>Sistem Developer <b>benyoriki.com</b></p>
 </div>
+<script src="splash.js"></script>
 
 <!-- ============ TOAST CONTAINER ============ -->
 <div id="toastRoot" class="toast-root" aria-live="polite" aria-atomic="true"></div>
@@ -160,8 +174,8 @@
     </nav>
 
     <div class="header-actions">
-      <button type="button" class="icon-btn" id="installAppBtn" aria-label="Instal aplikasi" title="Instal Aplikasi" hidden>
-        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3v12m0 0 4.5-4.5M12 15 7.5 10.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17.5V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+      <button type="button" class="pwa-btn" id="installAppBtn" aria-label="Pasang aplikasi di HP atau Windows" title="Pasang aplikasi (HP &amp; Windows)">
+        <span class="pwa-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2.6"/><path d="M8.5 20h7M12 16v4"/><path d="M12 6.6v5M12 11.8 9.9 9.7M12 11.8l2.1-2.1"/></svg></span><span class="pwa-txt">Pasang Aplikasi</span>
       </button>
       <button type="button" class="icon-btn" id="themeToggle" aria-label="Ganti mode gelap/terang" title="Mode gelap/terang">
         <svg class="icon-sun" viewBox="0 0 24 24" width="19" height="19"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7" fill="none"/><g stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></g></svg>
@@ -186,6 +200,10 @@
       <button type="button" class="drawer-quick-btn" id="openSearchBtnMobile" aria-label="Pencarian">
         <svg viewBox="0 0 24 24" width="19" height="19"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M20 20l-3.4-3.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         <span>Cari</span>
+      </button>
+      <button type="button" class="drawer-quick-btn" id="installAppBtnMobile" aria-label="Pasang aplikasi">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2.6"/><path d="M8.5 20h7M12 16v4"/><path d="M12 6.6v5M12 11.8 9.9 9.7M12 11.8l2.1-2.1"/></svg>
+        <span>Pasang</span>
       </button>
       <button type="button" class="drawer-quick-btn" id="themeToggleMobile" aria-label="Ganti mode gelap/terang">
         <svg class="icon-sun" viewBox="0 0 24 24" width="19" height="19"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7" fill="none"/><g stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></g></svg>
@@ -286,6 +304,6 @@
 <script src="annot.js"></script>
 <script src="mobilebar.js"></script>
 <script src="modern.js"></script>
-<script>setTimeout(function(){var e=document.getElementById("loadingScreen");if(e){e.classList.add("loading-hide");document.documentElement.classList.remove("is-loading");setTimeout(function(){if(e.parentNode)e.parentNode.removeChild(e);},700);}},7500);</script>
+<script src="pwa.js"></script>
 </body>
 </html>

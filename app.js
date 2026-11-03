@@ -1266,7 +1266,7 @@
         '<div class="hero-inner">' +
           '<div>' +
             '<a href="https://benyoriki.com/" target="_blank" rel="noopener noreferrer" class="hero-eyebrow">Sistem Developer benyoriki.com</a>' +
-            '<h1 class="hero-title">Modul Sistem<span class="line2">Database Centralized Real-Time</span></h1>' +
+            '<h1 class="hero-title">Modul Sistem<span class="line2">Database Centralized <span class="nw">Real-Time</span></span></h1>' +
             '<p class="hero-sub">Modul digital dan sistem administrasi, dapat diakses kapan saja dari HP, tablet, maupun komputer.</p>' +
             '<div class="hero-actions">' +
               '<a href="#/materi" class="btn btn-primary">Mulai Membaca</a>' +
@@ -1347,7 +1347,7 @@
     var heroInner = document.querySelector(".hero-inner");
     var materiSection = document.querySelector(".materi-pilihan-section");
     if (!heroVisual || !heroInner || !materiSection) return; // not on the home page
-    var isMobile = HERO_MOBILE_MQ ? HERO_MOBILE_MQ.matches : window.innerWidth <= 860;
+    var isMobile = false; // UI26: foto hero tetap di dalam hero pada semua ukuran layar
     if (isMobile) {
       if (heroVisual.previousElementSibling !== materiSection) {
         materiSection.insertAdjacentElement("afterend", heroVisual);
@@ -2464,6 +2464,7 @@
   // Browsers without install support (e.g. Safari) simply never show the
   // button — the site still works perfectly as a normal page there.
   function initPWA() {
+    return; // UI26: pendaftaran SW, update otomatis & tombol instal dipindah ke pwa.js
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", function () {
         navigator.serviceWorker.register("sw.js").catch(function () { /* offline caching just won't be available */ });
@@ -2497,7 +2498,7 @@
   function initLoadingScreen() {
     var screen = document.getElementById("loadingScreen");
     if (!screen) return;
-    var MIN_DISPLAY_MS = 5000;
+    var MIN_DISPLAY_MS = 2400;
     var pctEl = document.getElementById("loadingPct");
     var t0 = Date.now();
     var pctTimer = setInterval(function () {
