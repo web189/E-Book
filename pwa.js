@@ -119,7 +119,7 @@
   /* ========================================================================
      4) TOMBOL & PANEL INSTAL
      ======================================================================== */
-  var deferred = null, installed = false, sheet = null, banner = null;
+  var deferred = win.__pwaDeferred || null, installed = !!win.__pwaInstalled, sheet = null, banner = null;
   var ua = nav.userAgent || "";
   var IOS = /iPad|iPhone|iPod/.test(ua) || (nav.platform === "MacIntel" && nav.maxTouchPoints > 1);
   var ANDROID = /Android/.test(ua), FIREFOX = /Firefox/.test(ua), WIN7 = /Windows NT 6\.1/.test(ua);
@@ -166,14 +166,24 @@
   }
   function closeSheet() { if (sheet) sheet.className = "pw-ov"; }
   function nativeInstall() {
-    if (!deferred) { openSheet(); return; }
-    var d = deferred; deferred = null;
-    try {
-      d.prompt();
-      d.userChoice.then(function (c) { if (c && c.outcome === "accepted") { installed = true; refreshBtns(); } }).catch(noop);
-    } catch (e) { openSheet(); }
+    var d = deferred || win.__pwaDeferred;
+    if (!d) { openSheet(); return; }
+    deferred = null; win.__pwaDeferred = null;       // event hanya boleh dipakai sekali
+    var res;
+    try { res = d.prompt(); } catch (e) { openSheet(); return; }
+    // beberapa browser menolak prompt() -> tampilkan cara manual agar tidak buntu
+    if (res && typeof res.catch === "function") res.catch(function () { openSheet(); });
+    if (d.userChoice && d.userChoice.then) {
+      d.userChoice.then(function (c) {
+        if (c && c.outcome === "accepted") { installed = true; refreshBtns(); toast("Memasang aplikasi…", "ok", 3200); }
+      }).catch(noop);
+    }
   }
-  function onInstallClick() { hideBanner(true); if (deferred) nativeInstall(); else openSheet(); }
+  function onInstallClick(ev) {
+    if (ev && ev.preventDefault) ev.preventDefault();
+    hideBanner(true);
+    if (deferred || win.__pwaDeferred) nativeInstall(); else openSheet();   // prompt() harus dipanggil langsung di dalam klik
+  }
 
   function hideBanner(remember) {
     if (banner) banner.className = "pw-banner";
@@ -197,11 +207,13 @@
 
   function setupInstall() {
     win.addEventListener("beforeinstallprompt", function (e) {
-      e.preventDefault(); deferred = e; refreshBtns();
+      e.preventDefault(); deferred = e; win.__pwaDeferred = e; refreshBtns();
       setTimeout(maybeBanner, 5200);          // setelah splash selesai
     });
+    win.addEventListener("pwa-ready", function () { deferred = win.__pwaDeferred; });
+    if (deferred) setTimeout(maybeBanner, 5200);
     win.addEventListener("appinstalled", function () {
-      installed = true; deferred = null; refreshBtns(); hideBanner(false); closeSheet();
+      installed = true; deferred = null; win.__pwaDeferred = null; refreshBtns(); hideBanner(false); closeSheet();
       toast("Aplikasi berhasil dipasang ✓", "ok", 4200);
     });
     var list = btns();

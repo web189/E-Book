@@ -40,10 +40,6 @@
     "business",
     "productivity"
   ],
-  "display_override": [
-    "standalone",
-    "minimal-ui"
-  ],
   "shortcuts": [
     {
       "name": "Daftar Materi",
@@ -84,5 +80,6 @@
         }
       ]
     }
-  ]
+  ],
+  "prefer_related_applications": false
 }
