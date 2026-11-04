@@ -8,7 +8,7 @@
    • Gambar & font memakai cache-first (hemat kuota, cepat).
    Naikkan VERSION bila ingin memaksa semua perangkat membuang cache lama.
    ========================================================================== */
-var VERSION = "2026.11.03-b";
+var VERSION = "2026.11.04-a";
 var SHELL = "lp-shell-" + VERSION;
 var MEDIA = "lp-media-v1";
 
