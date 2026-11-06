@@ -19,3 +19,10 @@ hanya transform/opacity saat hover. Untuk kembali ke tampilan lama: hapus baris 
              halaman memuat ulang sendiri (menunggu bila pengguna sedang mengetik).
 - Cara merilis update: cukup upload file baru ke GitHub. Tidak perlu mengubah nomor versi.
   (Ubah VERSION di sw.js hanya bila ingin memaksa semua perangkat membuang cache lama.)
+
+## UI27 "Papan Gudang" (5 Nov 2026)
+- Berkas baru `ui27.css` (dimuat setelah ui26.css). Tidak ada JS/HTML materi yang diubah. Splash tetap 4 detik.
+- Hero: judul dua ukuran, tombol utama kuning-keselamatan, kisi denah gudang, label putih melayang, angka ringkas tanpa kotak.
+- Panel keunggulan jadi satu panel bersekat; kartu materi pakai garis warna + nomor besar; nav memakai garis bawah aktif.
+- Tetap ringan: tanpa blur/backdrop-filter/animasi berulang. Kembali ke tampilan lama: hapus baris ui27.css di index.html.
+- sw.js: VERSION 2026.11.05-a + ui27.css masuk daftar cache offline.

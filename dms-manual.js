@@ -36,6 +36,7 @@
     "1011101010101100011010101",
     "1000001000101101111111010",
     "1111111010000110100000111"];
+  window.DMS_QRM = QRM;
   var QRP = { f: { mode: 4, hx: 3 }, s: { mode: 1, hx: 5 } }, QVY = 3;
   var LG = { col: 101, cache: {} };
   function logoData() {
@@ -196,23 +197,60 @@
       '<input class="dm-q" type="number" min="0" inputmode="numeric" placeholder="Jumlah" value="' + esc(r.q) + '" aria-label="Jumlah">' +
       '<button type="button" class="dm-del" data-del aria-label="Hapus baris">×</button></div>';
   }
+  /* ---------- tampilan HP: pilih jenis dokumen + isian menyesuaikan jenis ---------- */
+  var MPH = { nodok: "mis. 281-0083795", dokreq: "mis. NO PO 31569174", pengemudi: "mis. 281-R061 - ARDI", sj: "No. surat jalan", jasa: "Nama ekspedisi", ket: "mis. RIT 1 / REVINA" },
+    MXTRA = { jasa: 1, ref2: 1, ref3: 1, shift: 1, kuli: 1 }, MPAIR = { sj: "tglsj", shift: "kuli" }, MREQ = { gudang: 1, kendaraan: 1 };
+  function mFields(D) {
+    var seen = {}, all = [], main = [], more = [], gd = null, kt = null;
+    D.L.concat(D.R).forEach(function (f) { if (f.t === "cap" || f.k === "tgl" || f.k === "tipe" || seen[f.k]) return; seen[f.k] = 1; all.push(f); });
+    all.forEach(function (f) {
+      if (f.k === "gudang") gd = f; else if (f.k === "ket") kt = f; else if (MXTRA[f.k]) more.push(f); else main.push(f);
+    });
+    if (gd) main.unshift(gd); if (kt) main.push(kt);
+    return { main: main, more: more };
+  }
+  function mLabel(f) { return f.k === "gudang" ? "Nama gudang" : f.l; }
+  function mField(f, tglPair) {
+    var v = st[f.k] == null ? "" : st[f.k], a = ' data-f="' + f.k + '" id="dmf-' + f.k + '"', ph = ' placeholder="' + esc(MPH[f.k] || f.ph || "") + '"', opt = MREQ[f.k] || f.k === "party" ? "" : ' <i class="dm-opt">opsional</i>', t = f.t, inner, d;
+    if (t === "gudang") inner = '<select' + a + '>' + GUDANG.map(function (g) { return "<option" + (g === st.gudang ? " selected" : "") + ">" + g + "</option>"; }).join("") + "</select>";
+    else if (t === "area") inner = '<textarea' + a + ph + ' rows="2">' + esc(v) + "</textarea>";
+    else if (t === "date") { d = new Date(); inner = '<input' + a + ' type="date" value="' + esc(v || d.getFullYear() + "-" + two(d.getMonth() + 1) + "-" + two(d.getDate())) + '">'; }
+    else if (t === "num") inner = '<input' + a + ' type="number" min="0" inputmode="numeric" value="' + esc(v) + '">';
+    else inner = '<input' + a + ph + ' value="' + esc(v) + '" autocomplete="off"' + (f.k === "kendaraan" ? ' autocapitalize="characters"' : "") + ">";
+    return "<label>" + mLabel(f) + opt + inner + "</label>";
+  }
+  function mForm(D) {
+    var F = mFields(D), byK = {}, h = "";
+    D.L.concat(D.R).forEach(function (f) { byK[f.k] = f; });
+    function one(f) {
+      if (MPAIR[f.k] && byK[MPAIR[f.k]]) return '<div class="dm-two">' + mField(f) + mField(byK[MPAIR[f.k]]) + "</div>";
+      for (var k in MPAIR) if (MPAIR[k] === f.k && byK[k]) return "";
+      return mField(f);
+    }
+    h += F.main.map(one).join("");
+    if (F.more.length) h += '<details class="dm-more"' + (F.more.some(function (f) { return String(st[f.k] || "").replace(/^0$/, ""); }) ? " open" : "") + "><summary>Info tambahan <small>(" + F.more.map(function (f) { return f.l; }).join(", ") + ")</small></summary>" + F.more.map(one).join("") + "</details>";
+    return h;
+  }
   function renderMobile(el) {
-    PK = null; PC = false; load(); root = el; clearInterval(tick); if (st.doc !== "bkd") switchDoc("bkd");
-    var P = catalog();
+    PK = null; PC = false; load(); root = el; clearInterval(tick);
+    var P = catalog(), D = DOCS[st.doc] || DOCS.bkd, ep = st.printer === "epson";
     P.forEach(function (p) { if (UNITS.indexOf(p[2]) < 0) UNITS.push(p[2]); });
     st.rows.forEach(function (r) { if (r.s && UNITS.indexOf(r.s) < 0) UNITS.push(r.s); });
-    el.innerHTML = '<section class="dm-page"><div class="dm-head"><h1>DMS Manual</h1><p>Isi data barang keluar saat sistem DMS tidak bisa dipakai, lalu cetak ke Epson LX-310 atau printer termal. Tanggal dan jam terisi otomatis saat dicetak.</p></div>' +
-      '<div class="dm-pick" role="group" aria-label="Pilih printer"><button type="button" data-pr="epson" class="' + (st.printer === "epson" ? "on" : "") + '"><b>Epson LX-310</b><span>Form kertas 3–4 ply</span></button><button type="button" data-pr="termal" class="' + (st.printer === "termal" ? "on" : "") + '"><b>Printer termal</b><span>Struk 80 / 58 mm</span></button></div>' +
-      '<div class="dm-grid"><div class="dm-card"><h2>Isi form</h2>' +
-      '<label>Nama gudang<select id="dmG">' + GUDANG.map(function (g) { return "<option" + (g === st.gudang ? " selected" : "") + ">" + g + "</option>"; }).join("") + '</select></label>' +
-      '<label>Kendaraan<input id="dmV" placeholder="mis. D 9193 AE" value="' + esc(st.kendaraan) + '" autocomplete="off"></label>' +
-      '<label>Pengemudi (opsional)<input id="dmD" placeholder="mis. 281-R061 - ARDI" value="' + esc(st.pengemudi) + '" autocomplete="off"></label>' +
-      '<label>Keterangan<input id="dmK" placeholder="mis. RIT 1 / REVINA" value="' + esc(st.ket) + '" autocomplete="off"></label>' +
+    el.innerHTML = '<section class="dm-page"><div class="dm-head"><h1>DMS Manual</h1><p>Pilih jenis dokumen, isi data, lalu cetak. Tanggal dan jam terisi otomatis saat dicetak.</p></div>' +
+      '<h4 class="dm-sec"><span>1</span>Jenis dokumen</h4>' +
+      '<div class="dm-docs" role="tablist" aria-label="Pilih jenis dokumen">' + ORDER.map(function (id, n) {
+        var d = DOCS[id], out = d.dir === "KELUAR";
+        return '<button type="button" role="tab" aria-selected="' + (id === st.doc) + '" class="dm-doc ' + (out ? "out" : "in") + (id === st.doc ? " on" : "") + '" data-doc="' + id + '"><i>' + (n + 1) + '</i><b>' + d.n + '</b><em>' + (out ? "Keluar" : "Terima") + '</em></button>';
+      }).join("") + '</div><p class="dm-docs-s">' + D.s + '</p>' +
+      '<h4 class="dm-sec"><span>2</span>Printer</h4>' +
+      '<div class="dm-pick" role="group" aria-label="Pilih printer"><button type="button" data-pr="epson" class="' + (ep ? "on" : "") + '"><b>Epson LX-310</b><span>Form kertas 3–4 ply</span></button><button type="button" data-pr="termal" class="' + (ep ? "" : "on") + '"><b>Printer termal</b><span>Struk 80 / 58 mm</span></button></div>' +
+      '<h4 class="dm-sec"><span>3</span>Isi data</h4>' +
+      '<div class="dm-grid"><div class="dm-card"><h2>' + D.n + ' <small>' + D.dir.toLowerCase() + '</small></h2>' + mForm(D) +
       '<h3>Barang</h3><div id="dmRows">' + st.rows.map(rowHtml).join("") + '</div>' +
       '<div id="dmAc" class="dm-ac" hidden></div>' +
       '<div class="dm-actions"><button type="button" class="dm-btn" id="dmAdd">+ Tambah barang</button><button type="button" class="dm-btn dm-ghost" id="dmClear">Kosongkan</button></div>' +
-      '<details class="dm-set"' + (st.set ? " open" : "") + '><summary>Pengaturan ' + (st.printer === "epson" ? "Epson LX-310" : "printer termal") + '</summary>' +
-      (st.printer === "epson" ?
+      '<details class="dm-set"' + (st.set ? " open" : "") + '><summary>Pengaturan ' + (ep ? "Epson LX-310" : "printer termal") + '</summary>' +
+      (ep ?
       '<label>Ukuran form<select id="dmF">' + Object.keys(FORMS).map(function (k) { return '<option value="' + k + '"' + (k === st.form ? " selected" : "") + ">" + FORMS[k].name + "</option>"; }).join("") + '</select></label>' +
       '<div class="dm-two"><label>Posisi form di lembar<select id="dmS">' + ["1", "2", "3"].map(function (k) { return '<option value="' + k + '"' + (k === st.slot ? " selected" : "") + ">Form ke-" + k + "</option>"; }).join("") + '</select></label><label>Garis tabel<select id="dmR"><option value="1"' + (st.solid ? " selected" : "") + '>Solid (PC437)</option><option value="0"' + (st.solid ? "" : " selected") + '>Putus-putus (-)</option></select></label><label>Nama printer Windows<input id="dmN" value="' + esc(st.pname) + '" placeholder="kosong = printer default"></label><label>Tebal huruf<select id="dmB"><option value="1"' + (st.tebal ? " selected" : "") + '>Tebal (lebih lambat, mesin lebih keras)</option><option value="0"' + (st.tebal ? "" : " selected") + '>Normal (cepat, tenang, jelas)</option></select></label></div>' +
       '<div class="dm-two"><label>Geser kanan (mm)<input id="dmL" type="number" step="0.5" value="' + st.left + '"></label><label>Geser bawah (mm)<input id="dmT" type="number" step="0.5" value="' + st.top + '"></label></div>' +
@@ -222,9 +260,9 @@
       '<label>QR di struk<select id="dmLg"><option value="1"' + (st.logo ? " selected" : "") + '>Tampilkan QR</option><option value="0"' + (st.logo ? "" : " selected") + '>Tanpa QR</option></select></label>' +
       '<p class="dm-hint">Pasangkan printer dulu di Pengaturan Bluetooth HP (PIN 0000 atau 1234). Bila "Bluetooth langsung" tidak menemukan printer, pilih <b>Aplikasi RawBT</b>. Cetak buram? Naikkan kegelapan.</p>') +
       '</details>' +
-      '<button type="button" class="dm-btn dm-primary" id="dmPrint">' + (st.printer === "epson" ? "Cetak ke Epson LX-310 (huruf asli printer)" : "Cetak ke printer termal " + st.tw + " mm") + '</button><button type="button" class="dm-btn dm-test" id="' + (st.printer === "epson" ? "dmTest" : "dmSave") + '">' + (st.printer === "epson" ? "Cetak tes langsung (data contoh)" : "Simpan gambar struk") + '</button>' +
-      (st.printer !== "epson" ? '<p id="dmAgent" class="dm-hint dm-pnote">Siap mencetak.</p>' : '') + (st.printer === "epson" ? '<p id="dmAgent" class="dm-hint dm-pnote">Memeriksa agen cetak…</p><button type="button" class="dm-btn dm-test" id="dmDlg">Cetak lewat dialog Chrome (gambar, kurang mirip)</button><button type="button" class="dm-btn dm-test" data-raw="1">Simpan PDF form Epson</button>' : "") +
-      (st.printer === "epson" ? '<p class="dm-hint dm-pnote">Di dialog cetak pilih printer <b>EPSON LX-310</b>, <b>Margins: None</b>, <b>Scale: 100</b>. Cetak tanpa dialog: pakai pintasan dari <b>pasang-epson-win7.bat</b>.</p>' : '') + '</div>' +
+      '<button type="button" class="dm-btn dm-primary" id="dmPrint">' + (ep ? "Cetak " + D.n + " ke Epson LX-310" : "Cetak " + D.n + " ke termal " + st.tw + " mm") + '</button><button type="button" class="dm-btn dm-test" id="' + (ep ? "dmTest" : "dmSave") + '">' + (ep ? "Cetak tes langsung (data contoh)" : "Simpan gambar struk") + '</button>' +
+      (!ep ? '<p id="dmAgent" class="dm-hint dm-pnote">Siap mencetak.</p>' : '') + (ep ? '<p id="dmAgent" class="dm-hint dm-pnote">Memeriksa agen cetak…</p><button type="button" class="dm-btn dm-test" id="dmDlg">Cetak lewat dialog Chrome (gambar, kurang mirip)</button><button type="button" class="dm-btn dm-test" data-raw="1">Simpan PDF form Epson</button>' : "") +
+      (ep ? '<p class="dm-hint dm-pnote">Di dialog cetak pilih printer <b>EPSON LX-310</b>, <b>Margins: None</b>, <b>Scale: 100</b>. Cetak tanpa dialog: pakai pintasan dari <b>pasang-epson-win7.bat</b>.</p>' : '') + '</div>' +
       '<div class="dm-card"><h2>Pratinjau <small id="dmInfo"></small></h2><div id="dmPrev" class="dm-prev"></div></div></div></section>';
     function $(s) { return el.querySelector(s); }
     function fillCode(row) {
@@ -233,7 +271,11 @@
       if (p) { row.querySelector(".dm-n").value = p[1]; var s = row.querySelector(".dm-s"); if (UNITS.indexOf(p[2]) >= 0) s.value = p[2]; }
     }
     function read() {
-      st.gudang = $("#dmG").value; st.kendaraan = $("#dmV").value; st.pengemudi = $("#dmD").value; st.ket = $("#dmK").value; if ($("#dmS")) { st.solid = $("#dmR").value === "1"; st.pname = $("#dmN").value.trim(); st.slot = $("#dmS").value; st.tebal = $("#dmB").value === "1"; }
+      [].forEach.call(el.querySelectorAll("[data-f]"), function (f) {
+        var k = f.getAttribute("data-f"), v = f.value; if (k === "ket") v = v.replace(/\s*[\r\n]+\s*/g, " ");
+        st[k] = (k === "pengemudi" || k === "ket" || k === "kendaraan" || k === "gudang") ? v : v.trim();
+      });
+      if ($("#dmS")) { st.solid = $("#dmR").value === "1"; st.pname = $("#dmN").value.trim(); st.slot = $("#dmS").value; st.tebal = $("#dmB").value === "1"; }
       if ($("#dmF")) { st.form = $("#dmF").value; st.left = parseFloat($("#dmL").value) || 0; st.top = parseFloat($("#dmT").value) || 0; }
       if ($("#dmW")) { st.tw = $("#dmW").value; st.tmethod = $("#dmM").value; st.dens = $("#dmDn").value; st.logo = $("#dmLg").value === "1"; }
       st.set = !!(el.querySelector(".dm-set") && el.querySelector(".dm-set").open);
@@ -270,7 +312,8 @@
       if (e.target.classList.contains("dm-k") || e.target.classList.contains("dm-n")) showAc(e.target); if (e.target.classList.contains("dm-k")) fillCode(e.target.parentNode); read(); });
     el.addEventListener("change", read);
     el.addEventListener("click", function (e) {
-      var t = e.target, pb = t.closest && t.closest("[data-pr]");
+      var t = e.target, pb = t.closest && t.closest("[data-pr]"), db = t.closest && t.closest("[data-doc]");
+      if (db) { read(); var sy = window.pageYOffset; switchDoc(db.getAttribute("data-doc")); render(el); window.scrollTo(0, sy); return; }
       if (pb) { read(); st.printer = pb.getAttribute("data-pr"); save(); render(el); return; }
       if (t.id === "dmPrint") { read(); if (st.printer === "epson") rawSend(false); else tPrint(false); return; }
       if (t.id === "dmDlg") { read(); doPrint(false); return; }
@@ -406,7 +449,16 @@
   }
   /* ---------- printer termal: gambar struk (logo + huruf tajam) -> ESC/POS ---------- */
   var pseq = 0;
-  function tdata(test) { var D = DOCS[st.doc] || DOCS.bkd; return { title: D.t0, doc: D.n, nodok: st.nodok, party: st.party, gudang: st.gudang, kendaraan: st.kendaraan, pengemudi: st.pengemudi, ket: st.ket, items: test ? SAMPLE : items(), test: !!test, now: now() }; }
+  function tdata(test) {
+    var D = DOCS[st.doc] || DOCS.bkd, pl = "Pihak", ex = [], has = {}, rg = [["dokreq", "Dok. Req"], ["sj", "No. SJ"], ["tglsj", "Tgl SJ"], ["jasa", "Angkutan"], ["ref1", "Ref 1"], ["ref2", "Ref 2"], ["ref3", "Ref 3"], ["shift", "Shift"], ["kuli", "Jml Kuli"]];
+    D.L.concat(D.R).forEach(function (f) { has[f.k] = 1; if (f.k === "party") pl = f.l; });
+    if (!test) rg.forEach(function (r) {
+      var v = st[r[0]]; if (!has[r[0]] || v == null || String(v).trim() === "") return;
+      if ((r[0] === "shift" || r[0] === "kuli") && !parseFloat(v)) return;
+      ex.push([r[1], r[0] === "tglsj" ? fdate(v) : v]);
+    });
+    return { title: D.t0, doc: D.n, sub: D.n + " \u00b7 MANUAL", sig: D.dir === "KELUAR" ? ["Dibuat", "Diterima"] : ["Diserahkan", "Diterima"], nodok: test ? "" : st.nodok, party: test ? "" : st.party, partyLabel: pl, extra: ex, gudang: st.gudang, kendaraan: st.kendaraan, pengemudi: st.pengemudi, ket: st.ket, items: test ? SAMPLE : items(), test: !!test, now: now() };
+  }
   function tPreview(pv) {
     var seq = ++pseq;
     window.ThermalPrint.render(tdata(false), { tw: st.tw, logo: st.logo }).then(function (cv) {

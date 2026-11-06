@@ -20,11 +20,15 @@
   }
   function delay(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
-  /* ---------- susun & gambar struk ---------- */
+  /* ---------- susun & gambar struk ----------
+     Gaya struk minimarket (Indomaret/Alfamart): kepala ringkas, info dokumen rapat dua kolom,
+     tiap barang hanya 2 baris (nama / kode + jumlah), total tebal, tanda tangan, lalu QR kecil di kaki. */
   function layout(c, d, W, img, dry) {
-    var M = 8, IW = W - 2 * M, y = 4, logoY = -1;
-    function f(sz, b) { c.font = (b ? "bold " : "") + sz + "px " + FONT; }
+    var wide = W > 400, z = wide ? 1.18 : 1, M = wide ? 12 : 8, IW = W - 2 * M, y = 8, Q = window.DMS_QRM, mod = wide ? 6 : 5;
+    function s(n) { return Math.round(n * z); }
+    function f(sz, b) { c.font = (b ? "bold " : "") + s(sz) + "px " + FONT; }
     function put(t, x, yy, al) { if (dry) return; c.textAlign = al || "left"; c.fillText(t, x, yy); }
+    function tw(t) { return c.measureText(t).width; }
     function wrap(t, maxW) {
       var words = String(t).split(/\s+/), out = [], cur = "";
       words.forEach(function (w) {
@@ -40,85 +44,124 @@
       if (cur) out.push(cur);
       return out.length ? out : [""];
     }
-    function center(t, sz, b) { f(sz, b); put(t, W / 2, y, "center"); y += Math.round(sz * 1.3); }
-    function line(dash, th) {
-      if (!dry) { c.save(); c.lineWidth = th; c.setLineDash(dash); c.beginPath(); c.moveTo(M, y); c.lineTo(W - M, y); c.stroke(); c.restore(); }
-      y += th + 6;
+    function center(t, sz, b, gap) { f(sz, b); put(t, W / 2, y, "center"); y += Math.round(s(sz) * 1.28) + (gap || 0); }
+    function rule(dash, th, gap) {
+      if (!dry) { c.save(); c.lineWidth = th; c.setLineDash(dash); c.beginPath(); c.moveTo(M, y + th / 2); c.lineTo(W - M, y + th / 2); c.stroke(); c.restore(); }
+      y += th + (gap == null ? 6 : gap);
     }
-    function bar(left, right, sz, al) {
-      var h = Math.round(sz * 1.75);
+    function rr(x, yy, w, h, r) { c.beginPath(); if (c.roundRect) c.roundRect(x, yy, w, h, r); else c.rect(x, yy, w, h); c.fill(); }
+    function pill(l, r, sz) {
+      var h = Math.round(s(sz) * 1.8), ty = y + Math.round((h - s(sz)) / 2) - 1;
       if (!dry) {
-        c.fillStyle = "#000"; c.fillRect(M, y, IW, h); c.fillStyle = "#fff"; f(sz, true);
-        if (al === "center") put(left, W / 2, y + Math.round((h - sz) / 2), "center");
-        else { put(left, M + 10, y + Math.round((h - sz) / 2)); put(right, W - M - 10, y + Math.round((h - sz) / 2), "right"); }
+        c.fillStyle = "#000"; rr(M, y, IW, h, Math.round(h / 3)); c.fillStyle = "#fff"; f(sz, true);
+        if (r == null) put(l, W / 2, ty, "center"); else { put(l, M + 12, ty); put(r, W - M - 12, ty, "right"); }
         c.fillStyle = "#000";
       }
       y += h + 8;
     }
-    function kv(k, v) {
-      if (!v) return;
-      var lw = 108, lines; f(21, true); lines = wrap(v, IW - lw - 14);
-      f(21, false); put(k, M, y);
-      f(21, true); lines.forEach(function (ln, i) { if (!i) put(":", M + lw, y); put(ln, M + lw + 14, y); y += 27; });
-    }
 
-    if (img) { logoY = y; y += img.height + 4; }
-    center("DEPO PARUNG", 25, true); y += 4;
-    bar(d.title || "BUKTI KELUAR BARANG", "", 22, "center");
-    center(d.test ? "( TES CETAK )" : "( MANUAL )", 17, false); y += 2;
-    line([7, 4], 2);
-    if (d.doc) kv("Jenis", d.doc);
-    if (d.nodok) kv("No. Dok", String(d.nodok).toUpperCase());
-    kv("Gudang", d.gudang);
-    if (d.party) kv("Pihak", String(d.party).toUpperCase());
-    kv("Tanggal", d.now.t + "  " + d.now.j);
-    kv("Kendaraan", (d.kendaraan || "").toUpperCase());
-    kv("Pengemudi", (d.pengemudi || "").toUpperCase());
-    kv("Ket", (d.ket || "").toUpperCase());
-    y += 4;
-    f(17, true); put("NO", M, y); put("NAMA BARANG", M + 34, y); put("JUMLAH", W - M, y, "right"); y += 22;
-    line([], 2);
-    var tot = 0, tx = M + 34, qw = 104, nameW = W - M - qw - tx - 4;
+    /* kepala */
+    center("DEPO PARUNG", 27, true, 4);
+    pill(d.title || "BUKTI KELUAR BARANG", null, 20);
+    center(d.test ? "( TES CETAK )" : String(d.sub || "( MANUAL )").toUpperCase(), 15, false, 2);
+    rule([7, 4], 2, 8);
+
+    /* baris atas: nomor dokumen kiri, tanggal + jam kanan */
+    var nd = d.nodok ? "No. " + String(d.nodok).toUpperCase() : "", dt = d.now.t + "  " + d.now.j, wn, wd;
+    f(21, true); wn = nd ? tw(nd) : 0; f(16, true); wd = tw(dt);
+    if (nd && wn + wd + 14 > IW) { f(21, true); put(nd, M, y); y += s(28); f(16, true); put(dt, M, y); y += s(24); }
+    else if (nd) { f(21, true); put(nd, M, y); f(16, true); put(dt, W - M, y + s(4), "right"); y += s(28); }
+    else { f(19, true); put(dt, M, y); y += s(26); }
+    y += 8;
+
+    /* info dokumen: label kecil di atas, isi tebal di bawah; isian pendek disandingkan dua kolom */
+    var cells = [], half = Math.floor((IW - 10) / 2), ci = 0;
+    function add(k, v, full) { if (v != null && String(v).trim() !== "") cells.push({ k: k, v: String(v).toUpperCase(), full: full }); }
+    add("Gudang", d.gudang, 1);
+    if (d.party) add(d.partyLabel || "Pihak", d.party, 1);
+    add("Kendaraan", d.kendaraan); add("Pengemudi", d.pengemudi);
+    (d.extra || []).forEach(function (e) { add(e[0], e[1]); });
+    add("Keterangan", d.ket, 1);
+    function cell(cl, x, w) {
+      var lines, h;
+      if ("letterSpacing" in c) c.letterSpacing = "1px";
+      f(12, true); put(cl.k.toUpperCase(), x, y);
+      if ("letterSpacing" in c) c.letterSpacing = "0px";
+      f(19, true); lines = wrap(cl.v, w);
+      lines.forEach(function (ln, i) { put(ln, x, y + s(15) + i * s(23)); });
+      return s(15) + lines.length * s(23);
+    }
+    while (ci < cells.length) {
+      var ca = cells[ci], cb = cells[ci + 1], pair = false, ha;
+      if (!ca.full && cb && !cb.full) { f(19, true); pair = tw(ca.v) <= half && tw(cb.v) <= half; }
+      if (pair) { ha = cell(ca, M, half); y += Math.max(ha, cell(cb, M + half + 10, half)) + s(7); ci += 2; }
+      else { y += cell(ca, M, IW) + s(7); ci++; }
+    }
+    y += 2;
+
+    /* daftar barang */
+    if ("letterSpacing" in c) c.letterSpacing = "1px";
+    f(12, true); put("BARANG", M, y); put("JUMLAH", W - M, y, "right"); y += s(17);
+    if ("letterSpacing" in c) c.letterSpacing = "0px";
+    rule([], 2, 8);
+    var ix = M + s(32), nameW = W - M - ix, cr = s(11);
     d.items.forEach(function (r, i) {
-      var st0 = y, lines;
-      f(21, true); lines = wrap(String(r.n || "").toUpperCase(), nameW);
-      put(String(i + 1), M, y);
-      lines.forEach(function (ln) { put(ln, tx, y); y += 26; });
-      f(17, false); put("Kode " + String(r.k || "").toUpperCase(), tx, y); y += 22;
-      f(31, true); put(String(r.q), W - M, st0, "right");
-      f(18, true); put(String(r.s || "").toUpperCase(), W - M, st0 + 36, "right");
-      if (y < st0 + 60) y = st0 + 60;
-      y += 4; line([2, 4], 1);
-      tot += parseFloat(r.q) || 0;
+      var lines, unit = String(r.s || "").toUpperCase(), q = String(r.q), uw, code = "Kode " + String(r.k || "").toUpperCase() + (r.l ? "  Lot " + String(r.l).toUpperCase() : "");
+      if (!dry) {
+        c.fillStyle = "#000"; c.beginPath(); c.arc(M + cr, y + cr + 1, cr, 0, Math.PI * 2); c.fill();
+        c.fillStyle = "#fff"; f(i > 8 ? 11 : 13, true); c.textAlign = "center"; c.fillText(String(i + 1), M + cr, y + cr + 1 - Math.round(s(i > 8 ? 11 : 13) * 0.5)); c.fillStyle = "#000";
+      }
+      f(20, true); lines = wrap(String(r.n || r.k || "").toUpperCase(), nameW);
+      lines.forEach(function (ln) { put(ln, ix, y); y += s(25); });
+      f(16, true); uw = tw(unit);
+      f(15, false); put(code, ix, y + s(5));
+      f(16, true); put(unit, W - M, y + s(6), "right");
+      f(24, true); put(q, W - M - uw - s(7), y, "right");
+      y += s(30);
+      if (i < d.items.length - 1) rule([2, 4], 1, 8);
     });
-    if (!d.items.length) { f(20, false); put("(belum ada barang)", W / 2, y, "center"); y += 30; }
-    y += 4;
-    bar("TOTAL " + d.items.length + " ITEM", String(tot), 23, "lr");
+    if (!d.items.length) { f(18, false); put("(belum ada barang)", W / 2, y, "center"); y += s(30); }
+    y += 4; rule([], 2, 6);
+
     if (d.test) {
       y += 4; if (!dry) c.fillRect(0, y, W, 14); y += 22;
       f(16, false); put("Teks kecil 16px: ABCDEFGHIJ 012345", M, y); y += 22;
       f(20, true); put("Tebal 20px: ABCDEFGH 01234", M, y); y += 28;
       if (!dry) { c.fillRect(0, y, 3, 24); c.fillRect(W - 3, y, 3, 24); } y += 32;
     }
-    y += 10;
-    f(19, false); put("Dibuat", W * 0.25, y, "center"); put("Diterima", W * 0.75, y, "center"); y += 66;
-    if (!dry) { c.fillRect(M + 8, y, W / 2 - M - 34, 2); c.fillRect(W / 2 + 26, y, W / 2 - M - 34, 2); }
-    y += 22;
-    line([7, 4], 2); y += 4;
+
+    /* tanda tangan */
+    var sg = d.sig || ["Dibuat", "Diterima"];
+    y += s(8); f(16, false); put(sg[0], W * 0.25, y, "center"); put(sg[1], W * 0.75, y, "center"); y += s(52);
+    if (!dry) { c.fillRect(M + 8, y, W / 2 - M - 30, 2); c.fillRect(W / 2 + 22, y, W / 2 - M - 30, 2); }
+    y += s(16);
+    rule([7, 4], 2, 12);
+
+    /* kaki: QR kecil di kiri, kredit pengembang di kanan */
+    var fy = y, qrS = (d.qr !== false && ((Q && Q.length) || img)) ? ((Q && Q.length) || 25) * mod : 0, qx = M + 6, x0 = qrS ? qx + qrS + 14 : M, cx = (x0 + W - M) / 2, bh = s(36), th = s(40) + 6 + bh, ty = fy + Math.max(0, Math.round((qrS - th) / 2)), bw, avail = W - M - x0;
+    if (qrS && !dry) {
+      c.fillStyle = "#000";
+      if (Q && Q.length) {
+        Q.forEach(function (row, r) {
+          var col = 0, n = row.length, st;
+          while (col < n) { if (row.charAt(col) === "1") { st = col; while (col < n && row.charAt(col) === "1") col++; c.fillRect(qx + st * mod, fy + r * mod, (col - st) * mod, mod); } else col++; }
+        });
+      } else { c.imageSmoothingEnabled = false; c.drawImage(img, qx, fy, qrS, qrS); }
+    }
     if ("letterSpacing" in c) c.letterSpacing = "1px";
-    center("Sistem & Website Developer", 17, false); y += 2;
-    if ("letterSpacing" in c) c.letterSpacing = "2px";
-    f(25, true);
-    var bw = Math.min(IW, Math.ceil(c.measureText("benyoriki.com").width) + 40);
-    if (!dry) { c.save(); c.lineWidth = 3; c.strokeRect((W - bw) / 2, y, bw, 42); c.restore(); }
-    put("benyoriki.com", W / 2 + 1, y + 8, "center");
+    f(15, false); put("Sistem & Website", cx, ty, "center"); put("Developer", cx, ty + s(20), "center");
+    f(20, true);
+    bw = Math.min(avail, Math.ceil(tw("benyoriki.com")) + 26);
+    if (!dry) { c.save(); c.lineWidth = 2.5; c.strokeRect(Math.round(cx - bw / 2), ty + s(44), bw, bh); c.restore(); }
+    put("benyoriki.com", cx + 1, ty + s(44) + Math.round((bh - s(20)) / 2) - 1, "center");
     if ("letterSpacing" in c) c.letterSpacing = "0px";
-    y += 60;
-    return { h: y + 24, logoY: logoY };
+    y = fy + Math.max(qrS, th + s(44) - s(40) + 2) + 20;
+    return { h: y + 16 };
   }
 
   function draw(d, o, img) {
     var W = DOTS[o.tw] || 384, S = 2, big = document.createElement("canvas"), c, L, H, i, id, p, g, sm, sc;
+    d.qr = o.logo !== false;
     big.width = W * S; big.height = 200; c = big.getContext("2d");
     c.setTransform(S, 0, 0, S, 0, 0); c.textBaseline = "top";
     L = layout(c, d, W, img, true); H = Math.ceil(L.h);
@@ -126,7 +169,7 @@
     c.fillStyle = "#fff"; c.fillRect(0, 0, W * S, H * S);
     c.setTransform(S, 0, 0, S, 0, 0); c.textBaseline = "top"; c.fillStyle = "#000"; c.strokeStyle = "#000";
     layout(c, d, W, img, false);
-    if (o.hi) { if (img && L.logoY >= 0) { c.imageSmoothingEnabled = false; c.drawImage(img, Math.round((W - img.width) / 2), L.logoY); } return big; }
+    if (o.hi) return big;
     /* turunkan 2x -> 1x lalu hitam-putihkan: tepi huruf mulus tapi tidak abu-abu */
     sm = document.createElement("canvas"); sm.width = W; sm.height = H; sc = sm.getContext("2d");
     sc.fillStyle = "#fff"; sc.fillRect(0, 0, W, H);
@@ -135,12 +178,11 @@
     id = sc.getImageData(0, 0, W, H); p = id.data;
     for (i = 0; i < p.length; i += 4) { g = p[i] * 0.299 + p[i + 1] * 0.587 + p[i + 2] * 0.114; p[i] = p[i + 1] = p[i + 2] = g < 175 ? 0 : 255; p[i + 3] = 255; }
     sc.putImageData(id, 0, 0);
-    if (img && L.logoY >= 0) { sc.imageSmoothingEnabled = false; sc.drawImage(img, Math.round((W - img.width) / 2), L.logoY); }
     return sm;
   }
   function render(d, o) {
     o = o || {};
-    return (o.logo === false ? Promise.resolve(null) : loadLogo()).then(function (img) {
+    return ((o.logo === false || (window.DMS_QRM && window.DMS_QRM.length)) ? Promise.resolve(null) : loadLogo()).then(function (img) {
       return (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(function () { return draw(d, o, img); });
     });
   }
