@@ -8,7 +8,7 @@
    • Gambar & font memakai cache-first (hemat kuota, cepat).
    Naikkan VERSION bila ingin memaksa semua perangkat membuang cache lama.
    ========================================================================== */
-var VERSION = "2026.11.06-a";
+var VERSION = "2026.11.11-a";
 var SHELL = "lp-shell-" + VERSION;
 var MEDIA = "lp-media-v1";
 
@@ -41,6 +41,7 @@ var CORE = [
   "./thermal-print.js",
   "./ui26.css",
   "./ui27.css",
+  "./ui30.css",
   "./assets/icons/apple-touch-icon.png",
   "./assets/icons/favicon-32.png",
   "./assets/icons/icon-192.png",

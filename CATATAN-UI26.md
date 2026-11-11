@@ -26,3 +26,12 @@ hanya transform/opacity saat hover. Untuk kembali ke tampilan lama: hapus baris 
 - Panel keunggulan jadi satu panel bersekat; kartu materi pakai garis warna + nomor besar; nav memakai garis bawah aktif.
 - Tetap ringan: tanpa blur/backdrop-filter/animasi berulang. Kembali ke tampilan lama: hapus baris ui27.css di index.html.
 - sw.js: VERSION 2026.11.05-a + ui27.css masuk daftar cache offline.
+
+## UI30 "Menara Kontrol Depo" (11 Nov 2026)
+- Berkas baru `ui30.css` (dimuat paling akhir di index.html). Tidak ada JS/materi yang diubah. Splash tetap 4 detik.
+- Header: bersih, nav teks polos + garis aktif, tombol Pasang datar (tanpa cincin berkedip), kredit benyoriki.com satu baris rapi.
+  Layar 861-1180px (termasuk "situs desktop" di HP) memakai menu laci supaya menu tidak terpotong/berdesakan.
+- Hero: judul lebih besar & tegas (2 baris di PC), bingkai foto bergaris, satu animasi masuk setelah splash (transform+opacity).
+- Kartu materi: isi sejajar dengan nomor modul, kartu terakhir mengisi sisa baris (tidak ada kotak kosong), mode gelap lebih kontras.
+- Aman Windows 7 / Chrome 109: tanpa blur/backdrop-filter, :has, color-mix, nesting. Kembali ke tampilan lama: hapus baris ui30.css di index.html.
+- sw.js: VERSION 2026.11.11-a + ui30.css masuk daftar cache offline.
