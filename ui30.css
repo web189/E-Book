@@ -53,10 +53,10 @@ html[data-theme="dark"] .dev-credit b{color:#8FC4FF;}
 
 /* navigasi: teks polos + garis aktif (tanpa kapsul pembungkus) */
 .main-nav{
-  margin-left:auto; padding:0; gap:2px; background:transparent; border:0; border-radius:0;
+  flex:0 0 auto; margin-left:auto; padding:0; gap:2px; background:transparent; border:0; border-radius:0;
 }
 .nav-link{
-  position:relative; padding:10px 12px; border-radius:10px; font-size:.85rem; font-weight:600;
+  white-space:nowrap; position:relative; padding:10px 12px; border-radius:10px; font-size:.85rem; font-weight:600;
   color:var(--v-text-2); background:transparent;
 }
 .nav-link:hover,.nav-dropdown.open .nav-dropdown-btn{color:var(--v-blue); background:rgba(20,86,240,.07);}
@@ -101,7 +101,7 @@ html[data-theme="dark"] .nav-link.active::after{background:#8FC4FF;}
 .drawer-acc-item{color:var(--v-text-2);}
 
 /* 861–1180px (PC kecil, tablet, "situs desktop" di HP): pakai menu laci agar tidak berdesakan */
-@media (min-width:861px) and (max-width:1180px){
+@media (min-width:861px) and (max-width:1439px){
   .main-nav{display:none;}
   .hamburger{display:flex;}
   .mobile-drawer{display:grid;}
