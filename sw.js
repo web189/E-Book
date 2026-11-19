@@ -11,7 +11,7 @@
    Naikkan VERSION setiap kali Anda mengunggah versi baru agar semua perangkat
    langsung mengganti cache lama (disarankan, tetapi bukan syarat).
    ========================================================================== */
-var VERSION = "2026.11.19-b";
+var VERSION = "2026.11.19-c";
 var SHELL = "lp-shell-" + VERSION;
 var MEDIA = "lp-media-v1";
 
@@ -47,6 +47,7 @@ var CORE = [
   "./ui30.css",
   "./ui31.css",
   "./ui32.css",
+  "./ui33.css",
   "./assets/icons/apple-touch-icon.png",
   "./assets/icons/favicon-32.png",
   "./assets/icons/icon-192.png",

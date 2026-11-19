@@ -31,7 +31,7 @@
      ======================================================================== */
   var reg = null, baseline = null, updating = false;
   var hadController = !!(nav.serviceWorker && nav.serviceWorker.controller);
-  var WATCH = ["index.html", "app.js", "ui26.css", "ui30.css", "ui31.css", "ui32.css", "style.css", "dms-manual.js", "dms-manual.css", "thermal-print.js", "opening.js", "pwa.js", "sw.js"];
+  var WATCH = ["index.html", "app.js", "ui26.css", "ui30.css", "ui31.css", "ui32.css", "ui33.css", "style.css", "dms-manual.js", "dms-manual.css", "thermal-print.js", "opening.js", "pwa.js", "sw.js"];
   var updEl = null, updTimer = null;
 
   function fingerprint() {
