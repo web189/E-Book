@@ -22,3 +22,9 @@ Link luar (benyoriki.com, Uang Ritase TUA) tetap butuh internet karena berada di
 - Tombol **Cetak > Epson LX-310** sekarang tidak lagi mengunduh .prn. Urutannya: (1) kirim ESC/P lewat agen bila agen aktif, (2) bila agen tidak ada, otomatis cetak lewat browser dengan huruf tebal.
 - Agar langsung keluar tanpa dialog: buka website lewat pintasan **DMS Manual (Epson)** dari `pasang-epson-win7.bat` (Chrome --kiosk-printing, Epson jadi printer default). Tanpa pintasan itu, dialog cetak Chrome muncul sekali; pilih kertas 9,5 x 3,75 in.
 - Pola cetak mengikuti DMS: 10 barang per form; form terakhir memuat tanda tangan (maks. 6 barang). Bila barang terakhir lebih dari 6, tanda tangan dicetak di form tambahan.
+
+## Update otomatis & cara unggah versi baru (v2026.11.19)
+- Saat **online**, setiap berkas kode (html/css/js) diambil dari internet lebih dulu (maks. 4 detik), lalu salinan offline diganti otomatis. Saat **offline**, salinan tersimpan dipakai. Respons error server (404/5xx) tidak pernah menimpa salinan yang baik.
+- Gambar & font tampil langsung dari salinan offline lalu diperbarui diam-diam di belakang layar.
+- **Setiap kali mengunggah versi baru ke GitHub, ubah `VERSION` di baris 11 `sw.js`** (mis. `2026.11.20-a`). Ini membuat semua HP/PC langsung mengganti cache lama dan menampilkan "Versi terbaru ditemukan".
+- Bila berkas inti (index.html, app.js, style.css, pwa.js) gagal diunduh saat pemasangan, versi baru dibatalkan dan versi lama tetap berjalan (tidak ada cache setengah jadi).

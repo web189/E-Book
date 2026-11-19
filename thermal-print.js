@@ -6,9 +6,12 @@
   var DOTS = { "58": 384, "80": 576 };               /* titik cetak (203 dpi, 8 titik/mm) */
   var HEAT = { "1": 60, "2": 80, "3": 110, "4": 140 }; /* ESC 7: waktu pemanasan, makin besar makin hitam */
   var SERV = ["000018f0-0000-1000-8000-00805f9b34fb", "0000ffe0-0000-1000-8000-00805f9b34fb", "0000fff0-0000-1000-8000-00805f9b34fb",
-    "e7810a71-73ae-499d-8c15-faa9aef0c3f2", "49535343-fe7d-4ae5-8fa9-9fafd205e455", "0000ae30-0000-1000-8000-00805f9b34fb", "0000fee7-0000-1000-8000-00805f9b34fb"];
+    "0000ff00-0000-1000-8000-00805f9b34fb", "e7810a71-73ae-499d-8c15-faa9aef0c3f2", "49535343-fe7d-4ae5-8fa9-9fafd205e455",
+    "0000ae30-0000-1000-8000-00805f9b34fb", "0000fee7-0000-1000-8000-00805f9b34fb"];
   var FONT = '"Roboto","Helvetica Neue",Arial,sans-serif';
-  var logoWait = null, ble = { dev: null, ch: null };
+  /* ble.pending = proses sambung yang dimulai langsung saat tombol ditekan; ble.busy = kunci agar 2 cetakan tidak bertabrakan;
+     ble.chunk = ukuran paket yang terbukti diterima printer (diingat selama halaman terbuka) */
+  var logoWait = null, ble = { dev: null, ch: null, pending: null, busy: false, chunk: 100, hooked: null };
 
   function loadLogo() {
     if (logoWait) return logoWait;
@@ -165,6 +168,8 @@
     big.width = W * S; big.height = 200; c = big.getContext("2d");
     c.setTransform(S, 0, 0, S, 0, 0); c.textBaseline = "top";
     L = layout(c, d, W, img, true); H = Math.ceil(L.h);
+    /* struk sangat panjang: kanvas 2x bisa melewati batas memori HP -> kanvas kosong/putih. Turunkan ke 1x bila terlalu besar. */
+    if (W * S * H * S > 12000000 || H * S > 14000) S = 1;
     big.width = W * S; big.height = H * S; c = big.getContext("2d");
     c.fillStyle = "#fff"; c.fillRect(0, 0, W * S, H * S);
     c.setTransform(S, 0, 0, S, 0, 0); c.textBaseline = "top"; c.fillStyle = "#000"; c.strokeStyle = "#000";
@@ -210,38 +215,85 @@
     document.body.appendChild(a); a.click(); setTimeout(function () { if (a.parentNode) a.parentNode.removeChild(a); }, 800);
     return Promise.resolve("Dikirim ke RawBT ✓ — bila tidak terbuka, pasang aplikasi RawBT dan pilih printernya.");
   }
-  function findChar(list, i) {
-    if (i >= list.length) return Promise.reject(new Error("Printer tidak punya jalur BLE yang dikenal (kemungkinan Bluetooth Classic). Pakai metode RawBT."));
-    return list[i].getCharacteristics().then(function (cs) {
-      for (var k = 0; k < cs.length; k++) if (cs[k].properties.writeWithoutResponse || cs[k].properties.write) return cs[k];
-      return findChar(list, i + 1);
+  /* urutkan layanan sesuai daftar SERV (jalur cetak yang dikenal didahulukan), lalu pilih karakteristik tulis;
+     writeWithoutResponse lebih disukai karena paling cepat dan dipakai hampir semua printer thermal */
+  function findChar(list) {
+    var sorted = list.slice().sort(function (a, b) {
+      var x = SERV.indexOf(a.uuid), y = SERV.indexOf(b.uuid);
+      return (x < 0 ? 99 : x) - (y < 0 ? 99 : y);
     });
+    function next(i) {
+      if (i >= sorted.length) return Promise.reject(new Error("Printer tidak punya jalur BLE yang dikenal (kemungkinan Bluetooth Classic). Pakai metode RawBT."));
+      return sorted[i].getCharacteristics().then(function (cs) {
+        var k, any = null;
+        for (k = 0; k < cs.length; k++) if (cs[k].properties.writeWithoutResponse) return cs[k];
+        for (k = 0; k < cs.length; k++) if (cs[k].properties.write) any = any || cs[k];
+        return any || next(i + 1);
+      }, function () { return next(i + 1); });
+    }
+    return next(0);
+  }
+  function bleReset(dropDevice) {
+    ble.ch = null;
+    if (dropDevice) ble.dev = null;       /* paksa pilih printer lagi di cetakan berikutnya */
   }
   function bleConnect(say) {
     if (!navigator.bluetooth) return Promise.reject(new Error("Browser ini tidak mendukung Bluetooth langsung. Pakai Chrome Android atau metode RawBT."));
     if (ble.ch && ble.dev && ble.dev.gatt && ble.dev.gatt.connected) return Promise.resolve(ble.ch);
+    /* requestDevice HARUS dipanggil langsung dari sentuhan pengguna (lihat prepare) */
     var p = ble.dev ? Promise.resolve(ble.dev) : navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: SERV });
     return p.then(function (dev) {
       ble.dev = dev; say("Menyambung ke " + (dev.name || "printer") + "…");
-      dev.addEventListener("gattserverdisconnected", function () { ble.ch = null; });
+      if (ble.hooked !== dev) {              /* pasang pendengar hanya sekali per perangkat (dulu menumpuk tiap cetak) */
+        ble.hooked = dev;
+        dev.addEventListener("gattserverdisconnected", function () { if (ble.dev === dev) ble.ch = null; });
+      }
+      ble.ch = null;
       return dev.gatt.connect();
     }).then(function (srv) { return srv.getPrimaryServices(); })
-      .then(function (list) { return findChar(list, 0); })
-      .then(function (ch) { ble.ch = ch; return ch; });
+      .then(function (list) { return findChar(list); })
+      .then(function (ch) { ble.ch = ch; return ch; }, function (e) {
+        if (!e || e.name !== "NotFoundError") bleReset(true);   /* gagal sambung -> lupakan perangkat lama yang mungkin basi */
+        throw e;
+      });
   }
+  /* kirim paket demi paket. Paket 100 byte; bila printer menolak, turun ke 20 byte (batas BLE paling aman) dan
+     ukuran itu diingat agar cetakan berikutnya tidak mengulang kegagalan. Putus di tengah jalan -> berhenti dengan pesan jelas
+     (TIDAK mengulang dari awal supaya struk tidak tercetak ganda). */
   function bleWrite(ch, bytes, say) {
-    var size = 100, i = 0, nores = !!(ch.properties.writeWithoutResponse && ch.writeValueWithoutResponse);
+    var i = 0, fails = 0, nores = !!(ch.properties.writeWithoutResponse && ch.writeValueWithoutResponse);
     function step() {
       if (i >= bytes.length) return Promise.resolve();
-      var part = bytes.slice(i, i + size);
+      if (ble.dev && ble.dev.gatt && !ble.dev.gatt.connected) { bleReset(false); return Promise.reject(new Error("Koneksi Bluetooth terputus saat mengirim. Nyalakan printer lalu cetak ulang.")); }
+      var part = bytes.slice(i, i + ble.chunk);
       return (nores ? ch.writeValueWithoutResponse(part) : ch.writeValue(part)).then(function () {
-        i += part.length; say("Mengirim " + Math.round(i * 100 / bytes.length) + "%…"); return delay(14);
-      }).then(step, function (e) { if (size > 20) { size = 20; return delay(60).then(step); } throw e; });
+        i += part.length; fails = 0; say("Mengirim " + Math.round(i * 100 / bytes.length) + "%…"); return delay(14);
+      }).then(step, function (e) {
+        if (ble.dev && ble.dev.gatt && !ble.dev.gatt.connected) { bleReset(false); throw new Error("Koneksi Bluetooth terputus saat mengirim. Nyalakan printer lalu cetak ulang."); }
+        if (ble.chunk > 20 && fails < 1) { ble.chunk = 20; fails++; return delay(60).then(step); }
+        if (fails < 3) { fails++; return delay(120).then(step); }   /* buffer printer penuh: beri jeda lalu coba paket yang sama */
+        throw e;
+      });
     }
     return step();
   }
+  /* Mulai menyambung SEKETIKA saat tombol cetak ditekan (sebelum menggambar struk), karena Chrome menolak requestDevice
+     bila sudah lewat beberapa detik dari sentuhan. Hasilnya dipakai oleh send(). */
+  function prepare(o, say) {
+    if (!o || o.method !== "ble" || ble.busy) return;
+    ble.pending = bleConnect(say || function () {});
+    ble.pending.catch(function () {});     /* cegah 'unhandled rejection'; galatnya dibaca lagi di viaBle */
+  }
   function viaBle(bytes, say) {
-    return bleConnect(say).then(function (ch) { return bleWrite(ch, bytes, say); }).then(function () { return "Terkirim ke printer ✓"; });
+    if (ble.busy) return Promise.reject(new Error("Printer masih mencetak. Tunggu selesai, lalu tekan cetak lagi."));
+    ble.busy = true;
+    var p = ble.pending || bleConnect(say);
+    ble.pending = null;
+    return p.then(function (ch) {
+      /* sambungan dari prepare() bisa sudah putus (printer mati/jauh) -> sambung ulang sebelum mengirim */
+      return (ble.dev && ble.dev.gatt && ble.dev.gatt.connected && ble.ch) ? ch : bleConnect(say);
+    }).then(function (ch) { return bleWrite(ch, bytes, say); })
+      .then(function () { ble.busy = false; return "Terkirim ke printer ✓"; }, function (e) { ble.busy = false; throw e; });
   }
   function viaDialog(cv, o) {
     var old = document.getElementById("dmFrame"); if (old && old.parentNode) old.parentNode.removeChild(old);
@@ -250,7 +302,13 @@
     document.body.appendChild(f); d = f.contentWindow.document; d.open();
     d.write('<!doctype html><html><head><meta charset="utf-8"><title>Struk</title><style>@page{size:' + o.tw + "mm " + mmH + "mm;margin:0}html,body{margin:0;padding:0;background:#fff}img{display:block;margin:0 auto;width:" + mmW + 'mm}</style></head><body><img src="' + cv.toDataURL("image/png") + '"></body></html>');
     d.close();
-    setTimeout(function () { try { f.contentWindow.focus(); f.contentWindow.print(); } catch (e) { alert("Gagal membuka dialog cetak."); } }, 400);
+    /* tunggu gambar benar-benar selesai dimuat; bila terlalu cepat, struk tercetak KOSONG */
+    var im = d.images && d.images[0], fired = false;
+    function go() {
+      if (fired) return; fired = true;
+      setTimeout(function () { try { f.contentWindow.focus(); f.contentWindow.print(); } catch (e) { alert("Gagal membuka dialog cetak."); } }, 150);
+    }
+    if (im && !im.complete) { im.onload = go; im.onerror = go; setTimeout(go, 3000); } else go();
     return Promise.resolve("Dialog cetak dibuka.");
   }
   function send(cv, o, say) {
@@ -260,5 +318,6 @@
     return o.method === "rawbt" ? viaRawBT(bytes) : viaBle(bytes, say);
   }
 
-  window.ThermalPrint = { render: render, send: send, bytes: toBytes, hasBle: function () { return !!navigator.bluetooth; } };
+  window.ThermalPrint = { render: render, send: send, prepare: prepare, bytes: toBytes, hasBle: function () { return !!navigator.bluetooth; },
+    forget: function () { bleReset(true); try { if (ble.dev && ble.dev.gatt && ble.dev.gatt.connected) ble.dev.gatt.disconnect(); } catch (e) {} } };
 })();

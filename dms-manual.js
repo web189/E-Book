@@ -243,13 +243,13 @@
         return '<button type="button" role="tab" aria-selected="' + (id === st.doc) + '" class="dm-doc ' + (out ? "out" : "in") + (id === st.doc ? " on" : "") + '" data-doc="' + id + '"><i>' + (n + 1) + '</i><b>' + d.n + '</b><em>' + (out ? "Keluar" : "Terima") + '</em></button>';
       }).join("") + '</div><p class="dm-docs-s">' + D.s + '</p>' +
       '<h4 class="dm-sec"><span>2</span>Printer</h4>' +
-      '<div class="dm-pick" role="group" aria-label="Pilih printer"><button type="button" data-pr="epson" class="' + (ep ? "on" : "") + '"><b>Epson LX-310</b><span>Form kertas 3–4 ply</span></button><button type="button" data-pr="termal" class="' + (ep ? "" : "on") + '"><b>Printer termal</b><span>Struk 80 / 58 mm</span></button></div>' +
+      '<div class="dm-pick" role="group" aria-label="Pilih printer"><button type="button" data-pr="epson" class="' + (ep ? "on" : "") + '"><b>Epson LX-310</b><span>Form kertas 3–4 ply</span></button><button type="button" data-pr="termal" class="' + (ep ? "" : "on") + '"><b>Printer Thermal</b><span>Struk 80 / 58 mm</span></button></div>' +
       '<h4 class="dm-sec"><span>3</span>Isi data</h4>' +
       '<div class="dm-grid"><div class="dm-card"><h2>' + D.n + ' <small>' + D.dir.toLowerCase() + '</small></h2>' + mForm(D) +
       '<h3>Barang</h3><div id="dmRows">' + st.rows.map(rowHtml).join("") + '</div>' +
       '<div id="dmAc" class="dm-ac" hidden></div>' +
       '<div class="dm-actions"><button type="button" class="dm-btn" id="dmAdd">+ Tambah barang</button><button type="button" class="dm-btn dm-ghost" id="dmClear">Kosongkan</button></div>' +
-      '<details class="dm-set"' + (st.set ? " open" : "") + '><summary>Pengaturan ' + (ep ? "Epson LX-310" : "printer termal") + '</summary>' +
+      '<details class="dm-set"' + (st.set ? " open" : "") + '><summary>Pengaturan ' + (ep ? "Epson LX-310" : "Printer Thermal") + '</summary>' +
       (ep ?
       '<label>Ukuran form<select id="dmF">' + Object.keys(FORMS).map(function (k) { return '<option value="' + k + '"' + (k === st.form ? " selected" : "") + ">" + FORMS[k].name + "</option>"; }).join("") + '</select></label>' +
       '<div class="dm-two"><label>Posisi form di lembar<select id="dmS">' + ["1", "2", "3"].map(function (k) { return '<option value="' + k + '"' + (k === st.slot ? " selected" : "") + ">Form ke-" + k + "</option>"; }).join("") + '</select></label><label>Garis tabel<select id="dmR"><option value="1"' + (st.solid ? " selected" : "") + '>Solid (PC437)</option><option value="0"' + (st.solid ? "" : " selected") + '>Putus-putus (-)</option></select></label><label>Nama printer Windows<input id="dmN" value="' + esc(st.pname) + '" placeholder="kosong = printer default"></label><label>Tebal huruf<select id="dmB"><option value="1"' + (st.tebal ? " selected" : "") + '>Tebal (lebih lambat, mesin lebih keras)</option><option value="0"' + (st.tebal ? "" : " selected") + '>Normal (cepat, tenang, jelas)</option></select></label></div>' +
@@ -260,7 +260,7 @@
       '<label>QR di struk<select id="dmLg"><option value="1"' + (st.logo ? " selected" : "") + '>Tampilkan QR</option><option value="0"' + (st.logo ? "" : " selected") + '>Tanpa QR</option></select></label>' +
       '<p class="dm-hint">Pasangkan printer dulu di Pengaturan Bluetooth HP (PIN 0000 atau 1234). Bila "Bluetooth langsung" tidak menemukan printer, pilih <b>Aplikasi RawBT</b>. Cetak buram? Naikkan kegelapan.</p>') +
       '</details>' +
-      '<button type="button" class="dm-btn dm-primary" id="dmPrint">' + (ep ? "Cetak " + D.n + " ke Epson LX-310" : "Cetak " + D.n + " ke termal " + st.tw + " mm") + '</button><button type="button" class="dm-btn dm-test" id="' + (ep ? "dmTest" : "dmSave") + '">' + (ep ? "Cetak tes langsung (data contoh)" : "Simpan gambar struk") + '</button>' +
+      '<button type="button" class="dm-btn dm-primary" id="dmPrint">' + (ep ? "Cetak " + D.n + " ke Epson LX-310" : "Cetak " + D.n + " ke Printer Thermal " + st.tw + " mm") + '</button><button type="button" class="dm-btn dm-test" id="' + (ep ? "dmTest" : "dmSave") + '">' + (ep ? "Cetak tes langsung (data contoh)" : "Simpan gambar struk") + '</button>' +
       (!ep ? '<p id="dmAgent" class="dm-hint dm-pnote">Siap mencetak.</p>' : '') + (ep ? '<p id="dmAgent" class="dm-hint dm-pnote">Memeriksa agen cetak…</p><button type="button" class="dm-btn dm-test" id="dmDlg">Cetak lewat dialog Chrome (gambar, kurang mirip)</button><button type="button" class="dm-btn dm-test" data-raw="1">Simpan PDF form Epson</button>' : "") +
       (ep ? '<p class="dm-hint dm-pnote">Di dialog cetak pilih printer <b>EPSON LX-310</b>, <b>Margins: None</b>, <b>Scale: 100</b>. Cetak tanpa dialog: pakai pintasan dari <b>pasang-epson-win7.bat</b>.</p>' : '') + '</div>' +
       '<div class="dm-card"><h2>Pratinjau <small id="dmInfo"></small></h2><div id="dmPrev" class="dm-prev"></div></div></div></section>';
@@ -448,7 +448,7 @@
     agentMsg("PDF form disimpan: " + esc(name) + ". Buka lalu Print ke Epson LX-310 (kertas 9,5 × " + (fhIn()).toFixed(2) + " in, skala 100%).");
   }
   /* ---------- printer termal: gambar struk (logo + huruf tajam) -> ESC/POS ---------- */
-  var pseq = 0;
+  var pseq = 0, tBusy = false;
   function tdata(test) {
     var D = DOCS[st.doc] || DOCS.bkd, pl = "Pihak", ex = [], has = {}, rg = [["dokreq", "Dok. Req"], ["sj", "No. SJ"], ["tglsj", "Tgl SJ"], ["jasa", "Angkutan"], ["ref1", "Ref 1"], ["ref2", "Ref 2"], ["ref3", "Ref 3"], ["shift", "Shift"], ["kuli", "Jml Kuli"]];
     D.L.concat(D.R).forEach(function (f) { has[f.k] = 1; if (f.k === "party") pl = f.l; });
@@ -483,16 +483,21 @@
   function tPrint(test) {
     if (!test && !items().length) { alert("Isi minimal satu barang dengan jumlah sebelum mencetak."); return; }
     var TP = window.ThermalPrint, o = { tw: st.tw, method: st.tmethod, dens: st.dens, logo: st.logo };
+    if (tBusy) { agentMsg("Struk sebelumnya masih diproses. Tunggu sebentar…"); return; }   /* cegah tekan ganda -> data tabrakan */
+    tBusy = true;
+    TP.prepare(o, agentMsg);          /* mulai pilih/sambung printer Bluetooth langsung dari sentuhan tombol */
     agentMsg("Menyiapkan struk…");
     TP.render(tdata(test), o).then(function (cv) {
       return TP.send(cv, o, agentMsg).then(function (m) { agentMsg(esc(m || "Terkirim ✓")); }, function (e) {
         var msg = e && e.message ? e.message : "gagal mengirim";
+        if (e && e.name === "NotFoundError") { agentMsg("Pemilihan printer dibatalkan."); return; }
         agentMsg("Gagal: " + esc(msg));
-        if (e && e.name === "NotFoundError") return;
         if (o.method === "ble" && window.confirm("Bluetooth langsung gagal (" + msg + ").\nCoba kirim lewat aplikasi RawBT?")) {
           o.method = "rawbt"; return TP.send(cv, o, agentMsg).then(function (m) { agentMsg(esc(m)); });
         }
       });
+    }).then(function () { tBusy = false; }, function (e) {
+      tBusy = false; agentMsg("Gagal menyiapkan struk: " + esc(e && e.message ? e.message : "kesalahan tidak dikenal"));
     });
   }
   function agentMsg(h) { var e = document.getElementById("dmAgent"); if (e) e.innerHTML = h; }

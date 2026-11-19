@@ -5,10 +5,13 @@
    • Update   : kode (html/css/js) SELALU diambil dari internet lebih dulu saat
                 online (maks. tunggu 4 dtk), lalu salinan offline diperbarui
                 otomatis. Tanpa internet -> memakai salinan tersimpan.
-   • Gambar & font memakai cache-first (hemat kuota, cepat).
-   Naikkan VERSION bila ingin memaksa semua perangkat membuang cache lama.
+   • Gambar & font: tampil langsung dari salinan offline, lalu diam-diam diperbarui
+     dari internet (stale-while-revalidate) -> gambar yang diganti ikut ter-update.
+   • Halaman yang gagal dimuat server (404/5xx) memakai salinan offline, bukan halaman error.
+   Naikkan VERSION setiap kali Anda mengunggah versi baru agar semua perangkat
+   langsung mengganti cache lama (disarankan, tetapi bukan syarat).
    ========================================================================== */
-var VERSION = "2026.11.14-a";
+var VERSION = "2026.11.19-a";
 var SHELL = "lp-shell-" + VERSION;
 var MEDIA = "lp-media-v1";
 
@@ -138,22 +141,41 @@ var LATER = [
   "./vendor/tesseract/worker.min.js"
 ];
 
+/* berkas inti yang WAJIB berhasil diunduh; bila gagal, pemasangan SW dibatalkan
+   dan versi lama yang sudah berjalan tetap dipakai (tidak ada cache setengah jadi) */
+var CRITICAL = ["./index.html", "./app.js", "./style.css", "./pwa.js"];
+
+function fetchPut(cache, u) {
+  return fetch(u, { cache: "reload" }).then(function (res) {
+    if (res && res.ok) return cache.put(u, res).then(function () { return true; });
+    return false;
+  }).catch(function () { return false; });
+}
+
 function addAll(cacheName, list, onStep) {
   return caches.open(cacheName).then(function (cache) {
-    var done = 0;
+    var done = 0, failed = [];
+    function step() { done++; onStep && onStep(done, list.length); }
     return Promise.all(list.map(function (u) {
       return cache.match(u).then(function (hit) {
-        if (hit && cacheName === MEDIA) { done++; onStep && onStep(done, list.length); return; }
-        return fetch(u, { cache: "reload" }).then(function (res) {
-          if (res && res.ok) return cache.put(u, res);
-        }).catch(function () {}).then(function () { done++; onStep && onStep(done, list.length); });
+        if (hit && cacheName === MEDIA) { step(); return; }
+        return fetchPut(cache, u).then(function (ok) { if (!ok) failed.push(u); step(); });
       });
-    }));
+    })).then(function () {
+      if (!failed.length) return failed;
+      /* coba ulang sekali untuk berkas yang gagal (sinyal HP sering putus-nyambung) */
+      return Promise.all(failed.map(function (u) { return fetchPut(cache, u).then(function (ok) { return ok ? null : u; }); }))
+        .then(function (r) { return r.filter(Boolean); });
+    });
   });
 }
 
 self.addEventListener("install", function (event) {
-  event.waitUntil(addAll(SHELL, CORE).then(function () { return self.skipWaiting(); }));
+  event.waitUntil(addAll(SHELL, CORE).then(function (failed) {
+    var bad = failed.filter(function (u) { return CRITICAL.indexOf(u) >= 0; });
+    if (bad.length) throw new Error("Gagal mengunduh berkas inti: " + bad.join(", "));
+    return self.skipWaiting();
+  }));   /* gagal -> SW baru dibatalkan, SW lama tetap jalan; browser mencoba lagi otomatis nanti */
 });
 
 self.addEventListener("activate", function (event) {
@@ -184,28 +206,55 @@ self.addEventListener("message", function (event) {
 
 function isCode(url) { return /\.(?:html|css|js|json|md)$/i.test(url.pathname) || /\/$/.test(url.pathname); }
 
-function networkFirst(req, cacheKey, timeoutMs) {
+function offlinePage() {
+  return new Response('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Offline</title>' +
+    '<body style="font-family:sans-serif;padding:32px;text-align:center"><h2>Belum tersimpan untuk offline</h2>' +
+    '<p>Sambungkan internet sekali, buka situs ini, tunggu sampai muncul tulisan “Siap dipakai offline”, lalu coba lagi.</p></body>',
+    { status: 503, headers: { "Content-Type": "text/html; charset=utf-8" } });
+}
+
+/* Kode (html/css/js): internet dulu (maks. timeoutMs), salinan offline sebagai cadangan.
+   Respons gagal dari server (404/5xx/captive portal) TIDAK dipakai bila salinan offline ada. */
+function networkFirst(event, cacheKey, timeoutMs, isNav) {
   return caches.open(SHELL).then(function (cache) {
     return new Promise(function (resolve) {
-      var settled = false;
-      function fallback() {
-        cache.match(cacheKey, { ignoreSearch: true }).then(function (hit) {
-          if (hit) { if (!settled) { settled = true; resolve(hit); } }
-          else if (!settled) { /* tunggu jaringan */ }
+      var settled = false, timer;
+      function done(r) { if (!settled) { settled = true; clearTimeout(timer); resolve(r); } }
+      function useCache(last) {
+        return cache.match(cacheKey, { ignoreSearch: true }).then(function (hit) {
+          if (hit) done(hit); else if (last) done(last);
         });
       }
-      var timer = setTimeout(fallback, timeoutMs);
-      fetch(cacheKey, { cache: "no-cache" }).then(function (res) {
-        clearTimeout(timer);
-        if (res && res.ok) { cache.put(cacheKey, res.clone()); }
-        if (!settled) { settled = true; resolve(res); }
+      timer = setTimeout(function () { useCache(null); }, timeoutMs);   /* jaringan lambat -> pakai salinan, jaringan tetap menyegarkan cache */
+      var net = fetch(cacheKey, { cache: "no-cache" }).then(function (res) {
+        if (res && res.ok) {
+          var copy = res.clone();
+          var put = cache.put(cacheKey, copy).catch(function () {});
+          event.waitUntil(put);
+          done(res);
+        } else {
+          useCache(res || null).then(function () { if (!settled) done(res || (isNav ? offlinePage() : new Response("", { status: 504 }))); });
+        }
       }).catch(function () {
-        clearTimeout(timer);
-        cache.match(cacheKey, { ignoreSearch: true }).then(function (hit) {
-          if (!settled) { settled = true; resolve(hit || new Response("Offline", { status: 503, statusText: "Offline" })); }
-        });
+        useCache(null).then(function () { if (!settled) done(isNav ? offlinePage() : new Response("Offline", { status: 503, statusText: "Offline" })); });
       });
+      event.waitUntil(net);
     });
+  });
+}
+
+/* Gambar, font, wasm: tampil dari salinan offline dulu, lalu diam-diam disegarkan bila online */
+function staleWhileRevalidate(event, req) {
+  return caches.match(req, { ignoreSearch: true }).then(function (hit) {
+    var refresh = fetch(req).then(function (res) {
+      if (res && res.ok && res.status === 200) {
+        var copy = res.clone();
+        return caches.open(MEDIA).then(function (c) { return c.put(req, copy); }).then(function () { return res; });
+      }
+      return res;
+    }).catch(function () { return null; });
+    if (hit) { event.waitUntil(refresh); return hit; }
+    return refresh.then(function (res) { return res || new Response("", { status: 504, statusText: "Offline" }); });
   });
 }
 
@@ -214,30 +263,19 @@ self.addEventListener("fetch", function (event) {
   if (req.method !== "GET") return;
   var url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
+  if (req.headers.has("range")) return;               /* biarkan browser menangani video/audio parsial */
 
   if (req.mode === "navigate") {
-    event.respondWith(networkFirst(req, "./index.html", 4000));
+    event.respondWith(networkFirst(event, "./index.html", 4000, true));
     return;
   }
 
   if (isCode(url)) {
     var scope = new URL(self.registration.scope).pathname;
     var rel = "./" + url.pathname.substring(scope.length);
-    event.respondWith(networkFirst(req, rel, 4000));
+    event.respondWith(networkFirst(event, rel, 4000, false));
     return;
   }
 
-  // gambar, font, wasm, dll: cache-first
-  event.respondWith(
-    caches.match(req, { ignoreSearch: true }).then(function (hit) {
-      if (hit) return hit;
-      return fetch(req).then(function (res) {
-        if (res && res.ok) {
-          var copy = res.clone();
-          caches.open(MEDIA).then(function (c) { c.put(req, copy); });
-        }
-        return res;
-      });
-    })
-  );
+  event.respondWith(staleWhileRevalidate(event, req));
 });
