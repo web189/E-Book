@@ -1,4 +1,4 @@
-/* pwa.js — mode offline, update otomatis, dan tombol instal (HP & Windows).
+/* pwa.js (generasi 3) — mode offline, update otomatis atomik, status offline, tombol instal (HP & Windows).
    Aman untuk Chrome 109 / Windows 7. Semua opsional: bila gagal, situs tetap normal. */
 (function () {
   "use strict";
@@ -27,19 +27,16 @@
   }
 
   /* ========================================================================
-     1) UPDATE OTOMATIS
+     1) UPDATE OTOMATIS  (mesin utamanya ada di sw.js; di sini hanya pemicu + tampilan)
      ======================================================================== */
-  var reg = null, baseline = null, updating = false;
+  var reg = null, updating = false, lastCheck = 0, status = null, prog = null, persisted = null, estimate = null, waitingCheck = false;
   var hadController = !!(nav.serviceWorker && nav.serviceWorker.controller);
-  var WATCH = ["index.html", "app.js", "ui26.css", "ui30.css", "ui31.css", "ui32.css", "ui33.css", "style.css", "dms-manual.js", "dms-manual.css", "thermal-print.js", "opening.js", "pwa.js", "sw.js"];
+  var SAVE = !!(nav.connection && nav.connection.saveData);
   var updEl = null, updTimer = null;
 
-  function fingerprint() {
-    return Promise.all(WATCH.map(function (u) {
-      return fetch(u, { method: "HEAD", cache: "no-store" }).then(function (r) {
-        return r.ok ? (r.headers.get("etag") || r.headers.get("last-modified") || r.headers.get("content-length") || "") : "?";
-      });
-    })).then(function (a) { return a.join("|"); }).catch(function () { return null; });
+  function toSW(msg) {
+    var t = (nav.serviceWorker && nav.serviceWorker.controller) || (reg && reg.active);
+    if (t) { try { t.postMessage(msg); } catch (e) {} }
   }
   function typing() {
     var a = doc.activeElement;
@@ -57,47 +54,69 @@
     doc.body.appendChild(updEl);
     void updEl.offsetWidth; updEl.className += " show";
     updEl.querySelector("button").addEventListener("click", reloadNow);
-    var wait = 2800;
     (function tick() {
       if (typing()) {
         updEl.querySelector("small").textContent = "Anda sedang mengisi data — tekan Perbarui jika sudah selesai.";
         updTimer = setTimeout(tick, 1500); return;
       }
-      updTimer = setTimeout(reloadNow, wait);
+      updTimer = setTimeout(reloadNow, 2800);
     })();
   }
-  function checkUpdate() {
+  function checkUpdate(force) {
     if (nav.onLine === false || updating) return;
+    var now = Date.now();
+    if (!force && now - lastCheck < 60000) return;
+    lastCheck = now;
     if (reg) { try { reg.update().catch(noop); } catch (e) {} }
-    fingerprint().then(function (v) {
-      if (!v) return;
-      if (baseline === null) { baseline = v; return; }
-      if (v !== baseline) showUpdate();
-    });
+    toSW({ type: "CHECK", force: !!force, saveData: SAVE });
   }
 
   /* ========================================================================
      2) REGISTRASI SERVICE WORKER + SIMPAN UNTUK OFFLINE
      ======================================================================== */
+  function askStatus() { toSW({ type: "STATUS" }); }
+  function askPersist() {
+    try {
+      if (!(nav.storage && nav.storage.persist)) return;
+      nav.storage.persisted().then(function (p) {
+        persisted = p;
+        if (p) return;
+        return nav.storage.persist().then(function (g) { persisted = g; paintPanel(); });
+      }).catch(noop);
+    } catch (e) {}
+  }
+  function registerSync(r) {
+    try { if (r.periodicSync && r.periodicSync.register) r.periodicSync.register("lp-update", { minInterval: 12 * 3600 * 1000 }).catch(noop); } catch (e) {}
+  }
+  function queueSync() {
+    try { if (reg && reg.sync && reg.sync.register) reg.sync.register("lp-update-once").catch(noop); } catch (e) {}
+  }
   function setupSW() {
     if (!("serviceWorker" in nav)) return;
     nav.serviceWorker.addEventListener("controllerchange", function () { if (hadController) showUpdate(); hadController = true; });
     nav.serviceWorker.addEventListener("message", function (e) {
       var d = e.data || {};
-      if (d.type === "CACHE_DONE" && ls("lp_offline_ready") !== d.version) {
-        ls("lp_offline_ready", d.version);
-        toast("Siap dipakai offline ✓", "ok", 4200);
+      if (d.type === "UPDATE_READY") { showUpdate(); }
+      else if (d.type === "SHELL_READY") { askStatus(); }
+      else if (d.type === "CACHE_PROGRESS") { prog = d; paintPill(); paintPanel(); }
+      else if (d.type === "CACHE_DONE") {
+        prog = null;
+        if (d.total && d.done >= d.total && ls("lp_offline_ready") !== d.version) { ls("lp_offline_ready", d.version); toast("Siap dipakai offline ✓", "ok", 4200); }
+        askStatus();
       }
+      else if (d.type === "STATUS") {
+        status = d; paintPill(); paintPanel();
+        if (waitingCheck && !updating) { waitingCheck = false; toast("Sudah versi terbaru ✓", "ok", 2800); }
+      }
+      else if (d.type === "RESET_FAILED") { toast("Gagal mengunduh ulang — periksa internet lalu coba lagi.", "", 4800); }
     });
-    nav.serviceWorker.register("sw.js").then(function (r) {
+    nav.serviceWorker.register("sw.js", { updateViaCache: "none" }).then(function (r) {
       reg = r;
-      r.addEventListener("updatefound", function () {
-        var w = r.installing; if (!w) return;
-        w.addEventListener("statechange", function () { if (w.state === "installed" && nav.serviceWorker.controller) { /* skipWaiting di sw.js */ } });
-      });
       return nav.serviceWorker.ready;
     }).then(function (r) {
-      if (nav.onLine !== false && r.active) r.active.postMessage({ type: "CACHE_ALL" });
+      reg = r;
+      if (r.active) { toSW({ type: "CACHE_ALL", saveData: SAVE }); askStatus(); }
+      askPersist(); registerSync(r);
     }).catch(noop);
   }
 
@@ -112,9 +131,122 @@
     if (ms) chipTimer = setTimeout(function () { chip.className = chip.className.replace(" show", ""); }, ms);
   }
   function netChange() {
-    if (nav.onLine === false) { wasOffline = true; chipShow("Mode offline — memakai versi tersimpan", "off", 5000); }
-    else if (wasOffline) { wasOffline = false; chipShow("Kembali online — memeriksa pembaruan…", "on", 3200); setTimeout(checkUpdate, 600); }
+    if (nav.onLine === false) { wasOffline = true; queueSync(); chipShow("Mode offline — memakai versi tersimpan", "off", 5000); paintPill(); paintPanel(); }
+    else if (wasOffline) { wasOffline = false; chipShow("Kembali online — memeriksa pembaruan…", "on", 3200); setTimeout(function () { checkUpdate(true); }, 600); paintPill(); paintPanel(); }
   }
+  /* tautan ke situs luar butuh internet: beri tahu, jangan tampilkan halaman error browser */
+  doc.addEventListener("click", function (e) {
+    if (nav.onLine !== false) return;
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!a) return;
+    try {
+      var u = new URL(a.href, win.location.href);
+      if (u.origin !== win.location.origin && /^https?:$/.test(u.protocol)) { e.preventDefault(); toast("Tautan ini butuh internet — sambungkan dulu.", "", 4200); }
+    } catch (x) {}
+  }, true);
+
+  /* ========================================================================
+     3b) TOMBOL & PANEL "STATUS OFFLINE"
+     ======================================================================== */
+  var pill = null, panel = null;
+  function fmtBytes(n) { if (!n) return "0 KB"; if (n < 1048576) return Math.max(1, Math.round(n / 1024)) + " KB"; return (n / 1048576).toFixed(n < 10485760 ? 1 : 0) + " MB"; }
+  function fmtTime(t) {
+    if (!t) return "—";
+    try { return new Date(t).toLocaleString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); } catch (e) { return new Date(t).toString(); }
+  }
+  function mediaDone() { return status ? status.imgDone + status.ocrDone : 0; }
+  function mediaTotal() { return status ? status.imgTotal + status.ocrTotal : 0; }
+  function pillState() {
+    var off = nav.onLine === false;
+    if (!("serviceWorker" in nav)) return "none";
+    if (!status) return off ? "off" : "wait";
+    if (!status.shellOk) return off ? "off" : "warn";
+    if (prog && prog.done < prog.total && !off) return "sync";
+    if (mediaDone() < mediaTotal()) return off ? "off-ok" : "warn";
+    return off ? "off-ok" : "ok";
+  }
+  var PILL_TXT = {
+    ok: "Siap dipakai offline", sync: "Menyimpan untuk offline…", warn: "Simpanan offline belum lengkap — ketuk untuk detail",
+    wait: "Memeriksa simpanan offline…", off: "Offline — belum ada simpanan", "off-ok": "Mode offline — memakai versi tersimpan", none: "Browser ini tidak mendukung mode offline"
+  };
+  function paintPill() {
+    if (!pill) return;
+    var s = pillState();
+    pill.className = "pw-pill s-" + s;
+    var t = PILL_TXT[s] || "";
+    if (s === "sync" && prog) t += " " + prog.done + "/" + prog.total;
+    pill.title = t; pill.setAttribute("aria-label", "Status offline: " + t);
+  }
+  function buildPill() {
+    if (pill) return;
+    pill = el("button", "pw-pill s-wait",
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 9.5a4.2 4.2 0 0 1-.5 8.5H7Z"/><path class="ck" d="M9.2 13.4l2 2 3.8-4"/></svg><i></i>');
+    pill.type = "button";
+    pill.addEventListener("click", openPanel);
+    doc.body.appendChild(pill);
+    paintPill();
+  }
+  function buildPanel() {
+    if (panel) return;
+    panel = el("div", "pw-ov");
+    panel.innerHTML =
+      '<div class="pw-sheet pw-st" role="dialog" aria-modal="true" aria-labelledby="stTitle">' +
+      '<button type="button" class="pw-x" aria-label="Tutup">✕</button>' +
+      '<h2 id="stTitle">Status Offline</h2><p class="pw-sub" id="stHead"></p>' +
+      '<ul class="st-list" id="stList"></ul>' +
+      '<div class="st-act"><button type="button" id="stCheck">Periksa pembaruan</button><button type="button" id="stFill">Lengkapi simpanan</button><button type="button" id="stReset" class="warn">Reset &amp; unduh ulang</button></div>' +
+      '<p class="pw-note">Sistem memeriksa pembaruan sendiri tiap kali online. Tombol di atas hanya bila diperlukan.</p></div>';
+    doc.body.appendChild(panel);
+    panel.addEventListener("click", function (e) { if (e.target === panel) closePanel(); });
+    panel.querySelector(".pw-x").addEventListener("click", closePanel);
+    doc.addEventListener("keydown", function (e) { if ((e.key === "Escape" || e.keyCode === 27) && panel) closePanel(); });
+    panel.querySelector("#stCheck").addEventListener("click", function () {
+      if (nav.onLine === false) { toast("Sedang offline — pemeriksaan butuh internet.", "", 3200); return; }
+      waitingCheck = true; toast("Memeriksa pembaruan…", "", 1800); lastCheck = 0; checkUpdate(true);
+    });
+    panel.querySelector("#stFill").addEventListener("click", function () {
+      if (nav.onLine === false) { toast("Sedang offline — penyimpanan butuh internet.", "", 3200); return; }
+      toSW({ type: "CACHE_ALL", saveData: false }); toast("Melengkapi simpanan offline…", "", 2600);
+    });
+    panel.querySelector("#stReset").addEventListener("click", function () {
+      if (nav.onLine === false) { toast("Reset butuh internet — sambungkan dulu.", "", 3600); return; }
+      if (!win.confirm("Hapus semua simpanan offline lalu unduh ulang dari internet?\nData isian Anda (Opening/Closing, DMS Manual) TIDAK dihapus.")) return;
+      status = null; prog = null; paintPill(); paintPanel();
+      toSW({ type: "RESET" }); toast("Mengunduh ulang semua berkas…", "", 3600);
+    });
+  }
+  function row(ok, title, detail, pct) {
+    return '<li class="' + (ok === true ? "ok" : ok === false ? "bad" : "mid") + '"><i></i><b>' + title + '</b><span>' + detail + '</span>' +
+      (pct != null ? '<em class="bar"><u style="width:' + Math.min(100, pct) + '%"></u></em>' : "") + "</li>";
+  }
+  function paintPanel() {
+    if (!panel || panel.className.indexOf("show") < 0) return;
+    var s = status, off = nav.onLine === false, st = pillState();
+    panel.querySelector("#stHead").textContent =
+      st === "ok" ? "Semua siap. Website terbuka normal walau internet mati." :
+      st === "off-ok" ? "Anda sedang offline — website memakai salinan tersimpan." :
+      st === "sync" ? "Sedang menyimpan berkas untuk offline…" :
+      st === "none" ? "Browser ini tidak mendukung mode offline. Gunakan Chrome / Edge." :
+      "Belum lengkap. Sambungkan internet dan tunggu beberapa menit.";
+    var h = "";
+    if (!s) h = row(null, "Memeriksa…", "");
+    else {
+      h += row(!!s.shellOk, "Halaman &amp; program", s.shellOk ? s.files + " berkas · " + fmtBytes(s.bytes) : "belum tersimpan");
+      h += row(s.imgDone >= s.imgTotal, "Gambar materi", s.imgDone + " / " + s.imgTotal, s.imgTotal ? s.imgDone * 100 / s.imgTotal : 0);
+      h += row(s.ocrTotal ? s.ocrDone >= s.ocrTotal : null, "Mesin baca gambar (OCR)", s.ocrDone + " / " + s.ocrTotal, s.ocrTotal ? s.ocrDone * 100 / s.ocrTotal : 0);
+      h += row(persisted === true ? true : null, "Penyimpanan permanen", persisted === true ? "Ya — tidak dihapus otomatis" : "Belum (Chrome bisa menghapus bila ruang penuh)");
+      if (estimate && estimate.usage) h += row(true, "Ruang terpakai", fmtBytes(estimate.usage) + (estimate.quota ? " dari " + fmtBytes(estimate.quota) : ""));
+      h += row(true, "Versi tersimpan", (s.version || "—") + " · diperbarui " + fmtTime(s.builtAt));
+      h += row(off ? null : true, "Terakhir dicek", off ? "offline — dicek saat tersambung" : fmtTime(s.checkedAt));
+    }
+    panel.querySelector("#stList").innerHTML = h;
+  }
+  function openPanel() {
+    buildPanel(); askStatus();
+    try { if (nav.storage && nav.storage.estimate) nav.storage.estimate().then(function (e) { estimate = e; paintPanel(); }).catch(noop); } catch (e) {}
+    void panel.offsetWidth; panel.className = "pw-ov show"; paintPanel();
+  }
+  function closePanel() { if (panel) panel.className = "pw-ov"; }
 
   /* ========================================================================
      4) TOMBOL & PANEL INSTAL
@@ -231,10 +363,10 @@
     win.addEventListener("online", netChange);
     win.addEventListener("offline", netChange);
     if (nav.onLine === false) netChange();
-    win.addEventListener("load", function () { setTimeout(checkUpdate, 1500); });
-    doc.addEventListener("visibilitychange", function () { if (!doc.hidden) checkUpdate(); });
-    win.addEventListener("focus", checkUpdate);
-    setInterval(function () { if (!doc.hidden) checkUpdate(); }, 5 * 60 * 1000);
+    win.addEventListener("load", function () { setTimeout(buildPill, 600); setTimeout(function () { checkUpdate(false); }, 1500); });
+    doc.addEventListener("visibilitychange", function () { if (!doc.hidden) checkUpdate(false); });
+    win.addEventListener("focus", function () { checkUpdate(false); });
+    setInterval(function () { if (!doc.hidden) checkUpdate(false); }, 5 * 60 * 1000);
   }
   if (doc.readyState === "loading") doc.addEventListener("DOMContentLoaded", start); else start();
 })();

@@ -23,8 +23,18 @@ Link luar (benyoriki.com, Uang Ritase TUA) tetap butuh internet karena berada di
 - Agar langsung keluar tanpa dialog: buka website lewat pintasan **DMS Manual (Epson)** dari `pasang-epson-win7.bat` (Chrome --kiosk-printing, Epson jadi printer default). Tanpa pintasan itu, dialog cetak Chrome muncul sekali; pilih kertas 9,5 x 3,75 in.
 - Pola cetak mengikuti DMS: 10 barang per form; form terakhir memuat tanda tangan (maks. 6 barang). Bila barang terakhir lebih dari 6, tanda tangan dicetak di form tambahan.
 
-## Update otomatis & cara unggah versi baru (v2026.11.19)
-- Saat **online**, setiap berkas kode (html/css/js) diambil dari internet lebih dulu (maks. 4 detik), lalu salinan offline diganti otomatis. Saat **offline**, salinan tersimpan dipakai. Respons error server (404/5xx) tidak pernah menimpa salinan yang baik.
-- Gambar & font tampil langsung dari salinan offline lalu diperbarui diam-diam di belakang layar.
-- **Setiap kali mengunggah versi baru ke GitHub, ubah `VERSION` di baris 11 `sw.js`** (mis. `2026.11.20-a`). Ini membuat semua HP/PC langsung mengganti cache lama dan menampilkan "Versi terbaru ditemukan".
-- Bila berkas inti (index.html, app.js, style.css, pwa.js) gagal diunduh saat pemasangan, versi baru dibatalkan dan versi lama tetap berjalan (tidak ada cache setengah jadi).
+## Sistem offline generasi 3 "Atomic Offline" (2026.11.20)
+**Buka normal tanpa internet**: halaman, kode, font, ikon, 63 gambar materi dan mesin OCR disimpan di perangkat. Halaman dilayani dari salinan itu lebih dulu (instan, online maupun offline).
+
+**Update otomatis TANPA naik versi manual**: setiap kali online (buka situs, kembali ke tab, internet tersambung lagi, tiap 5 menit, Background/Periodic Sync), `sw.js` memeriksa ulang semua berkas kode (pemeriksaan bersyarat 304, hemat kuota), menghitung sidik jari SHA-256 gabungan, dan bila ada yang berubah membangun "paket versi" baru secara ATOMIK (semua berkas berhasil, atau versi lama tetap dipakai). Tidak pernah tercampur versi lama-baru. Setelah siap, halaman memuat ulang sendiri (menunggu bila Anda sedang mengetik).
+- **Tidak perlu lagi mengubah `VERSION` di sw.js** saat mengunggah versi baru. Cukup unggah berkas ke GitHub.
+- Berkas CSS/JS baru yang ditautkan di `index.html` (mis. `ui34.css`) otomatis ikut tersimpan offline. Gambar baru yang disebut di kode juga ditemukan otomatis. Daftar di `sw.js` (CORE & LATER) hanya benih cadangan.
+- Gagal unduh / server error / halaman portal Wi-Fi tidak pernah menimpa salinan yang baik.
+
+**Tombol "Status Offline"** (ikon awan, pojok kiri bawah): titik hijau = siap offline, biru = sedang menyimpan, oranye = belum lengkap. Ketuk untuk melihat rincian (berkas, gambar, OCR, ruang terpakai, penyimpanan permanen, versi, waktu cek) serta tombol Periksa pembaruan, Lengkapi simpanan, dan Reset & unduh ulang. Data isian (Opening/Closing, DMS Manual) tidak ikut terhapus oleh Reset.
+
+**Penyimpanan permanen**: situs meminta Chrome agar simpanan offline tidak dihapus otomatis saat ruang penuh (jika Chrome mengizinkan; biasanya setelah aplikasi dipasang).
+
+**Tautan ke situs luar** (Uang Ritase, KS/BKB/BTB, Absen GPS) tetap butuh internet; saat offline muncul pemberitahuan, bukan halaman error Chrome.
+
+**Syarat**: buka situs sekali saat online sampai titik hijau / tulisan "Siap dipakai offline". Perangkat lama otomatis berpindah ke sistem baru saat pertama kali online.
